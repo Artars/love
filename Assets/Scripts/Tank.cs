@@ -37,7 +37,9 @@ public class Tank : MonoBehaviour
     public float leftAxis;
     [Range(-1,1)]
     public float rightAxis;
+    [SerializeField]
     protected bool rightThreadOnGround = true;
+    [SerializeField]
     protected bool leftThreadOnGround = true;
     
 
@@ -51,6 +53,7 @@ public class Tank : MonoBehaviour
     }
 
     void FixedUpdate(){
+        checkGround();
         moveTank(Time.fixedDeltaTime);
     }
 
@@ -60,29 +63,55 @@ public class Tank : MonoBehaviour
     }
 
 
+    protected void checkGround(){
+
+        bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, 0.1f);
+        bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, 0.1f);
+        leftThreadOnGround = begin && end;
+
+        begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, 0.1f);
+        end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, 0.1f);
+        rightThreadOnGround = begin && end;
+    }
+
+
     //Move the tank based on the axis inputs. Should be called from the fixed updates
     protected void moveTank(float deltaTime) {
-        bool shouldMove = ( (rightAxis > 0) ^ (leftAxis > 0) );
-        shouldMove = !shouldMove && rightAxis != 0 && leftAxis != 0;
-        shouldMove = shouldMove && leftThreadOnGround && rightThreadOnGround;
+        float realRightAxis = rightThreadOnGround ? rightAxis : 0;
+        float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
+
+        bool shouldMove = ( (realRightAxis > 0) ^ (realLeftAxis > 0) );
+        shouldMove = !shouldMove && realRightAxis != 0 && realLeftAxis != 0;
 
         //Make linear movement
         if(shouldMove) {
-            float axisMin = Mathf.Min(Mathf.Abs(leftAxis), Mathf.Abs(rightAxis));
-            float speed = (rightAxis > 0 ) ? forwardSpeed : -backwardSpeed; //The left axis would also work
+            float axisMin = Mathf.Min(Mathf.Abs(realLeftAxis), Mathf.Abs(realRightAxis));
+            float speed = (realRightAxis > 0 ) ? forwardSpeed : -backwardSpeed; //The left axis would also work
             speed *= axisMin;
 
             rgbd.velocity = myTransform.forward.normalized * speed;
         }
 
         //Rotation
-        if( Mathf.Abs(rightAxis - leftAxis) > float.Epsilon){
-            float dif = rightAxis - leftAxis;
-            dif *= turnSpeed * deltaTime;
+        if( Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon){
+            float dif = realLeftAxis - realRightAxis;
+            dif *= turnSpeed * deltaTime * 0.5f;
             myTransform.RotateAround(myTransform.position, myTransform.up.normalized, dif);
             rotationPivot.RotateAround(rotationPivot.position,myTransform.up.normalized, -dif);
         }
     }
 
+
+    protected void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        if(leftThreadBegining != null && leftThreadEnd != null) {
+            Gizmos.DrawRay(leftThreadBegining.position,-leftThreadBegining.up * 0.1f);
+            Gizmos.DrawRay(leftThreadEnd.position,-leftThreadEnd.up * 0.1f);
+        }
+        if(rightThreadBegining != null && rightThreadEnd != null) {
+            Gizmos.DrawRay(rightThreadBegining.position,-rightThreadBegining.up * 0.1f);
+            Gizmos.DrawRay(rightThreadEnd.position,-rightThreadEnd.up * 0.1f);
+        }
+    }
     
 }
