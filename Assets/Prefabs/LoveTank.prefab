@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &453009222240433206
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7862455469707825493}
+  m_Layer: 0
+  m_Name: CameraPositionDriver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7862455469707825493
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453009222240433206}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.33, z: 1.24}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5378618044361611542}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1832644148669778366
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,7 +286,8 @@ Transform:
     w: 1}
   m_LocalPosition: {x: -0.6871663, y: 0.000000051879613, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1983551147013062854}
   m_Father: {fileID: 5378618044361611548}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -327,6 +358,7 @@ Transform:
   - {fileID: 5378618044769985994}
   - {fileID: 3689465730199546956}
   - {fileID: 1295102833233114057}
+  - {fileID: 7862455469707825493}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -365,8 +397,8 @@ MonoBehaviour:
   team: 0
   cannonTransform: {fileID: 5378618043552432752}
   rotationPivot: {fileID: 5378618044769985994}
-  cameraPositionDriver: {fileID: 0}
-  cameraPositionGunner: {fileID: 0}
+  cameraPositionDriver: {fileID: 7862455469707825493}
+  cameraPositionGunner: {fileID: 1983551147013062854}
   rightThreadBegining: {fileID: 56184290208913658}
   rightThreadEnd: {fileID: 398595851171187539}
   leftThreadBegining: {fileID: 2805745751244474308}
@@ -646,4 +678,34 @@ Transform:
   - {fileID: 398595851171187539}
   m_Father: {fileID: 5378618044361611542}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8914923503545853488
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1983551147013062854}
+  m_Layer: 0
+  m_Name: CameraPositionGunner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1983551147013062854
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8914923503545853488}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5378618044361611538}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

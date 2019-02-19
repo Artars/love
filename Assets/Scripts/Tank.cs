@@ -22,6 +22,7 @@ public class Tank : MonoBehaviour
     public float forwardSpeed = 10;
     public float backwardSpeed = 5;
     public float turnSpeed = 10;
+    public float distanceCheckGround = 0.5f;
 
 
     [Header("Health")]
@@ -65,12 +66,12 @@ public class Tank : MonoBehaviour
 
     protected void checkGround(){
 
-        bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, 0.1f);
-        bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, 0.1f);
+        bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, distanceCheckGround);
+        bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, distanceCheckGround);
         leftThreadOnGround = begin && end;
 
-        begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, 0.1f);
-        end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, 0.1f);
+        begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, distanceCheckGround);
+        end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, distanceCheckGround);
         rightThreadOnGround = begin && end;
     }
 
@@ -105,12 +106,12 @@ public class Tank : MonoBehaviour
     protected void OnDrawGizmos() {
         Gizmos.color = Color.red;
         if(leftThreadBegining != null && leftThreadEnd != null) {
-            Gizmos.DrawRay(leftThreadBegining.position,-leftThreadBegining.up * 0.1f);
-            Gizmos.DrawRay(leftThreadEnd.position,-leftThreadEnd.up * 0.1f);
+            Gizmos.DrawRay(leftThreadBegining.position,-leftThreadBegining.up * distanceCheckGround);
+            Gizmos.DrawRay(leftThreadEnd.position,-leftThreadEnd.up * distanceCheckGround);
         }
         if(rightThreadBegining != null && rightThreadEnd != null) {
-            Gizmos.DrawRay(rightThreadBegining.position,-rightThreadBegining.up * 0.1f);
-            Gizmos.DrawRay(rightThreadEnd.position,-rightThreadEnd.up * 0.1f);
+            Gizmos.DrawRay(rightThreadBegining.position,-rightThreadBegining.up * distanceCheckGround);
+            Gizmos.DrawRay(rightThreadEnd.position,-rightThreadEnd.up * distanceCheckGround);
         }
     }
     
