@@ -76,8 +76,8 @@ public class Tank : MonoBehaviour
         }
 
         //Rotation
-        if( Mathf.Abs(rightAxis - leftAxis) > float.Epsilon){
-            float dif = rightAxis - leftAxis;
+        if( Mathf.Abs(leftAxis - rightAxis) > float.Epsilon){
+            float dif = leftAxis - rightAxis;
             dif *= turnSpeed * deltaTime;
             myTransform.RotateAround(myTransform.position, myTransform.up.normalized, dif);
             rotationPivot.RotateAround(rotationPivot.position,myTransform.up.normalized, -dif);
