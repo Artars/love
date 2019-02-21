@@ -336,6 +336,9 @@ GameObject:
   - component: {fileID: 5378618044361311543}
   - component: {fileID: 5378618044361311541}
   - component: {fileID: 5378618044361311546}
+  - component: {fileID: 4246788299485847027}
+  - component: {fileID: 2911701456979844964}
+  - component: {fileID: 2440279489567513974}
   m_Layer: 0
   m_Name: LoveTank
   m_TagString: Untagged
@@ -394,7 +397,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   players: []
-  team: 0
   cannonTransform: {fileID: 5378618043552432752}
   rotationPivot: {fileID: 5378618044769985994}
   cameraPositionDriver: {fileID: 7862455469707825493}
@@ -406,6 +408,7 @@ MonoBehaviour:
   forwardSpeed: 20
   backwardSpeed: 10
   turnSpeed: 30
+  distanceCheckGround: 0.5
   maxHeath: 100
   currentHealth: 0
   leftAxis: 0
@@ -441,6 +444,79 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.863634, y: 1.4979858, z: 3.8741274}
   m_Center: {x: 0, y: 0.24749756, z: -0.033239126}
+--- !u!114 &4246788299485847027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5378618044361311542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -410691123, guid: 5c9dfb45edfcdbd4da3e0df63d06ff99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FixedSendsPerSecond: 20
+  AssumeSyncedSends: 1
+  InterpolatePosition: 1
+  SnapDistance: 10
+  InterpolateServer: 1
+  MinMeters: 0.15
+  MinDegrees: 1.5
+  ExtrapolatePosition: 0
+  MaxSendsToExtrapolate: 5
+  EnableRange: 0
+  EnableNonProvokedResendChecks: 0
+  DistanceSendrate:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 20
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 500
+      value: 20
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &2911701456979844964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5378618044361311542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 209037615, guid: 5c9dfb45edfcdbd4da3e0df63d06ff99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NetworkedPrefabName: LoveTank
+  SceneDelayedSpawn: 0
+--- !u!114 &2440279489567513974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5378618044361311542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -812986392, guid: 5c9dfb45edfcdbd4da3e0df63d06ff99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5378618044361311548
 GameObject:
   m_ObjectHideFlags: 0

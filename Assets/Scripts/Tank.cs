@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLAPI;
 
-public class Tank : MonoBehaviour
+public class Tank : NetworkedBehaviour
 {
     [Header("Team")]
     public List<Player> players;
-    public int team;
+    public NetworkedVar<int> team;
 
     [Header("Transform references")]
     public Transform cannonTransform;
@@ -54,8 +55,10 @@ public class Tank : MonoBehaviour
     }
 
     void FixedUpdate(){
-        checkGround();
-        moveTank(Time.fixedDeltaTime);
+        if(isOwner) {
+            checkGround();
+            moveTank(Time.fixedDeltaTime);
+        }
     }
 
     public void setAxis(float left, float right) {

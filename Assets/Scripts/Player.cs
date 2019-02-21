@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MLAPI;
 
-public class Player : MonoBehaviour
+public class Player : NetworkedBehaviour
 {
 
     public enum Mode {
@@ -17,7 +18,7 @@ public class Player : MonoBehaviour
 
 
     public Mode currentMode = Mode.Playing;
-    public Tank tankRef;
+    public  Tank tankRef;
     public Cannon cannonRef;
     public Role role = Role.Pilot;
 
@@ -40,15 +41,29 @@ public class Player : MonoBehaviour
     protected float leftAxis;
 
 
+
+    
+
+
     protected void Start() {
+        if(!isLocalPlayer){
+            firstPersonCamera.gameObject.SetActive(false);
+            observerPivot.gameObject.SetActive(false);
+        }
+        if(isLocalPlayer){
+            Debug.Log("Is player " + networkId);
+        }
         //Debug
-        possesTank(tankRef);
+        // possesTank(tankRef);
     }
 
+
     protected void Update() {
-        if(currentMode == Mode.Playing) {
-            if(role == Role.Pilot){
-                pilotUpdate(Time.deltaTime);
+        if(isLocalPlayer) {
+            if(currentMode == Mode.Playing) {
+                if(role == Role.Pilot){
+                    pilotUpdate(Time.deltaTime);
+                }
             }
         }
     }
@@ -74,15 +89,28 @@ public class Player : MonoBehaviour
     }
 
     public void possesTank(Tank tank) {
+        if(!isServer) return;
+        if(tank == null)
+            return;
         //Posses network logic
         tankRef = tank;
+        NetworkedObject tankNO = tank.GetComponent<NetworkedObject>();
+        if(tankNO != null) {
+            tankNO.ChangeOwnership(OwnerClientId);
+        }
 
+        InvokeClientRpcOnClient("assignTankRPC", OwnerClientId);
+
+    }
+
+    [ClientRPC]
+    protected void assignTankRPC(int param){
         observerPivot.gameObject.SetActive(false);
         firstPersonCamera.gameObject.SetActive(true);
         if(role == Role.Pilot){
-            firstPersonCamera.position = tank.cameraPositionDriver.position;
-            firstPersonCamera.rotation = tank.cameraPositionDriver.rotation;
-            firstPersonCamera.SetParent(tank.cameraPositionDriver);
+            firstPersonCamera.position = tankRef.cameraPositionDriver.position;
+            firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
+            firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
         }
 
         assignHUD();
