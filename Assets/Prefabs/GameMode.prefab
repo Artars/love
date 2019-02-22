@@ -45,8 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numTeams: 2
+  numberOfPlayersToStartGame: 2
+  timeToStartGame: 5
   tankPrefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
     type: 3}
+  cannonPrefab: {fileID: 3339457165545903351, guid: da97a165b96eb7d478db6ce4f289ef3e,
+    type: 3}
+  tanks: []
 --- !u!114 &1094133066987509114
 MonoBehaviour:
   m_ObjectHideFlags: 0

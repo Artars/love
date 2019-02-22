@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MLAPI;
 
 public class Cannon : MonoBehaviour
 {
 
     [Header("References")]
+    public Tank tankRef;
     public Transform nivelTransform;
+    public Transform gunnerCameraTransform;
 
     [Header("Movement")]
     public float turnSpeed = 20;
@@ -20,10 +23,19 @@ public class Cannon : MonoBehaviour
     public float rotationAxis;
     [Range(-1,1)]
     public float inclinationAxis;
-    protected float currentInclinationAngle;
+    protected float currentInclinationAngle = 0;
+
+    public void setInputAxis(float rotation, float inclination) {
+        rotationAxis = rotation;
+        inclinationAxis = inclination;
+    }
 
     protected void FixedUpdate(){
-        updateRotation(Time.fixedDeltaTime);
+        // updateRotation(Time.fixedDeltaTime);
+    }
+
+    public void UpdateLoop(float delta){
+        updateRotation(delta);
     }
 
     protected virtual void updateRotation(float deltaTime){

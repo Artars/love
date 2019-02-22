@@ -7,7 +7,8 @@ public class Tank : NetworkedBehaviour
 {
     [Header("Team")]
     public List<Player> players;
-    public NetworkedVar<int> team;
+    public NetworkedVar<int> team = new NetworkedVar<int>(-1);
+    public Cannon cannon;
 
     [Header("Transform references")]
     public Transform cannonTransform;
@@ -49,21 +50,52 @@ public class Tank : NetworkedBehaviour
     protected Rigidbody rgbd;
     protected Transform myTransform;
 
+
+    [ClientRPC]
+    public void updateTankReferenceRPC(int team){
+        GameMode.instance.setTankReference(this, team);
+    }
+
+    [ServerRPC(RequireOwnership = false)]
+    public void setTankInputRPC(float left, float right){
+        setAxis(left,right);
+    }
+
+    [ServerRPC(RequireOwnership = false)]
+    public void setCannonInputRPC(float rotation, float inclination){
+        cannon.setInputAxis(rotation,inclination);
+    }
+
     void Awake(){
         rgbd = GetComponent<Rigidbody>();
         myTransform = transform;
+        if(team.Value != -1) {
+            GameMode.instance.setTankReference(this,team.Value);
+        }
     }
+
 
     void FixedUpdate(){
         if(isOwner) {
             checkGround();
             moveTank(Time.fixedDeltaTime);
+            cannon.UpdateLoop(Time.fixedDeltaTime);
         }
+    }
+
+    public void attachCannonToTank(Cannon cannonRef) {
+        cannon = cannonRef;
+        cannon.transform.SetParent(cannonTransform);
+        cameraPositionGunner = cannon.gunnerCameraTransform;
     }
 
     public void setAxis(float left, float right) {
         leftAxis = Mathf.Clamp(left,-1,1);
         rightAxis = Mathf.Clamp(right,-1,1);
+    }
+
+    public void setCannonAxis(float horizontal, float inclination) {
+        cannon.setInputAxis(horizontal, inclination);
     }
 
 

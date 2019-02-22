@@ -389,7 +389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NetworkedPrefabName: Player_Networked
-  SceneDelayedSpawn: 1
+  SceneDelayedSpawn: 0
 --- !u!1 &945030072711043705
 GameObject:
   m_ObjectHideFlags: 0

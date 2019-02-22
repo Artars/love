@@ -17,7 +17,7 @@ public class Player : NetworkedBehaviour
     }
 
 
-    public Mode currentMode = Mode.Playing;
+    public Mode currentMode = Mode.Observing;
     public  Tank tankRef;
     public Cannon cannonRef;
     public Role role = Role.Pilot;
@@ -25,7 +25,8 @@ public class Player : NetworkedBehaviour
 
     [Header("Camera")]
     public Transform observerPivot;
-    protected Transform pointToObserve;
+    protected Vector3 pointToObserve;
+    protected float rotateSpeed;
     public Transform firstPersonCamera;
 
     [Header("HUD")]
@@ -57,13 +58,37 @@ public class Player : NetworkedBehaviour
         // possesTank(tankRef);
     }
 
+    [ClientRPC]
+    public void observePositionRPC(float x, float y, float z, float speed) {
+        Debug.Log("Called");
+        if(isLocalPlayer){
+            Debug.Log("Will observe " +x+ " "+y+ " "+z+ " ");
+            currentMode = Mode.Observing;
+            firstPersonCamera.gameObject.SetActive(false);
+            observerPivot.gameObject.SetActive(true);
+            pointToObserve = new Vector3(x,y,z);
+            rotateSpeed = speed;
+        }
+    }
+
+    
+
 
     protected void Update() {
-        if(isLocalPlayer) {
-            if(currentMode == Mode.Playing) {
-                if(role == Role.Pilot){
-                    pilotUpdate(Time.deltaTime);
-                }
+        if(!isLocalPlayer) return;
+        
+        if(currentMode == Mode.Observing) {
+            if(pointToObserve != null) {
+                observerPivot.position = pointToObserve;
+                observerPivot.RotateAround(pointToObserve, observerPivot.up, rotateSpeed * Time.deltaTime);
+            }
+        }
+        else if(currentMode == Mode.Playing) {
+            if(role == Role.Pilot){
+                pilotUpdate(Time.deltaTime);
+            }
+            else if(role == Role.Gunner){
+                gunnerUpdate(Time.deltaTime);
             }
         }
     }
@@ -84,33 +109,56 @@ public class Player : NetworkedBehaviour
         if(leftSlider != null) leftSlider.value = leftAxis;
 
         if(tankRef != null)
-            tankRef.setAxis(leftAxis, rightAxis);
+            tankRef.InvokeServerRpc("setTankInputRPC", leftAxis, rightAxis);
 
     }
 
-    public void possesTank(Tank tank) {
+    protected void gunnerUpdate(float deltaTime) {
+        float horizontalAxis = Input.GetAxis("Horizontal");
+        float verticalAxis = Input.GetAxis("Vertical");
+
+        if(tankRef != null) {
+            tankRef.InvokeServerRpc("setCannonInputRPC", horizontalAxis, verticalAxis);
+        }
+    }
+
+    public void possesTank(Tank tank, Role role) {
         if(!isServer) return;
         if(tank == null)
             return;
-        //Posses network logic
-        tankRef = tank;
-        NetworkedObject tankNO = tank.GetComponent<NetworkedObject>();
-        if(tankNO != null) {
-            tankNO.ChangeOwnership(OwnerClientId);
-        }
 
-        InvokeClientRpcOnClient("assignTankRPC", OwnerClientId);
+        //Posses network logic
+
+        InvokeClientRpcOnEveryone("assignTankRPC", tank.team.Value, (int) role);
 
     }
 
     [ClientRPC]
-    protected void assignTankRPC(int param){
+    protected void assignTankRPC(int team, int roleToAssing){
+
+        tankRef = GameMode.instance.getTank(team);
+        if(tankRef == null) {
+            Debug.Log("Player found null tank");
+            return;
+        }
+        cannonRef = tankRef.cannon;
+
+        if(!isLocalPlayer) return;
+
         observerPivot.gameObject.SetActive(false);
         firstPersonCamera.gameObject.SetActive(true);
+
+        this.role = (Role) roleToAssing;
         if(role == Role.Pilot){
             firstPersonCamera.position = tankRef.cameraPositionDriver.position;
             firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
             firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
+        }
+        else if(role == Role.Gunner){
+            firstPersonCamera.position = cannonRef.gunnerCameraTransform.position;
+            firstPersonCamera.rotation = cannonRef.gunnerCameraTransform.rotation;
+            firstPersonCamera.SetParent(tankRef.cameraPositionGunner);
+
         }
 
         assignHUD();
