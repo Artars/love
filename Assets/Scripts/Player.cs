@@ -41,6 +41,8 @@ public class Player : NetworkedBehaviour
     protected float rightAxis;
     protected float leftAxis;
 
+    protected float fireCounter = 0;
+
 
 
     
@@ -114,6 +116,13 @@ public class Player : NetworkedBehaviour
     }
 
     protected void gunnerUpdate(float deltaTime) {
+        fireCounter -= Time.deltaTime;
+
+        if(fireCounter < 0 && Input.GetButton("Jump")){
+            tankRef.InvokeServerRpc("shootCannonRPC", 0);
+            fireCounter = tankRef.fireWaitTime;
+        }
+
         float horizontalAxis = Input.GetAxis("Horizontal");
         float verticalAxis = Input.GetAxis("Vertical");
 

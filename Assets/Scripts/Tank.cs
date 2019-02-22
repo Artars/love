@@ -20,11 +20,20 @@ public class Tank : NetworkedBehaviour
     public Transform leftThreadBegining;
     public Transform leftThreadEnd;
 
+
     [Header("Movement")]
     public float forwardSpeed = 10;
     public float backwardSpeed = 5;
     public float turnSpeed = 10;
     public float distanceCheckGround = 0.5f;
+
+    [Header("Shooting")]
+    public Transform bulletSpawnPosition;
+    public GameObject bulletPrefab;
+    public float bulletSpeed = 30;
+    public float fireWaitTime = 1;
+    protected float fireCounter = 0;
+    
 
 
     [Header("Health")]
@@ -66,6 +75,31 @@ public class Tank : NetworkedBehaviour
         cannon.setInputAxis(rotation,inclination);
     }
 
+    [ServerRPC(RequireOwnership = false)]
+    public void shootCannonRPC(int arg) {
+        if(fireCounter <= 0){
+            //It will just ignore and shoot based on the tank transform
+            Vector3 positionToUse = bulletSpawnPosition.position;
+            Quaternion rotationToUse = bulletSpawnPosition.rotation;
+            Vector3 directionToUse = bulletSpawnPosition.forward;
+            GameObject bullet = GameObject.Instantiate(bulletPrefab, positionToUse, rotationToUse);
+            NetworkedObject noBullet = bullet.GetComponent<NetworkedObject>();
+            noBullet.Spawn();
+
+            noBullet.transform.position = positionToUse;
+            noBullet.transform.rotation = rotationToUse;
+
+            
+            Bullet bulletScript = bullet.GetComponent<Bullet>();
+            bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
+
+            Debug.Log("Firing from: " + positionToUse);
+
+            fireCounter = fireWaitTime;
+            
+        }
+    }
+
     void Awake(){
         rgbd = GetComponent<Rigidbody>();
         myTransform = transform;
@@ -74,6 +108,12 @@ public class Tank : NetworkedBehaviour
         }
     }
 
+
+    void Update() {
+        if(isOwner) {
+            fireCounter -= Time.deltaTime;
+        }
+    }
 
     void FixedUpdate(){
         if(isOwner) {
