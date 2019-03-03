@@ -9,6 +9,12 @@ public class Tank : NetworkBehaviour
     public List<Player> players;
     [SyncVar]
     public int team = -1;
+    public Color color;
+
+    [Header("Cannon")]
+    [SyncVar]
+    public NetworkIdentity cannonIdentity;
+    public Cannon cannonRef;
 
     [Header("Transform references")]
     public Transform rotationPivot;
@@ -58,7 +64,30 @@ public class Tank : NetworkBehaviour
         GameMode.instance.setTankReference(this, team);
     }
 
-    
+    [ClientRpc]
+    public void RpcSetColor(Color newColor) {
+        color = newColor;
+    }
+
+    public void ApplyColor(){
+
+    }
+
+    /// <summary>
+    /// Should be called by the server
+    /// </summary>
+    public void ResetTank() {
+        currentHealth = maxHeath;
+    }
+
+    public void ResetTankPosition(Vector3 position) {
+        ResetTank();
+        transform.position = position;
+        transform.rotation = Quaternion.identity;
+        rgbd.velocity = Vector3.zero;
+        rotationPivot.rotation = Quaternion.identity;
+    }
+
 
     void Awake(){
         rgbd = GetComponent<Rigidbody>();
@@ -69,11 +98,17 @@ public class Tank : NetworkBehaviour
         if(isServer) {
             currentHealth = maxHeath;
         }
+        ApplyColor();
     }
 
-    public void ResetTank() {
-        currentHealth = maxHeath;
+    void Update(){
+        if(!isServer) return;
+        if(Input.GetKeyDown(KeyCode.K) && team == 0){
+            int otherTeam = (team == 1) ? 0 : 1;
+            killTank(otherTeam);
+        }
     }
+
 
     void FixedUpdate(){
         if(hasAuthority) {
@@ -129,17 +164,6 @@ public class Tank : NetworkBehaviour
     }
 
 
-    protected void OnDrawGizmos() {
-        Gizmos.color = Color.red;
-        if(leftThreadBegining != null && leftThreadEnd != null) {
-            Gizmos.DrawRay(leftThreadBegining.position,-leftThreadBegining.up * distanceCheckGround);
-            Gizmos.DrawRay(leftThreadEnd.position,-leftThreadEnd.up * distanceCheckGround);
-        }
-        if(rightThreadBegining != null && rightThreadEnd != null) {
-            Gizmos.DrawRay(rightThreadBegining.position,-rightThreadBegining.up * distanceCheckGround);
-            Gizmos.DrawRay(rightThreadEnd.position,-rightThreadEnd.up * distanceCheckGround);
-        }
-    }
 
     protected void OnTriggerEnter(Collider col) {
         if(isServer){
@@ -154,22 +178,27 @@ public class Tank : NetworkBehaviour
             if(bullet != null) {
                 Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
-                    DealDamage(bullet.damage);
+                    DealDamage(bullet.damage, bullet.team);
                     NetworkServer.Destroy(col.gameObject);
                 }
             }
         }
     }
 
-    public void DealDamage(float damage) {
+    public void DealDamage(float damage, int otherTeam) {
         Debug.Log("Tank from team " + team + " received " + damage + " damage!");
         currentHealth -= damage;
         if(currentHealth <= 0) {
             Debug.Log("Is ded. RIP team " + team);
+            killTank(otherTeam);
         }
         else {
             RpcOnChangeHealth(currentHealth);
         }
+    }
+
+    protected void killTank(int oposingTeam){
+        GameMode.instance.tankKilled(team,oposingTeam);
     }
 
     public void SetHealthSlider(UnityEngine.UI.Slider slider) {
@@ -187,4 +216,15 @@ public class Tank : NetworkBehaviour
         }
     }
     
+    protected void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        if(leftThreadBegining != null && leftThreadEnd != null) {
+            Gizmos.DrawRay(leftThreadBegining.position,-leftThreadBegining.up * distanceCheckGround);
+            Gizmos.DrawRay(leftThreadEnd.position,-leftThreadEnd.up * distanceCheckGround);
+        }
+        if(rightThreadBegining != null && rightThreadEnd != null) {
+            Gizmos.DrawRay(rightThreadBegining.position,-rightThreadBegining.up * distanceCheckGround);
+            Gizmos.DrawRay(rightThreadEnd.position,-rightThreadEnd.up * distanceCheckGround);
+        }
+    }
 }

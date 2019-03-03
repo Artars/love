@@ -107,6 +107,13 @@ public class Cannon : NetworkBehaviour
         }
     }
 
+    public void ResetPosition() {
+        // transform.localPosition = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        currentInclinationAngle = 0;
+        nivelTransform.localRotation = Quaternion.Euler(0,currentInclinationAngle,0);
+    }
+
     protected void OnTriggerEnter(Collider col) {
         if(isServer){
             if(tankScript != null){

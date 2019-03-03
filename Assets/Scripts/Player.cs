@@ -43,6 +43,7 @@ public class Player : NetworkBehaviour
 
     public GameObject canvasShared;
     public Slider healthSlider;
+    public TMPro.TextMeshProUGUI scoreText;
 
     [Header("Pilot")]
     public float axisSpeed = 2;
@@ -122,6 +123,22 @@ public class Player : NetworkBehaviour
 
     }
 
+    public void RpcRemoveOwnership(){
+        if(!isLocalPlayer) return;
+
+        currentMode = Mode.Observing;
+
+        if(role == Role.Pilot)
+        {
+            rightAxis = 0;
+            leftAxis = 0;
+            rightSlider.value = 0;
+            leftSlider.value = 0;
+        }
+
+        HideHUD();
+    }
+
     
 
 
@@ -184,7 +201,9 @@ public class Player : NetworkBehaviour
 
     protected void assignHUD() {
         canvasShared.SetActive(true);
+        healthSlider.gameObject.SetActive(true);
         tankRef.SetHealthSlider(healthSlider);
+        ScoreCallBack(SyncListInt.Operation.OP_DIRTY,0,0);
 
         if(role == Role.Pilot){
             canvasGunner.SetActive(false);
@@ -198,6 +217,17 @@ public class Player : NetworkBehaviour
             leftSlider.gameObject.SetActive(true);
 
         }
+    }
+
+    protected void HideHUD(){
+        healthSlider.gameObject.SetActive(false);
+
+        if(role == Role.Pilot){
+            rightSlider.onValueChanged.RemoveListener(onUpdateRightSlider);
+            leftSlider.onValueChanged.RemoveListener(onUpdateLeftSlider);
+        }
+        canvasGunner.SetActive(false);
+        canvasPilot.SetActive(false);
     }
 
     protected void onUpdateRightSlider(float value) {
@@ -216,6 +246,20 @@ public class Player : NetworkBehaviour
             if(possesedObject != null){
                 possesedObject.RemoveClientAuthority(possesedObject.clientAuthorityOwner);
             }
+        }
+    }
+
+    public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
+        if(scoreText != null && team != -1){
+            SyncListInt syncList = GameMode.instance.score;
+            string newText = syncList[team].ToString();
+            for(int i = 0; i < syncList.Count; i++) {
+                if(i != team){
+                    newText += " x " + syncList[i]; 
+                }
+            }
+
+            scoreText.text = newText;
         }
     }
 
