@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 5712120476808202714}
   - component: {fileID: 4519863773916438460}
   - component: {fileID: 3162367981297692581}
+  - component: {fileID: 2805130658975025074}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -87,9 +88,10 @@ MonoBehaviour:
   nivelSpeed: 20
   minNivel: -30
   maxNivel: 30
-  bulletSpawnPosition: {fileID: 0}
-  bulletPrefab: {fileID: 0}
-  bulletSpeed: 30
+  bulletSpawnPosition: {fileID: 5056368126628380301}
+  bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
+    type: 3}
+  bulletSpeed: 10
   fireWaitTime: 1
   rotationAxis: 0
   inclinationAxis: 0
@@ -121,8 +123,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
-  compressRotation: 1
+  syncInterval: 0.05
+  compressRotation: 0
 --- !u!114 &3162367981297692581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,9 +137,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
-  compressRotation: 1
+  syncInterval: 0.05
+  compressRotation: 0
   target: {fileID: 3339457166336724886}
+--- !u!114 &2805130658975025074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3339457165545903351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  compressRotation: 0
+  target: {fileID: 5056368126628380301}
 --- !u!1 &3339457166336955312
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,10 +356,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8208875502984087118}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.675, y: -0, z: -0}
+  m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: -0.5}
+  m_LocalPosition: {x: -1.6749086, y: 0.000048286023, z: -0.00013818554}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3339457166336724886}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90.00001, z: 270}

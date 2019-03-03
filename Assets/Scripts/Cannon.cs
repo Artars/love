@@ -59,7 +59,7 @@ public class Cannon : NetworkBehaviour
     }
 
    protected void Update(){
-       if(!hasAuthority) return;
+       if(!isServer) return;
         fireCounter -= Time.deltaTime;
 
    }
@@ -80,14 +80,17 @@ public class Cannon : NetworkBehaviour
     } 
 
     [Command]
-    public void CmdShootCannon(int arg) {
+    public void CmdShootCannon(Vector3 position, Quaternion rotation, Vector3 forward) {
         if(fireCounter <= 0){
-            //It will just ignore and shoot based on the tank transform
-            Vector3 positionToUse = bulletSpawnPosition.position;
-            Quaternion rotationToUse = bulletSpawnPosition.rotation;
-            Vector3 directionToUse = bulletSpawnPosition.forward;
+            Vector3 positionToUse = position;
+            Quaternion rotationToUse = rotation;
+            Vector3 directionToUse = forward;
+
             GameObject bullet = GameObject.Instantiate(bulletPrefab, positionToUse, rotationToUse);
             NetworkServer.Spawn(bullet);
+
+            bullet.transform.position = positionToUse;
+            bullet.transform.rotation = rotationToUse;
 
             
             Bullet bulletScript = bullet.GetComponent<Bullet>();

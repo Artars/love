@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf48b6532cda55441908bb73763d06bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
+  syncInterval: 0.05
   players: []
   team: -1
   rotationPivot: {fileID: 5378618044769985994}
@@ -393,7 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  compressRotation: 1
+  compressRotation: 0
   target: {fileID: 5378618044769985994}
 --- !u!1 &5378618044769985989
 GameObject:

@@ -71,7 +71,6 @@ public class Player : NetworkBehaviour
 
     [ClientRpc]
     public void RpcObservePosition(Vector3 position, float speed) {
-        Debug.Log("Called");
         if(isLocalPlayer){
             Debug.Log("Will observe " + position);
             currentMode = Mode.Observing;
@@ -95,6 +94,7 @@ public class Player : NetworkBehaviour
         this.team = team;
         this.role = role;
         this.possesedObject = toAssign;
+        currentMode = Mode.Playing;
 
         if(role == Role.Pilot){
             tankRef = possesedObject.GetComponent<Tank>();
@@ -161,8 +161,10 @@ public class Player : NetworkBehaviour
     protected void gunnerUpdate(float deltaTime) {
         fireCounter -= Time.deltaTime;
 
-        if(fireCounter < 0 && Input.GetButton("Jump")){
-            cannonRef.CmdShootCannon(0);
+        if(fireCounter <= 0 && Input.GetButton("Jump")){
+            Debug.Log("Tried to shoot from " + cannonRef.bulletSpawnPosition.position);
+            cannonRef.CmdShootCannon(cannonRef.bulletSpawnPosition.position,
+            cannonRef.bulletSpawnPosition.rotation, cannonRef.bulletSpawnPosition.forward);
             fireCounter = cannonRef.fireWaitTime;
         }
 
@@ -198,6 +200,14 @@ public class Player : NetworkBehaviour
         leftAxis = Mathf.Clamp(-1,value,1);
         if(tankRef != null)
             tankRef.setAxis(leftAxis, rightAxis);
+    }
+
+    protected void OnDestroy() {
+        if(isServer){
+            if(possesedObject != null){
+                possesedObject.RemoveClientAuthority(possesedObject.clientAuthorityOwner);
+            }
+        }
     }
 
 
