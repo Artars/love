@@ -40,6 +40,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3339457165545903348}
   - component: {fileID: 6386889496880179488}
+  - component: {fileID: 5712120476808202714}
+  - component: {fileID: 4519863773916438460}
+  - component: {fileID: 3162367981297692581}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -74,15 +77,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e95a52b43136a1848b58d601716f088a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tankRef: {fileID: 0}
+  syncInterval: 0.1
+  tankIdentity: {fileID: 0}
+  team: 0
+  tankScript: {fileID: 0}
   nivelTransform: {fileID: 3339457166336724886}
   gunnerCameraTransform: {fileID: 9185776736498112066}
   turnSpeed: 20
   nivelSpeed: 20
   minNivel: -30
   maxNivel: 30
+  bulletSpawnPosition: {fileID: 0}
+  bulletPrefab: {fileID: 0}
+  bulletSpeed: 30
+  fireWaitTime: 1
   rotationAxis: 0
   inclinationAxis: 0
+--- !u!114 &5712120476808202714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3339457165545903351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId: 0
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
+  m_AssetId: da97a165b96eb7d478db6ce4f289ef3e
+--- !u!114 &4519863773916438460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3339457165545903351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  compressRotation: 1
+--- !u!114 &3162367981297692581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3339457165545903351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  compressRotation: 1
+  target: {fileID: 3339457166336724886}
 --- !u!1 &3339457166336955312
 GameObject:
   m_ObjectHideFlags: 0

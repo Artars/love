@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MLAPI;
+using Mirror;
 
-public class Bullet : NetworkedBehaviour
+public class Bullet : NetworkBehaviour
 {
     protected Rigidbody rgbd;
 
@@ -11,8 +11,8 @@ public class Bullet : NetworkedBehaviour
         rgbd = GetComponent<Rigidbody>();
     }
 
-    [ClientRPC]
-    public void fireWithVelocityRPC(Vector3 position, Quaternion rotation, Vector3 velocity){
+    [ClientRpc]
+    public void RpcFireWithVelocityRpc(Vector3 position, Quaternion rotation, Vector3 velocity){
         transform.position = position;
         transform.rotation = rotation;
 
@@ -20,7 +20,6 @@ public class Bullet : NetworkedBehaviour
     }
 
     public void fireWithVelocity(Vector3 velocity){
-
         rgbd.velocity = velocity;
     }
 }

@@ -102,9 +102,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6080059330043788242}
   - component: {fileID: 6733689384308155331}
-  - component: {fileID: 1356128432878238478}
   - component: {fileID: 8362911629168556891}
   - component: {fileID: 8767738475641689513}
+  - component: {fileID: 2581246014050152322}
   m_Layer: 0
   m_Name: Pref_Bullet
   m_TagString: Untagged
@@ -139,20 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24b19d1a7a54fb6469a90c00ab305a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1356128432878238478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 998014477034441962}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 209037615, guid: 5c9dfb45edfcdbd4da3e0df63d06ff99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NetworkedPrefabName: Pref_Bullet
-  SceneDelayedSpawn: 0
+  syncInterval: 0.1
 --- !u!54 &8362911629168556891
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -178,41 +165,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 998014477034441962}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -410691123, guid: 5c9dfb45edfcdbd4da3e0df63d06ff99, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FixedSendsPerSecond: 38
-  AssumeSyncedSends: 1
-  InterpolatePosition: 1
-  SnapDistance: 10
-  InterpolateServer: 1
-  MinMeters: 0.15
-  MinDegrees: 1.5
-  ExtrapolatePosition: 1
-  MaxSendsToExtrapolate: 5
-  EnableRange: 0
-  EnableNonProvokedResendChecks: 0
-  DistanceSendrate:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 20
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 500
-      value: 20
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  m_SceneId: 0
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
+  m_AssetId: 74ca6805f1c7dc6499e9c704dc38114b
+--- !u!114 &2581246014050152322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998014477034441962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  compressRotation: 1

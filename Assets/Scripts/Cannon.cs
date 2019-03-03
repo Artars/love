@@ -1,13 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MLAPI;
+using Mirror;
 
-public class Cannon : MonoBehaviour
+public class Cannon : NetworkBehaviour
 {
 
     [Header("References")]
-    public Tank tankRef;
+    [SyncVar]
+    public NetworkIdentity tankIdentity;
+    [SyncVar]
+    public int team;
+
+    public Tank tankScript;
+
     public Transform nivelTransform;
     public Transform gunnerCameraTransform;
 
@@ -17,6 +23,13 @@ public class Cannon : MonoBehaviour
     public float minNivel = -30;
     public float maxNivel = 30;
 
+    [Header("Shooting")]
+    public Transform bulletSpawnPosition;
+    public GameObject bulletPrefab;
+    public float bulletSpeed = 30;
+    public float fireWaitTime = 1;
+    protected float fireCounter = 0;
+
     
     //Movement variables
     [Range(-1,1)]
@@ -25,18 +38,31 @@ public class Cannon : MonoBehaviour
     public float inclinationAxis;
     protected float currentInclinationAngle = 0;
 
+    public void Start() {
+        if(tankIdentity != null){
+            tankScript = tankIdentity.GetComponent<Tank>();
+            if(tankScript != null) {
+                transform.SetParent(tankScript.rotationPivot);
+            }
+        }
+    }
+
+
     public void setInputAxis(float rotation, float inclination) {
         rotationAxis = rotation;
         inclinationAxis = inclination;
     }
 
     protected void FixedUpdate(){
-        // updateRotation(Time.fixedDeltaTime);
+        if(!hasAuthority) return;
+        updateRotation(Time.fixedDeltaTime);
     }
 
-    public void UpdateLoop(float delta){
-        updateRotation(delta);
-    }
+   protected void Update(){
+       if(!hasAuthority) return;
+        fireCounter -= Time.deltaTime;
+
+   }
 
     protected virtual void updateRotation(float deltaTime){
         //Should rotate
@@ -52,5 +78,26 @@ public class Cannon : MonoBehaviour
             }
         }
     } 
+
+    [Command]
+    public void CmdShootCannon(int arg) {
+        if(fireCounter <= 0){
+            //It will just ignore and shoot based on the tank transform
+            Vector3 positionToUse = bulletSpawnPosition.position;
+            Quaternion rotationToUse = bulletSpawnPosition.rotation;
+            Vector3 directionToUse = bulletSpawnPosition.forward;
+            GameObject bullet = GameObject.Instantiate(bulletPrefab, positionToUse, rotationToUse);
+            NetworkServer.Spawn(bullet);
+
+            
+            Bullet bulletScript = bullet.GetComponent<Bullet>();
+            bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
+
+            Debug.Log("Firing from: " + positionToUse);
+
+            fireCounter = fireWaitTime;
+            
+        }
+    }
     
 }

@@ -1,18 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MLAPI;
-using MLAPI.Collections;
+using Mirror;
 
-public class GameMode : NetworkedBehaviour
+public class GameMode : NetworkBehaviour
 {
     public int numTeams = 2;
     public int numberOfPlayersToStartGame = 2;
     public float timeToStartGame = 5;
     public GameObject tankPrefab;
+    public GameObject cannonPrefab;
     public Tank[] tanks;
+    public Cannon[] cannons;
     protected SpawnPoint[] spawnPoints;
     protected bool tanksSpawned;
+
+    public List<Player> players;
 
     public static GameMode instance = null;
 
@@ -22,40 +25,12 @@ public class GameMode : NetworkedBehaviour
     //Debug
     bool tankAssigned = false;
 
-    public override void OnEnabled() {
-        if(isServer)
-            NetworkingManager.singleton.OnClientConnectedCallback += OnClientConnect;
-
-        base.OnEnabled();
-    }
-
-    public override void OnDestroyed() {
-        if(isServer)
-            NetworkingManager.singleton.OnClientConnectedCallback -= OnClientConnect;
-
-        base.OnDestroyed();
-    }
-
-
-    protected void OnClientConnect(uint client) {
-        if(isHost) {
-            Debug.Log("Logged :" + client);
-            connectedNumberOfClients += 1;
-            if(connectedNumberOfClients >= numberOfPlayersToStartGame){
-                StartCountDown();
-            }
-            // NetworkedObject playerObj = NetworkingManager.singleton.ConnectedClients[client].PlayerObject;
-            // Player playerScript = playerObj.GetComponent<Player>();
-            // if(playerScript != null) {
-            //     playerScript.InvokeClientRpcOnOwner("observeTransform",0,0,0, "Reliable", MLAPI.Data.SecuritySendFlags.None);
-            // }
-        }
-    }
-
     protected void Awake(){
         if(instance == null) instance = this;
             else if(instance != this) Destroy(gameObject);
         tanks = new Tank[numTeams];
+        cannons = new Cannon[numTeams];
+        players = new List<Player>();
     }
 
     protected void spawnTanks(){
@@ -74,25 +49,32 @@ public class GameMode : NetworkedBehaviour
 
     protected void spawnTank(Transform position, int team){
         GameObject tank = GameObject.Instantiate(tankPrefab,position.position,Quaternion.identity);
-        NetworkedObject noTank = tank.GetComponent<NetworkedObject>();
-        noTank.Spawn();
         Tank tankRef = tank.GetComponent<Tank>();
-        tankRef.team.Value = team;
+        tankRef.team = team;
         tanks[team] = tankRef;
+        NetworkServer.Spawn(tank);
 
-        tankRef.InvokeClientRpcOnEveryone("updateTankReferenceRPC", team);
+        tankRef.RpcUpdateTankReferenceRPC(team);
+
+        GameObject cannon = GameObject.Instantiate(cannonPrefab, tankRef.rotationPivot);
+        Cannon cannonScript = cannon.GetComponent<Cannon>();
+        cannonScript.team = team;
+        cannonScript.tankIdentity = tank.GetComponent<NetworkIdentity>();
+        cannons[team] = cannonScript;
+
+        NetworkServer.Spawn(cannon);
+
     }
 
-    public void assingPlayer(Player player) {
-        Debug.Log("Player " + player.OwnerClientId + " tried to assign");
-        uint playerId = player.OwnerClientId;
-        if(!tankAssigned) {
-            player.possesTank(tanks[0], Player.Role.Pilot);
-            tankAssigned = true;
-        } else {
-            player.possesTank(tanks[0], Player.Role.Gunner);
+    public void setPlayerReference(Player player) {
+        players.Add(player);
+        if(isServer){
+            connectedNumberOfClients++;
+            if(connectedNumberOfClients > numberOfPlayersToStartGame){
+                StartCountDown();
+            }
+            player.RpcObservePosition(Vector3.zero,10);
         }
-        
 
     }
 
@@ -110,34 +92,37 @@ public class GameMode : NetworkedBehaviour
 
     public void startGame(){
         Debug.Log("Starting game");
+        assignPlayers();
+        
+    }
 
-        //Assing all players
-        foreach(MLAPI.Data.NetworkedClient client in  NetworkingManager.singleton.ConnectedClientsList) {
-            NetworkedObject networkedObj = client.PlayerObject;
-            if(networkedObj != null) {
-                Player script = networkedObj.GetComponent<Player>();
+    public void assignPlayers() {
+        if(isServer){
+            Debug.Log("Trying to assing");
+            foreach (KeyValuePair<int, NetworkConnection> pair in NetworkServer.connections){
+                Debug.Log("Connected: " + pair.Key);
+                int id = pair.Key - 1;
+                if(id < 0) id = 0; //Fix host
 
-                if(script != null) {
-                    assingPlayer(script);
-                } else Debug.Log("Player script is null");
+                Player player = pair.Value.playerController.GetComponent<Player>();
+                if(player != null) {
+                    int playerTeam = id/2;
+                    Player.Role role = (id % 2 == 0) ? Player.Role.Pilot : Player.Role.Gunner; 
 
-            } else Debug.Log("Couldn't get player obj");
+                    NetworkIdentity toPosses = role == Player.Role.Pilot ? 
+                    tanks[playerTeam].GetComponent<NetworkIdentity>() : cannons[playerTeam].GetComponent<NetworkIdentity>();
+
+                    toPosses.AssignClientAuthority(pair.Value);
+                    player.RpcAssignPlayer(playerTeam, role, toPosses);
+                }
+            }
         }
     }
 
-
-    public void updateAllTankReferences() {
-        foreach(Tank t in tanks) {
-            t.InvokeClientRpcOnEveryone("updateTankReferenceRPC", t.team.Value, "Reliable", MLAPI.Data.SecuritySendFlags.None);
-        }
-    }
-
-    public void makeUsersObservePoint() {
-        foreach(MLAPI.Data.NetworkedClient client in  NetworkingManager.singleton.ConnectedClientsList) {
-            NetworkedObject networkedObj = client.PlayerObject;
-            if(networkedObj != null) {
-                Player script = networkedObj.GetComponent<Player>();
-                script.InvokeClientRpcOnEveryone("observePositionRPC",0f,0f,0f);
+    public void makeUsersObservePoint(Vector3 position, float speed) {
+        if(isServer){
+            foreach(Player p in players) {
+                p.RpcObservePosition(position, speed);
             }
         }
 

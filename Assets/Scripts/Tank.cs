@@ -1,17 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MLAPI;
+using Mirror;
 
-public class Tank : NetworkedBehaviour
+public class Tank : NetworkBehaviour
 {
     [Header("Team")]
     public List<Player> players;
-    public NetworkedVar<int> team = new NetworkedVar<int>(-1);
-    public Cannon cannon;
+    [SyncVar]
+    public int team = -1;
 
     [Header("Transform references")]
-    public Transform cannonTransform;
     public Transform rotationPivot;
     public Transform cameraPositionDriver;
     public Transform cameraPositionGunner;
@@ -27,13 +26,6 @@ public class Tank : NetworkedBehaviour
     public float turnSpeed = 10;
     public float distanceCheckGround = 0.5f;
 
-    [Header("Shooting")]
-    public Transform bulletSpawnPosition;
-    public GameObject bulletPrefab;
-    public float bulletSpeed = 30;
-    public float fireWaitTime = 1;
-    protected float fireCounter = 0;
-    
 
 
     [Header("Health")]
@@ -60,83 +52,39 @@ public class Tank : NetworkedBehaviour
     protected Transform myTransform;
 
 
-    [ClientRPC]
-    public void updateTankReferenceRPC(int team){
+    [ClientRpc]
+    public void RpcUpdateTankReferenceRPC(int team){
         GameMode.instance.setTankReference(this, team);
     }
 
-    [ServerRPC(RequireOwnership = false)]
-    public void setTankInputRPC(float left, float right){
-        setAxis(left,right);
-    }
-
-    [ServerRPC(RequireOwnership = false)]
-    public void setCannonInputRPC(float rotation, float inclination){
-        cannon.setInputAxis(rotation,inclination);
-    }
-
-    [ServerRPC(RequireOwnership = false)]
-    public void shootCannonRPC(int arg) {
-        if(fireCounter <= 0){
-            //It will just ignore and shoot based on the tank transform
-            Vector3 positionToUse = bulletSpawnPosition.position;
-            Quaternion rotationToUse = bulletSpawnPosition.rotation;
-            Vector3 directionToUse = bulletSpawnPosition.forward;
-            GameObject bullet = GameObject.Instantiate(bulletPrefab, positionToUse, rotationToUse);
-            NetworkedObject noBullet = bullet.GetComponent<NetworkedObject>();
-            noBullet.Spawn();
-
-            noBullet.transform.position = positionToUse;
-            noBullet.transform.rotation = rotationToUse;
-
-            
-            Bullet bulletScript = bullet.GetComponent<Bullet>();
-            bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
-
-            Debug.Log("Firing from: " + positionToUse);
-
-            fireCounter = fireWaitTime;
-            
-        }
-    }
+    
 
     void Awake(){
         rgbd = GetComponent<Rigidbody>();
         myTransform = transform;
-        if(team.Value != -1) {
-            GameMode.instance.setTankReference(this,team.Value);
+        if(team != -1) {
+            GameMode.instance.setTankReference(this,team);
         }
     }
 
 
     void Update() {
-        if(isOwner) {
-            fireCounter -= Time.deltaTime;
-        }
+        if(!hasAuthority) return;
     }
 
     void FixedUpdate(){
-        if(isOwner) {
+        if(hasAuthority) {
             checkGround();
             moveTank(Time.fixedDeltaTime);
-            cannon.UpdateLoop(Time.fixedDeltaTime);
         }
     }
 
-    public void attachCannonToTank(Cannon cannonRef) {
-        cannon = cannonRef;
-        cannon.transform.SetParent(cannonTransform);
-        cameraPositionGunner = cannon.gunnerCameraTransform;
-    }
 
     public void setAxis(float left, float right) {
         leftAxis = Mathf.Clamp(left,-1,1);
         rightAxis = Mathf.Clamp(right,-1,1);
     }
 
-    public void setCannonAxis(float horizontal, float inclination) {
-        cannon.setInputAxis(horizontal, inclination);
-    }
 
 
     protected void checkGround(){

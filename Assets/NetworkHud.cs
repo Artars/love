@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using MLAPI;
-using MLAPI.Components;
+using Mirror;
 
 public class NetworkHud : MonoBehaviour
 {
@@ -16,19 +15,17 @@ public class NetworkHud : MonoBehaviour
     }
 
     public void OnClickStartHost(){
-        NetworkingManager.singleton.OnServerStarted += OnServerStart;
-        NetworkingManager.singleton.StartHost();
+        NetworkManager.singleton.StartHost();
     }
 
     public void OnServerStart(){
-        NetworkSceneManager.SwitchScene(sceneToChange);
     }
 
 
 
     public void OnClickStartClient(){
-        NetworkingManager.singleton.NetworkConfig.ConnectAddress = address;
-        NetworkingManager.singleton.StartClient();
+        NetworkManager.singleton.networkAddress = address;
+        NetworkManager.singleton.StartClient();
     }
 
 }

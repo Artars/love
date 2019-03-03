@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e09d979acc6f44449490fd1b0660408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
   numTeams: 2
   numberOfPlayersToStartGame: 2
   timeToStartGame: 5
@@ -52,6 +53,8 @@ MonoBehaviour:
   cannonPrefab: {fileID: 3339457165545903351, guid: da97a165b96eb7d478db6ce4f289ef3e,
     type: 3}
   tanks: []
+  cannons: []
+  players: []
 --- !u!114 &1094133066987509114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,8 +64,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 18332451572104369}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 209037615, guid: 5c9dfb45edfcdbd4da3e0df63d06ff99, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NetworkedPrefabName: GameMode
-  SceneDelayedSpawn: 0
+  m_SceneId: 0
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
+  m_AssetId: bb8bff03f39ff904aa9174e33d4c73d2

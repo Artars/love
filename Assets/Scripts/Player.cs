@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using MLAPI;
+using Mirror;
 
-public class Player : NetworkedBehaviour
+public class Player : NetworkBehaviour
 {
 
     public enum Mode {
@@ -18,9 +18,14 @@ public class Player : NetworkedBehaviour
 
 
     public Mode currentMode = Mode.Observing;
-    public  Tank tankRef;
+    public Tank tankRef;
     public Cannon cannonRef;
+    [SyncVar]
+    public int team = -1;
+    [SyncVar]
     public Role role = Role.Pilot;
+    [SyncVar]
+    public NetworkIdentity possesedObject;
 
 
     [Header("Camera")]
@@ -49,28 +54,66 @@ public class Player : NetworkedBehaviour
 
 
     protected void Start() {
+        //Update referece
+        GameMode.instance.setPlayerReference(this);
+        
+
         if(!isLocalPlayer){
             firstPersonCamera.gameObject.SetActive(false);
             observerPivot.gameObject.SetActive(false);
         }
         if(isLocalPlayer){
-            Debug.Log("Is player " + networkId);
+            // Debug.Log("Is player " + NetworkManager.singleton.);
         }
         //Debug
         // possesTank(tankRef);
     }
 
-    [ClientRPC]
-    public void observePositionRPC(float x, float y, float z, float speed) {
+    [ClientRpc]
+    public void RpcObservePosition(Vector3 position, float speed) {
         Debug.Log("Called");
         if(isLocalPlayer){
-            Debug.Log("Will observe " +x+ " "+y+ " "+z+ " ");
+            Debug.Log("Will observe " + position);
             currentMode = Mode.Observing;
             firstPersonCamera.gameObject.SetActive(false);
             observerPivot.gameObject.SetActive(true);
-            pointToObserve = new Vector3(x,y,z);
+            pointToObserve = position;
             rotateSpeed = speed;
         }
+    }
+
+    [ClientRpc]
+    public void RpcAssignPlayer(int team, Role role, NetworkIdentity toAssign){
+        Debug.Log("Assigning player team " + team + " with role " + role.ToString());
+
+        if(!isLocalPlayer) return;
+        
+
+        observerPivot.gameObject.SetActive(false);
+        firstPersonCamera.gameObject.SetActive(true);
+
+        this.team = team;
+        this.role = role;
+        this.possesedObject = toAssign;
+
+        if(role == Role.Pilot){
+            tankRef = possesedObject.GetComponent<Tank>();
+
+            firstPersonCamera.position = tankRef.cameraPositionDriver.position;
+            firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
+            firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
+        }
+        else if(role == Role.Gunner){
+            cannonRef = possesedObject.GetComponent<Cannon>();
+
+            firstPersonCamera.position = cannonRef.gunnerCameraTransform.position;
+            firstPersonCamera.rotation = cannonRef.gunnerCameraTransform.rotation;
+            firstPersonCamera.SetParent(cannonRef.gunnerCameraTransform);
+
+        }
+
+        assignHUD();
+
     }
 
     
@@ -110,67 +153,25 @@ public class Player : NetworkedBehaviour
         if(rightSlider != null) rightSlider.value = rightAxis;
         if(leftSlider != null) leftSlider.value = leftAxis;
 
-        if(tankRef != null)
-            tankRef.InvokeServerRpc("setTankInputRPC", leftAxis, rightAxis);
-
+        if(tankRef != null){
+            tankRef.setAxis(leftAxis,rightAxis);
+        }
     }
 
     protected void gunnerUpdate(float deltaTime) {
         fireCounter -= Time.deltaTime;
 
         if(fireCounter < 0 && Input.GetButton("Jump")){
-            tankRef.InvokeServerRpc("shootCannonRPC", 0);
-            fireCounter = tankRef.fireWaitTime;
+            cannonRef.CmdShootCannon(0);
+            fireCounter = cannonRef.fireWaitTime;
         }
 
         float horizontalAxis = Input.GetAxis("Horizontal");
         float verticalAxis = Input.GetAxis("Vertical");
 
-        if(tankRef != null) {
-            tankRef.InvokeServerRpc("setCannonInputRPC", horizontalAxis, verticalAxis);
+        if(cannonRef != null) {
+            cannonRef.setInputAxis(horizontalAxis, verticalAxis);
         }
-    }
-
-    public void possesTank(Tank tank, Role role) {
-        if(!isServer) return;
-        if(tank == null)
-            return;
-
-        //Posses network logic
-
-        InvokeClientRpcOnEveryone("assignTankRPC", tank.team.Value, (int) role);
-
-    }
-
-    [ClientRPC]
-    protected void assignTankRPC(int team, int roleToAssing){
-
-        tankRef = GameMode.instance.getTank(team);
-        if(tankRef == null) {
-            Debug.Log("Player found null tank");
-            return;
-        }
-        cannonRef = tankRef.cannon;
-
-        if(!isLocalPlayer) return;
-
-        observerPivot.gameObject.SetActive(false);
-        firstPersonCamera.gameObject.SetActive(true);
-
-        this.role = (Role) roleToAssing;
-        if(role == Role.Pilot){
-            firstPersonCamera.position = tankRef.cameraPositionDriver.position;
-            firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
-            firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
-        }
-        else if(role == Role.Gunner){
-            firstPersonCamera.position = cannonRef.gunnerCameraTransform.position;
-            firstPersonCamera.rotation = cannonRef.gunnerCameraTransform.rotation;
-            firstPersonCamera.SetParent(tankRef.cameraPositionGunner);
-
-        }
-
-        assignHUD();
     }
 
     protected void assignHUD() {

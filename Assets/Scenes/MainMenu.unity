@@ -649,6 +649,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1309190071}
+  - component: {fileID: 1309190072}
   - component: {fileID: 1309190070}
   m_Layer: 0
   m_Name: NetworkingManager
@@ -666,58 +667,49 @@ MonoBehaviour:
   m_GameObject: {fileID: 1309190069}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1682170820, guid: 5c9dfb45edfcdbd4da3e0df63d06ff99, type: 3}
+  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DontDestroy: 1
-  RunInBackground: 1
-  LogLevel: 1
-  NetworkConfig:
-    ProtocolVersion: 0
-    Transport: 0
-    RelayAddress: 127.0.0.1
-    RelayPort: 8888
-    RelayEnabled: 1
-    Channels: []
-    RegisteredScenes:
-    - MainMenu
-    - TestMultiplayer
-    NetworkedPrefabs:
-    - prefab: {fileID: 945030072491325362, guid: 28ea76c88bc6a9e498f2682f21af16e2,
-        type: 3}
-      playerPrefab: 1
-    - prefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
-        type: 3}
-      playerPrefab: 0
-    - prefab: {fileID: 18332451572104369, guid: bb8bff03f39ff904aa9174e33d4c73d2,
-        type: 3}
-      playerPrefab: 0
-    - prefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
-        type: 3}
-      playerPrefab: 0
-    PlayerPrefabName: Player_Networked
-    MessageBufferSize: 1024
-    ReceiveTickrate: 64
-    MaxReceiveEventsPerTickRate: 500
-    SendTickrate: 64
-    EventTickrate: 64
-    MaxConnections: 100
-    ConnectPort: 7777
-    ConnectAddress: 127.0.0.1
-    ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 0
-    ConnectionData: 
-    SecondsHistory: 5
-    HandleObjectSpawning: 1
-    EnableSceneSwitching: 1
-    EnableTimeResync: 0
-    ForceSamePrefabs: 1
-    RpcHashSize: 0
-    PrefabHashSize: 0
-    LoadSceneTimeOut: 120
-    EnableEncryption: 0
-    SignKeyExchange: 0
-    ServerBase64PfxCertificate: 
+  OnClientConnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnClientDataReceived:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventByteArray, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnClientError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventException, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnClientDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnServerConnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnServerDataReceived:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventIntByteArray, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnServerError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventIntException, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnServerDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  port: 7777
+  NoDelay: 1
 --- !u!4 &1309190071
 Transform:
   m_ObjectHideFlags: 0
@@ -732,6 +724,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1309190072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309190069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  startOnHeadless: 1
+  showDebugMessages: 0
+  offlineScene: MainMenu
+  onlineScene: TestMultiplayer
+  transport: {fileID: 1309190070}
+  networkAddress: localhost
+  maxConnections: 4
+  playerPrefab: {fileID: 945030072491325362, guid: c29bbf87b1265a84893bc71b470548d2,
+    type: 3}
+  autoCreatePlayer: 1
+  playerSpawnMethod: 0
+  spawnPrefabs:
+  - {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11, type: 3}
+  - {fileID: 3339457165545903351, guid: da97a165b96eb7d478db6ce4f289ef3e, type: 3}
+  - {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b, type: 3}
+  - {fileID: 18332451572104369, guid: bb8bff03f39ff904aa9174e33d4c73d2, type: 3}
 --- !u!1 &1382991679
 GameObject:
   m_ObjectHideFlags: 0

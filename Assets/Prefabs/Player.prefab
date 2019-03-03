@@ -328,6 +328,7 @@ GameObject:
   m_Component:
   - component: {fileID: 945030072491325364}
   - component: {fileID: 945030072491325363}
+  - component: {fileID: 3881336984627048843}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -364,6 +365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 445756f9fc9095647861c106d1160732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncInterval: 0.1
   currentMode: 2
   tankRef: {fileID: 0}
   cannonRef: {fileID: 0}
@@ -375,6 +377,22 @@ MonoBehaviour:
   leftSlider: {fileID: 945030072350155240}
   canvasGunner: {fileID: 945030074400270220}
   axisSpeed: 2
+--- !u!114 &3881336984627048843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945030072491325362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId: 0
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
+  m_AssetId: c29bbf87b1265a84893bc71b470548d2
 --- !u!1 &945030072711043705
 GameObject:
   m_ObjectHideFlags: 0
