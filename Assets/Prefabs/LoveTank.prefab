@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7862455469707825493}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CameraPositionDriver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 398595851171187539}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightThreadEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2805745751244474308}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftThreadStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 56184290208913658}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightThreadStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5378618044168448177}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 5378618044361611536}
   - component: {fileID: 5378618044360317236}
   - component: {fileID: 5378618044359318516}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,9 +244,9 @@ GameObject:
   - component: {fileID: 8069897468372611511}
   - component: {fileID: 7224657846611481838}
   - component: {fileID: 333933308631590521}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LoveTank
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -317,6 +317,7 @@ MonoBehaviour:
   distanceCheckGround: 0.5
   maxHeath: 100
   currentHealth: 0
+  healthSlider: {fileID: 0}
   leftAxis: 0
   rightAxis: 0
   rightThreadOnGround: 1
@@ -404,7 +405,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5378618044769985994}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RotationPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -434,7 +435,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3689465730199546956}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftThread
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -466,7 +467,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5657618841033057013}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftThreadEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -496,7 +497,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1295102833233114057}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightThread
   m_TagString: Untagged
   m_Icon: {fileID: 0}

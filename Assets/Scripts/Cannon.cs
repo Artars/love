@@ -27,6 +27,7 @@ public class Cannon : NetworkBehaviour
     public Transform bulletSpawnPosition;
     public GameObject bulletPrefab;
     public float bulletSpeed = 30;
+    public float bulletDamage = 20;
     public float fireWaitTime = 1;
     protected float fireCounter = 0;
 
@@ -87,19 +88,30 @@ public class Cannon : NetworkBehaviour
             Vector3 directionToUse = forward;
 
             GameObject bullet = GameObject.Instantiate(bulletPrefab, positionToUse, rotationToUse);
-            NetworkServer.Spawn(bullet);
 
             bullet.transform.position = positionToUse;
             bullet.transform.rotation = rotationToUse;
 
             
             Bullet bulletScript = bullet.GetComponent<Bullet>();
+            bulletScript.team = team;
+            bulletScript.damage = bulletDamage;
             bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
 
             Debug.Log("Firing from: " + positionToUse);
 
+            NetworkServer.Spawn(bullet);
+
             fireCounter = fireWaitTime;
             
+        }
+    }
+
+    protected void OnTriggerEnter(Collider col) {
+        if(isServer){
+            if(tankScript != null){
+                tankScript.DealWithCollision(col, true);
+            }
         }
     }
     

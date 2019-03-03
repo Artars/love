@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9185776736498112066}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CameraPositionGunner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,9 +44,10 @@ GameObject:
   - component: {fileID: 4519863773916438460}
   - component: {fileID: 3162367981297692581}
   - component: {fileID: 2805130658975025074}
-  m_Layer: 0
+  - component: {fileID: 4577463490186134796}
+  m_Layer: 10
   m_Name: Cannon
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91,7 +92,8 @@ MonoBehaviour:
   bulletSpawnPosition: {fileID: 5056368126628380301}
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
-  bulletSpeed: 10
+  bulletSpeed: 30
+  bulletDamage: 20
   fireWaitTime: 1
   rotationAxis: 0
   inclinationAxis: 0
@@ -155,6 +157,19 @@ MonoBehaviour:
   syncInterval: 0.1
   compressRotation: 0
   target: {fileID: 5056368126628380301}
+--- !u!65 &4577463490186134796
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3339457165545903351}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.5218291, y: 0.52526164, z: 1.5285192}
+  m_Center: {x: 0.0066901147, y: 1.2938281, z: -0.10369682}
 --- !u!1 &3339457166336955312
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,7 +179,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3339457166336724880}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,9 +211,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3339457166336724886}
-  m_Layer: 0
+  - component: {fileID: 3726216072447930734}
+  m_Layer: 10
   m_Name: Cannon
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -220,6 +236,19 @@ Transform:
   m_Father: {fileID: 3339457166336724888}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &3726216072447930734
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3339457166336955318}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.6891047, y: 0.38512257, z: 0.18701361}
+  m_Center: {x: -0.8371658, y: 0.003202472, z: 0.012802843}
 --- !u!1 &3339457166336955320
 GameObject:
   m_ObjectHideFlags: 0
@@ -229,7 +258,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3339457166336724888}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +290,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3339457166336724890}
   - component: {fileID: 3339457166350556850}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -342,7 +371,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5056368126628380301}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SpawnBulletTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +386,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8208875502984087118}
   m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: -0.5}
-  m_LocalPosition: {x: -1.6749086, y: 0.000048286023, z: -0.00013818554}
+  m_LocalPosition: {x: -1.947, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3339457166336724886}

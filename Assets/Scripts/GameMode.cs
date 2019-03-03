@@ -15,6 +15,9 @@ public class GameMode : NetworkBehaviour
     protected SpawnPoint[] spawnPoints;
     protected bool tanksSpawned;
 
+    [SyncVar]
+    public bool gameHasStarted;
+
     public List<Player> players;
 
     public static GameMode instance = null;
@@ -52,6 +55,7 @@ public class GameMode : NetworkBehaviour
         Tank tankRef = tank.GetComponent<Tank>();
         tankRef.team = team;
         tanks[team] = tankRef;
+        tankRef.ResetTank();
         NetworkServer.Spawn(tank);
 
         tankRef.RpcUpdateTankReferenceRPC(team);
@@ -70,7 +74,7 @@ public class GameMode : NetworkBehaviour
         players.Add(player);
         if(isServer){
             connectedNumberOfClients++;
-            if(connectedNumberOfClients > numberOfPlayersToStartGame){
+            if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
                 StartCountDown();
             }
             player.RpcObservePosition(Vector3.zero,10);
@@ -132,6 +136,7 @@ public class GameMode : NetworkBehaviour
         Debug.Log("Game will start in "+ timeToStartGame + " seconds");
         StartCoroutine(doCountdown(timeToStartGame));
         spawnTanks();
+        gameHasStarted = true;
         // makeUsersObservePoint();
     }
 

@@ -30,8 +30,9 @@ public class Tank : NetworkBehaviour
 
     [Header("Health")]
     public float maxHeath = 100;
-    [HideInInspector]
+    [SyncVar]
     public float currentHealth;
+    public UnityEngine.UI.Slider healthSlider;
 
 
     //Movement variables
@@ -65,11 +66,13 @@ public class Tank : NetworkBehaviour
         if(team != -1) {
             GameMode.instance.setTankReference(this,team);
         }
+        if(isServer) {
+            currentHealth = maxHeath;
+        }
     }
 
-
-    void Update() {
-        if(!hasAuthority) return;
+    public void ResetTank() {
+        currentHealth = maxHeath;
     }
 
     void FixedUpdate(){
@@ -135,6 +138,52 @@ public class Tank : NetworkBehaviour
         if(rightThreadBegining != null && rightThreadEnd != null) {
             Gizmos.DrawRay(rightThreadBegining.position,-rightThreadBegining.up * distanceCheckGround);
             Gizmos.DrawRay(rightThreadEnd.position,-rightThreadEnd.up * distanceCheckGround);
+        }
+    }
+
+    protected void OnTriggerEnter(Collider col) {
+        if(isServer){
+            Debug.Log("Enter trigger with " + col.gameObject);
+            DealWithCollision(col, false);
+        }
+    }
+
+    public void DealWithCollision(Collider col, bool fromCannon) {
+        if(isServer){
+            Bullet bullet = col.GetComponent<Bullet>();
+            if(bullet != null) {
+                Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
+                if(bullet.team != team) {
+                    DealDamage(bullet.damage);
+                    NetworkServer.Destroy(col.gameObject);
+                }
+            }
+        }
+    }
+
+    public void DealDamage(float damage) {
+        Debug.Log("Tank from team " + team + " received " + damage + " damage!");
+        currentHealth -= damage;
+        if(currentHealth <= 0) {
+            Debug.Log("Is ded. RIP team " + team);
+        }
+        else {
+            RpcOnChangeHealth(currentHealth);
+        }
+    }
+
+    public void SetHealthSlider(UnityEngine.UI.Slider slider) {
+        healthSlider = slider;
+        healthSlider.maxValue = maxHeath;
+        healthSlider.minValue = 0;
+        healthSlider.value = currentHealth;
+    }
+
+
+    [ClientRpc]
+    public void RpcOnChangeHealth(float health) {
+        if(healthSlider != null) {
+            healthSlider.value = health;
         }
     }
     

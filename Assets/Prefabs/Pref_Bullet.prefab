@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 7728515987404608326}
   - component: {fileID: 6528088176883234786}
   - component: {fileID: 8037827508323963100}
-  - component: {fileID: 5651493327971450741}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -78,20 +77,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!136 &5651493327971450741
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 347072949504553966}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &998014477034441962
 GameObject:
   m_ObjectHideFlags: 0
@@ -105,7 +90,9 @@ GameObject:
   - component: {fileID: 8362911629168556891}
   - component: {fileID: 8767738475641689513}
   - component: {fileID: 2581246014050152322}
-  m_Layer: 0
+  - component: {fileID: 7840505459286740528}
+  - component: {fileID: 7716936044706581032}
+  m_Layer: 9
   m_Name: Pref_Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,6 +127,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  team: -1
+  damage: 0
+  lifeTime: 10
 --- !u!54 &8362911629168556891
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -186,3 +176,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   compressRotation: 1
+--- !u!65 &7840505459286740528
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998014477034441962}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.24534535, y: 0.23052168, z: 0.47021744}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &7716936044706581032
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998014477034441962}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.42829195, y: 0.4019401, z: 0.61505014}
+  m_Center: {x: 0, y: 0, z: 0}

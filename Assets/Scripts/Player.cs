@@ -41,6 +41,9 @@ public class Player : NetworkBehaviour
     
     public GameObject canvasGunner;
 
+    public GameObject canvasShared;
+    public Slider healthSlider;
+
     [Header("Pilot")]
     public float axisSpeed = 2;
     protected float rightAxis;
@@ -102,13 +105,16 @@ public class Player : NetworkBehaviour
             firstPersonCamera.position = tankRef.cameraPositionDriver.position;
             firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
             firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
+
         }
         else if(role == Role.Gunner){
             cannonRef = possesedObject.GetComponent<Cannon>();
+            tankRef = cannonRef.tankScript;
 
             firstPersonCamera.position = cannonRef.gunnerCameraTransform.position;
             firstPersonCamera.rotation = cannonRef.gunnerCameraTransform.rotation;
             firstPersonCamera.SetParent(cannonRef.gunnerCameraTransform);
+
 
         }
 
@@ -177,6 +183,9 @@ public class Player : NetworkBehaviour
     }
 
     protected void assignHUD() {
+        canvasShared.SetActive(true);
+        tankRef.SetHealthSlider(healthSlider);
+
         if(role == Role.Pilot){
             canvasGunner.SetActive(false);
             canvasPilot.SetActive(true);
