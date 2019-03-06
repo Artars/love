@@ -46,15 +46,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   numTeams: 2
+  teamColors:
+  - {r: 1, g: 0.3820755, b: 0.9357688, a: 1}
+  - {r: 0.3803922, g: 0.94189346, b: 1, a: 1}
+  - {r: 0, g: 0.7924528, b: 0.06076486, a: 1}
+  - {r: 0.9363882, g: 0.9528302, b: 0.17528482, a: 1}
   numberOfPlayersToStartGame: 2
   timeToStartGame: 5
   tankPrefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
     type: 3}
-  cannonPrefab: {fileID: 3339457165545903351, guid: da97a165b96eb7d478db6ce4f289ef3e,
-    type: 3}
   tanks: []
-  cannons: []
   players: []
+  gameHasStarted: 0
 --- !u!114 &1094133066987509114
 MonoBehaviour:
   m_ObjectHideFlags: 0

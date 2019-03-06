@@ -12,12 +12,26 @@ public class Tank : NetworkBehaviour
     public Color color;
 
     [Header("Cannon")]
-    [SyncVar]
-    public NetworkIdentity cannonIdentity;
-    public Cannon cannonRef;
+    public float turnCannonSpeed = 20;
+    public float nivelCannonSpeed = 20;
+    public float minCannonNivel = -30;
+    public float maxCannonNivel = 30;
+    protected float rotationAxis;
+    protected float inclinationAxis;
+    protected float currentInclinationAngle = 0;
+
+    [Header("Shooting")]
+    public float timeToShoot = 1;
+    public GameObject bulletPrefab;
+    public float bulletSpeed = 30;
+    public float bulletDamage = 20;
+    protected float cannonShootCounter;
 
     [Header("Transform references")]
     public Transform rotationPivot;
+    public Transform cannonTransform;
+    public Transform nivelTransform;
+    public Transform bulletSpawnPosition;
     public Transform cameraPositionDriver;
     public Transform cameraPositionGunner;
     public Transform rightThreadBegining;
@@ -67,10 +81,14 @@ public class Tank : NetworkBehaviour
     [ClientRpc]
     public void RpcSetColor(Color newColor) {
         color = newColor;
+        ApplyColor();
     }
 
     public void ApplyColor(){
-
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach(Renderer r in renderers) {
+            r.material.color = color;
+        }
     }
 
     /// <summary>
@@ -78,6 +96,7 @@ public class Tank : NetworkBehaviour
     /// </summary>
     public void ResetTank() {
         currentHealth = maxHeath;
+        RpcOnChangeHealth(currentHealth);
     }
 
     public void ResetTankPosition(Vector3 position) {
@@ -86,6 +105,10 @@ public class Tank : NetworkBehaviour
         transform.rotation = Quaternion.identity;
         rgbd.velocity = Vector3.zero;
         rotationPivot.rotation = Quaternion.identity;
+
+        cannonTransform.rotation = Quaternion.identity;
+        currentInclinationAngle = 0;
+        nivelTransform.localRotation = Quaternion.Euler(0,currentInclinationAngle,0);
     }
 
 
@@ -98,11 +121,20 @@ public class Tank : NetworkBehaviour
         if(isServer) {
             currentHealth = maxHeath;
         }
+    }
+
+    void Start(){
         ApplyColor();
+        if(!isServer){
+            GetComponent<Rigidbody>().isKinematic = true;
+        }
     }
 
     void Update(){
         if(!isServer) return;
+
+        cannonShootCounter -= Time.deltaTime;
+
         if(Input.GetKeyDown(KeyCode.K) && team == 0){
             int otherTeam = (team == 1) ? 0 : 1;
             killTank(otherTeam);
@@ -111,9 +143,10 @@ public class Tank : NetworkBehaviour
 
 
     void FixedUpdate(){
-        if(hasAuthority) {
+        if(isServer) {
             checkGround();
             moveTank(Time.fixedDeltaTime);
+            updateCannonRotation(Time.fixedDeltaTime);
         }
     }
 
@@ -122,6 +155,55 @@ public class Tank : NetworkBehaviour
         leftAxis = Mathf.Clamp(left,-1,1);
         rightAxis = Mathf.Clamp(right,-1,1);
     }
+
+    public void setCannonAxis(float rotation, float nivel) {
+        rotationAxis = rotation;
+        inclinationAxis = nivel;
+    }
+
+    public void cannonShoot() {
+        if(cannonShootCounter < 0){
+            ShootCannon(team);
+            cannonShootCounter = timeToShoot;
+        }
+    }
+
+
+    public void ShootCannon(int team) {
+        Vector3 positionToUse = bulletSpawnPosition.position;
+        Quaternion rotationToUse = bulletSpawnPosition.rotation;
+        Vector3 directionToUse = bulletSpawnPosition.forward;
+
+        GameObject bullet = GameObject.Instantiate(bulletPrefab, positionToUse, rotationToUse);
+
+        bullet.transform.position = positionToUse;
+        bullet.transform.rotation = rotationToUse;
+
+        
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+        bulletScript.team = team;
+        bulletScript.damage = bulletDamage;
+        bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
+
+        Debug.Log("Firing from: " + positionToUse);
+
+        NetworkServer.Spawn(bullet);
+    }
+
+    public virtual void updateCannonRotation(float deltaTime){
+        //Should rotate
+        if(rotationAxis != 0){
+            cannonTransform.RotateAround(transform.position, transform.up, rotationAxis * turnCannonSpeed * deltaTime);
+        }
+
+        if(inclinationAxis != 0) {
+            currentInclinationAngle += inclinationAxis * nivelCannonSpeed * deltaTime;
+            currentInclinationAngle = Mathf.Clamp(currentInclinationAngle, minCannonNivel, maxCannonNivel);
+            if(nivelTransform != null) {
+                nivelTransform.localRotation = Quaternion.Euler(0,currentInclinationAngle,0);
+            }
+        }
+    } 
 
 
 
@@ -168,11 +250,11 @@ public class Tank : NetworkBehaviour
     protected void OnTriggerEnter(Collider col) {
         if(isServer){
             Debug.Log("Enter trigger with " + col.gameObject);
-            DealWithCollision(col, false);
+            DealWithCollision(col);
         }
     }
 
-    public void DealWithCollision(Collider col, bool fromCannon) {
+    public void DealWithCollision(Collider col) {
         if(isServer){
             Bullet bullet = col.GetComponent<Bullet>();
             if(bullet != null) {

@@ -13,11 +13,9 @@ public class GameMode : NetworkBehaviour
 
     [Header("Prefabs")]
     public GameObject tankPrefab;
-    public GameObject cannonPrefab;
 
     [Header("References")]
     public Tank[] tanks;
-    public Cannon[] cannons;
     public List<Player> players;
     protected SpawnPoint[] spawnPoints;
     protected bool tanksSpawned;
@@ -41,7 +39,6 @@ public class GameMode : NetworkBehaviour
         if(instance == null) instance = this;
             else if(instance != this) Destroy(gameObject);
         tanks = new Tank[numTeams];
-        cannons = new Cannon[numTeams];
         players = new List<Player>();
     }
 
@@ -83,20 +80,12 @@ public class GameMode : NetworkBehaviour
         tankRef.team = team;
         tanks[team] = tankRef;
         tankRef.color = teamColors[team % teamColors.Length];
+        tankRef.ApplyColor();
         tankRef.ResetTank();
         NetworkServer.Spawn(tank);
 
         tankRef.RpcUpdateTankReferenceRPC(team);
-
-        GameObject cannon = GameObject.Instantiate(cannonPrefab, tankRef.rotationPivot);
-        Cannon cannonScript = cannon.GetComponent<Cannon>();
-        cannonScript.team = team;
-        cannonScript.tankIdentity = tank.GetComponent<NetworkIdentity>();
-        cannons[team] = cannonScript;
-
-        NetworkServer.Spawn(cannon);
-
-        tankRef.cannonIdentity = cannon.GetComponent<NetworkIdentity>();
+        tankRef.RpcSetColor(tankRef.color);
     }
 
     public void tankKilled(int ownerTeam, int oposingTeam) {
@@ -115,53 +104,11 @@ public class GameMode : NetworkBehaviour
 
     public void ResetTank(int team){
         Tank tankToReset = tanks[team];
-        Cannon cannonToReset = cannons[team];
-
-        //Remove ownership from tank player
-        Player tankPlayer;
-
-        NetworkIdentity tankIdentity = tankToReset.GetComponent<NetworkIdentity>();
-        NetworkConnection tankOwner = tankIdentity.clientAuthorityOwner;
-        if(tankOwner != null) 
-        {
-            tankIdentity.RemoveClientAuthority(tankOwner);
-            tankPlayer = tankOwner.playerController.GetComponent<Player>();
-            tankPlayer.RpcRemoveOwnership();
-        }
-
-
-        //Remove ownership from cannon player
-        Player cannonPlayer;
-
-        NetworkIdentity cannonIdentity = cannonToReset.GetComponent<NetworkIdentity>();
-        NetworkConnection cannonOwner = cannonIdentity.clientAuthorityOwner;
-        if(cannonOwner != null) 
-        {
-            cannonIdentity.RemoveClientAuthority(cannonOwner);
-            cannonPlayer = cannonOwner.playerController.GetComponent<Player>();
-            cannonPlayer.RpcRemoveOwnership();
-        }
-
 
         Transform positionToSpawn = spawnPoints[Random.Range(0,spawnPoints.Length)].transform;
-        Vector3 cannonOffset = cannonToReset.transform.localPosition;
 
-        cannonToReset.transform.parent = null;
         tankToReset.ResetTankPosition(positionToSpawn.position);
 
-        cannonToReset.transform.position = positionToSpawn.position + cannonOffset;
-        cannonToReset.transform.SetParent(tankToReset.rotationPivot);
-        cannonToReset.ResetPosition();
-
-
-        //Reasign ownership
-        if(tankOwner != null) {
-            StartCoroutine(waitToAssignBack(2, tankOwner));
-        }
-
-        if(cannonOwner != null) {
-            StartCoroutine(waitToAssignBack(2, cannonOwner));
-        }
     }
 
     public void setPlayerReference(Player player) {
@@ -215,10 +162,13 @@ public class GameMode : NetworkBehaviour
             int playerTeam = id/2;
             Player.Role role = (id % 2 == 0) ? Player.Role.Pilot : Player.Role.Gunner; 
 
-            NetworkIdentity toPosses = role == Player.Role.Pilot ? 
-            tanks[playerTeam].GetComponent<NetworkIdentity>() : cannons[playerTeam].GetComponent<NetworkIdentity>();
+            NetworkIdentity toPosses = tanks[playerTeam].GetComponent<NetworkIdentity>();
+            // NetworkIdentity toPosses = role == Player.Role.Pilot ? 
+            // tanks[playerTeam].GetComponent<NetworkIdentity>() : cannons[playerTeam].GetComponent<NetworkIdentity>();
 
-            toPosses.AssignClientAuthority(connection);
+            // toPosses.AssignClientAuthority(connection);
+
+            player.SetTankReference(tanks[playerTeam], playerTeam, role);
             player.RpcAssignPlayer(playerTeam, role, toPosses);
         }
     }

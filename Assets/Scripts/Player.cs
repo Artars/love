@@ -49,7 +49,13 @@ public class Player : NetworkBehaviour
     public float axisSpeed = 2;
     protected float rightAxis;
     protected float leftAxis;
+    protected float old_rightAxis = -2; //Force first sync
+    protected float old_leftAxis = -2;
 
+    
+    //Gunner propeties
+    protected float old_horizontal = -2;
+    protected float old_vertical = -2;
     protected float fireCounter = 0;
 
 
@@ -67,10 +73,8 @@ public class Player : NetworkBehaviour
             observerPivot.gameObject.SetActive(false);
         }
         if(isLocalPlayer){
-            // Debug.Log("Is player " + NetworkManager.singleton.);
+            observerPivot.gameObject.SetActive(true);
         }
-        //Debug
-        // possesTank(tankRef);
     }
 
     [ClientRpc]
@@ -90,7 +94,6 @@ public class Player : NetworkBehaviour
         Debug.Log("Assigning player team " + team + " with role " + role.ToString());
 
         if(!isLocalPlayer) return;
-        
 
         observerPivot.gameObject.SetActive(false);
         firstPersonCamera.gameObject.SetActive(true);
@@ -98,23 +101,19 @@ public class Player : NetworkBehaviour
         this.team = team;
         this.role = role;
         this.possesedObject = toAssign;
+        tankRef = possesedObject.GetComponent<Tank>();
         currentMode = Mode.Playing;
 
         if(role == Role.Pilot){
-            tankRef = possesedObject.GetComponent<Tank>();
-
             firstPersonCamera.position = tankRef.cameraPositionDriver.position;
             firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
             firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
 
         }
         else if(role == Role.Gunner){
-            cannonRef = possesedObject.GetComponent<Cannon>();
-            tankRef = cannonRef.tankScript;
-
-            firstPersonCamera.position = cannonRef.gunnerCameraTransform.position;
-            firstPersonCamera.rotation = cannonRef.gunnerCameraTransform.rotation;
-            firstPersonCamera.SetParent(cannonRef.gunnerCameraTransform);
+            firstPersonCamera.position = tankRef.cameraPositionGunner.position;
+            firstPersonCamera.rotation = tankRef.cameraPositionGunner.rotation;
+            firstPersonCamera.SetParent(tankRef.cameraPositionGunner);
 
 
         }
@@ -123,6 +122,7 @@ public class Player : NetworkBehaviour
 
     }
 
+    [ClientRpc]
     public void RpcRemoveOwnership(){
         if(!isLocalPlayer) return;
 
@@ -139,8 +139,39 @@ public class Player : NetworkBehaviour
         HideHUD();
     }
 
-    
+    public void SetTankReference(Tank tank, int team, Role role){
+        tankRef = tank;
+        this.team = team;
+        this.role = role;
+    }
 
+    //Input update on server
+    [Command]
+    public void CmdUpdateAxisPilot(float leftAxis, float rightAxis){
+        if(role == Role.Pilot){
+            if(tankRef != null) {
+                tankRef.setAxis(leftAxis, rightAxis);
+            }
+        }
+    }
+
+    [Command]
+    public void CmdUpdateAxisGunner(float horizontal, float vertical) {
+        if(role == Role.Gunner){
+            if(tankRef != null) {
+                tankRef.setCannonAxis(horizontal,vertical);
+            }
+        }
+    }
+    
+    [Command]
+    public void CmdShootCannon(){
+        if(role == Role.Gunner){
+            if(tankRef != null) {
+                tankRef.cannonShoot();
+            }
+        }
+    }
 
     protected void Update() {
         if(!isLocalPlayer) return;
@@ -176,27 +207,31 @@ public class Player : NetworkBehaviour
         if(rightSlider != null) rightSlider.value = rightAxis;
         if(leftSlider != null) leftSlider.value = leftAxis;
 
-        if(tankRef != null){
-            tankRef.setAxis(leftAxis,rightAxis);
+        if(old_leftAxis != leftAxis || old_rightAxis != rightAxis) {
+            old_leftAxis = leftAxis;
+            old_rightAxis = rightAxis;
+            CmdUpdateAxisPilot(leftAxis, rightAxis);
         }
     }
 
     protected void gunnerUpdate(float deltaTime) {
-        fireCounter -= Time.deltaTime;
+        fireCounter -= deltaTime;
 
         if(fireCounter <= 0 && Input.GetButton("Jump")){
-            Debug.Log("Tried to shoot from " + cannonRef.bulletSpawnPosition.position);
-            cannonRef.CmdShootCannon(cannonRef.bulletSpawnPosition.position,
-            cannonRef.bulletSpawnPosition.rotation, cannonRef.bulletSpawnPosition.forward);
-            fireCounter = cannonRef.fireWaitTime;
+            Debug.Log("Tried to shoot from " + tankRef.bulletSpawnPosition.position);
+            CmdShootCannon();
+            fireCounter = tankRef.timeToShoot;
         }
 
         float horizontalAxis = Input.GetAxis("Horizontal");
         float verticalAxis = Input.GetAxis("Vertical");
 
-        if(cannonRef != null) {
-            cannonRef.setInputAxis(horizontalAxis, verticalAxis);
+        if(old_horizontal != horizontalAxis || old_vertical != verticalAxis){
+            old_horizontal = horizontalAxis;
+            old_vertical = verticalAxis;
+            CmdUpdateAxisGunner(horizontalAxis, verticalAxis);
         }
+
     }
 
     protected void assignHUD() {
@@ -209,12 +244,12 @@ public class Player : NetworkBehaviour
             canvasGunner.SetActive(false);
             canvasPilot.SetActive(true);
 
+            rightSlider.gameObject.SetActive(true);
             rightSlider.onValueChanged.AddListener(onUpdateRightSlider);
             rightSlider.value = rightAxis;
-            rightSlider.gameObject.SetActive(true);
+            leftSlider.gameObject.SetActive(true);
             leftSlider.onValueChanged.AddListener(onUpdateLeftSlider);
             leftSlider.value = leftAxis;
-            leftSlider.gameObject.SetActive(true);
 
         }
     }
@@ -241,17 +276,14 @@ public class Player : NetworkBehaviour
             tankRef.setAxis(leftAxis, rightAxis);
     }
 
-    protected void OnDestroy() {
-        if(isServer){
-            if(possesedObject != null){
-                possesedObject.RemoveClientAuthority(possesedObject.clientAuthorityOwner);
-            }
-        }
-    }
 
     public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
+        Debug.Log("Callbacked");
         if(scoreText != null && team != -1){
             SyncListInt syncList = GameMode.instance.score;
+
+            if(syncList == null || syncList.Count < 1) return;
+            
             string newText = syncList[team].ToString();
             for(int i = 0; i < syncList.Count; i++) {
                 if(i != team){
