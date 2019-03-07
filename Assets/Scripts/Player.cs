@@ -36,14 +36,16 @@ public class Player : NetworkBehaviour
 
     [Header("HUD")]
     public GameObject canvasPilot;
+    public GameObject canvasGunner;
     public Slider rightSlider;
     public Slider leftSlider;
     
-    public GameObject canvasGunner;
-
     public GameObject canvasShared;
     public Slider healthSlider;
     public TMPro.TextMeshProUGUI scoreText;
+
+    public GameObject ipCanvas;
+    public TMPro.TextMeshProUGUI ipText;
 
     [Header("Pilot")]
     public float axisSpeed = 2;
@@ -71,10 +73,25 @@ public class Player : NetworkBehaviour
         if(!isLocalPlayer){
             firstPersonCamera.gameObject.SetActive(false);
             observerPivot.gameObject.SetActive(false);
+            ipCanvas.SetActive(false);
         }
         if(isLocalPlayer){
             observerPivot.gameObject.SetActive(true);
+            ipCanvas.SetActive(true);
+            ipText.text = getIPString();
+            Debug.Log("Tried to get adress " + getIPString());
         }
+    }
+
+    public string getIPString(){
+        string s;
+        // NetworkManager.singleton.transport.GetConnectionInfo(0, out s);
+        s = NetworkManager.singleton.networkAddress;
+        foreach (var ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList){//[0].ToString());
+            if(ip.ToString().Length < 17)
+                s = ip.ToString();
+        }
+        return s;
     }
 
     [ClientRpc]
@@ -240,6 +257,8 @@ public class Player : NetworkBehaviour
         tankRef.SetHealthSlider(healthSlider);
         ScoreCallBack(SyncListInt.Operation.OP_DIRTY,0,0);
 
+        ipCanvas.SetActive(false);
+
         if(role == Role.Pilot){
             canvasGunner.SetActive(false);
             canvasPilot.SetActive(true);
@@ -251,6 +270,10 @@ public class Player : NetworkBehaviour
             leftSlider.onValueChanged.AddListener(onUpdateLeftSlider);
             leftSlider.value = leftAxis;
 
+        }
+        else if(role == Role.Gunner){
+            canvasGunner.SetActive(true);
+            canvasPilot.SetActive(false);
         }
     }
 
@@ -283,7 +306,7 @@ public class Player : NetworkBehaviour
             SyncListInt syncList = GameMode.instance.score;
 
             if(syncList == null || syncList.Count < 1) return;
-            
+
             string newText = syncList[team].ToString();
             for(int i = 0; i < syncList.Count; i++) {
                 if(i != team){
