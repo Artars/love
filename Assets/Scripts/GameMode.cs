@@ -6,10 +6,19 @@ using Mirror;
 public class GameMode : NetworkBehaviour
 {
     [Header("Game settings")]
+    [SyncVar]
     public int numTeams = 2;
     public Color[] teamColors = {new Color(1,0.3820755f,0.9357688f)};
+    [SyncVar]
     public int numberOfPlayersToStartGame = 2;
+    [SyncVar]
     public float timeToStartGame = 5;
+    [SyncVar]
+    public float timeToEndGame = 5;
+    [SyncVar]
+    public bool returnToLobby = true;
+    [SyncVar]
+    public int maxScore = 5;
 
     [Header("Prefabs")]
     public GameObject tankPrefab;
@@ -17,10 +26,14 @@ public class GameMode : NetworkBehaviour
     [Header("References")]
     public Tank[] tanks;
     public List<Player> players;
+    public Player localPlayer;
+    public List<Player>[] teamPlayers;
     protected SpawnPoint[] spawnPoints;
     protected bool tanksSpawned;
 
     [Header("Game State")]
+    [SyncVar]
+    public string hostIP;
     [SyncVar]
     public bool gameHasStarted;
     public SyncListInt score;
@@ -40,9 +53,11 @@ public class GameMode : NetworkBehaviour
             else if(instance != this) Destroy(gameObject);
         tanks = new Tank[numTeams];
         players = new List<Player>();
+        teamPlayers = new List<Player>[numTeams];
     }
 
     void Start(){
+        spawnPoints = GameObject.FindObjectsOfType<SpawnPoint>();
         if(isServer) {
             for(int i = 0; i < numTeams; i++) {
                 score.Insert(i,0);
@@ -51,12 +66,14 @@ public class GameMode : NetworkBehaviour
             }
 
             Debug.Log("List: " + score);
+            hostIP = getIPString();
 
         }
     }
 
+    #region Tank
+
     protected void spawnTanks(){
-        spawnPoints = GameObject.FindObjectsOfType<SpawnPoint>();
         int index = 0;
         if(spawnPoints.Length < 1){
             Debug.LogWarning("NO SPAWN POINTS");
@@ -96,32 +113,12 @@ public class GameMode : NetworkBehaviour
         ResetTank(ownerTeam);
     }
 
-    public virtual void updateScore(){
-        for(int i = 0; i < numTeams; i++) {
-            score[i] = kills[i];
-        }
-    }
-
     public void ResetTank(int team){
         Tank tankToReset = tanks[team];
 
         Transform positionToSpawn = spawnPoints[Random.Range(0,spawnPoints.Length)].transform;
 
         tankToReset.ResetTankPosition(positionToSpawn.position);
-
-    }
-
-    public void setPlayerReference(Player player) {
-        players.Add(player);
-        score.Callback += player.ScoreCallBack;
-
-        if(isServer){
-            connectedNumberOfClients++;
-            if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
-                StartCountDown();
-            }
-            player.RpcObservePosition(Vector3.zero,10);
-        }
 
     }
 
@@ -137,10 +134,45 @@ public class GameMode : NetworkBehaviour
         return tanks[team];
     }
 
-    public void startGame(){
-        Debug.Log("Starting game");
-        assignPlayers();
+    #endregion
+
+    #region Player
+
+    public void setPlayerReference(Player player) {
+        players.Add(player);
+        score.Callback += player.ScoreCallBack;
         
+        int id;
+        if(isServer)
+            id = player.connectionToClient.connectionId - 1;
+        else
+            id = player.connectionToServer.connectionId - 1;
+        if(id < 0) id = 0; //Fix host
+        
+        int playerTeam = id/2;
+        Player.Role role = (id % 2 == 0) ? Player.Role.Pilot : Player.Role.Gunner; 
+
+        player.team = playerTeam;
+        player.role = role;
+
+        if(player.isLocalPlayer) {
+            localPlayer = player;
+        }
+
+
+        if(teamPlayers[playerTeam] == null) teamPlayers[playerTeam] = new List<Player>();
+        teamPlayers[playerTeam].Add(player);
+
+        if(isServer){
+            connectedNumberOfClients++;
+            if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
+                StartCountDown();
+            }
+            player.RpcObservePosition(spawnPoints[playerTeam % spawnPoints.Length].transform.position,10);
+            player.RpcDisplayMessage("You are on Team " + (playerTeam+1) + " with role " + role.ToString(),timeToStartGame/2, 0.5f, 1f);
+            player.RpcShowHostIp(hostIP);
+        }
+
     }
 
     public void assignPlayers() {
@@ -159,8 +191,8 @@ public class GameMode : NetworkBehaviour
 
         Player player = connection.playerController.GetComponent<Player>();
         if(player != null) {
-            int playerTeam = id/2;
-            Player.Role role = (id % 2 == 0) ? Player.Role.Pilot : Player.Role.Gunner; 
+            int playerTeam = player.team;
+            Player.Role role = player.role; 
 
             NetworkIdentity toPosses = tanks[playerTeam].GetComponent<NetworkIdentity>();
             // NetworkIdentity toPosses = role == Player.Role.Pilot ? 
@@ -182,6 +214,20 @@ public class GameMode : NetworkBehaviour
 
     }
 
+    private IEnumerator waitToAssignBack(float time, NetworkConnection toAssing) {
+        currentCountdown = time;
+        while(currentCountdown > 0) {
+            currentCountdown -= Time.deltaTime;
+            yield return null;
+        }
+
+        assignPlayer(toAssing);
+    }
+
+    #endregion
+
+    #region GameFlow
+
     private void StartCountDown() {
         Debug.Log("Game will start in "+ timeToStartGame + " seconds");
         StartCoroutine(doCountdown(timeToStartGame));
@@ -200,13 +246,74 @@ public class GameMode : NetworkBehaviour
         startGame();
     }
 
-    private IEnumerator waitToAssignBack(float time, NetworkConnection toAssing) {
-        currentCountdown = time;
-        while(currentCountdown > 0) {
-            currentCountdown -= Time.deltaTime;
+    public void startGame(){
+        Debug.Log("Starting game");
+        assignPlayers();
+    }
+
+    public virtual void updateScore(){
+        for(int i = 0; i < numTeams; i++) {
+            score[i] = kills[i];
+        }
+        checkWinCondition();
+    }
+
+    public virtual void checkWinCondition() {
+        for(int i = 0; i < numTeams; i++) {
+            if(score[i] >= maxScore){
+                endGame(i);
+                break;
+            }
+        }
+    }
+
+    public void endGame(int winnerTeam){
+        for(int i = 0; i < numTeams; i ++){
+            if(teamPlayers[i] != null){
+                foreach(Player p in teamPlayers[i])
+                {
+                    if(i == winnerTeam){
+                        p.RpcDisplayMessage("You achieved love!", 10, 0.1f, 1);
+                    }
+                    else
+                        p.RpcDisplayMessage("You tried your best, but the team " + winnerTeam + " achieved love and you don't"
+                        , 10, 0.1f, 1);
+                }
+            }
+        }
+
+        StartCoroutine(waitTimeToEndGame(timeToEndGame));
+    }
+
+    private IEnumerator waitTimeToEndGame(float time) {
+        float counter = time;
+
+        while (counter > 0){
+            counter -= Time.deltaTime;
             yield return null;
         }
 
-        assignPlayer(toAssing);
+        shutdownGame();
     }
+
+    public void shutdownGame(){
+        // if(!returnToLobby)
+        NetworkManager.singleton.StopHost();
+    }
+
+
+    #endregion
+
+
+    protected string getIPString(){
+        string s;
+        // NetworkManager.singleton.transport.GetConnectionInfo(0, out s);
+        s = NetworkManager.singleton.networkAddress;
+        foreach (var ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList){//[0].ToString());
+            if(ip.ToString().Length < 17)
+                s = ip.ToString();
+        }
+        return s;
+    }
+
 }

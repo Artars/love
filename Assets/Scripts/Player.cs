@@ -44,8 +44,9 @@ public class Player : NetworkBehaviour
     public Slider healthSlider;
     public TMPro.TextMeshProUGUI scoreText;
 
-    public GameObject ipCanvas;
+    public GameObject informationCanvas;
     public TMPro.TextMeshProUGUI ipText;
+    public TMPro.TextMeshProUGUI messageText;
 
     [Header("Pilot")]
     public float axisSpeed = 2;
@@ -73,26 +74,14 @@ public class Player : NetworkBehaviour
         if(!isLocalPlayer){
             firstPersonCamera.gameObject.SetActive(false);
             observerPivot.gameObject.SetActive(false);
-            ipCanvas.SetActive(false);
+            informationCanvas.SetActive(false);
         }
         if(isLocalPlayer){
             observerPivot.gameObject.SetActive(true);
-            ipCanvas.SetActive(true);
-            ipText.text = getIPString();
-            Debug.Log("Tried to get adress " + getIPString());
+            informationCanvas.SetActive(true);
         }
     }
 
-    public string getIPString(){
-        string s;
-        // NetworkManager.singleton.transport.GetConnectionInfo(0, out s);
-        s = NetworkManager.singleton.networkAddress;
-        foreach (var ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList){//[0].ToString());
-            if(ip.ToString().Length < 17)
-                s = ip.ToString();
-        }
-        return s;
-    }
 
     [ClientRpc]
     public void RpcObservePosition(Vector3 position, float speed) {
@@ -155,6 +144,24 @@ public class Player : NetworkBehaviour
 
         HideHUD();
     }
+
+    [ClientRpc]
+    public void RpcDisplayMessage(string message, float duration, float fadeIn, float fadeOut){
+        if(isLocalPlayer){
+            StartCoroutine(showMessage(messageText, message, messageText.color, duration, fadeIn, fadeOut));
+        }
+    }
+
+    [ClientRpc]
+    public void RpcShowHostIp(string ip){
+        if(isLocalPlayer)
+        {
+            ipText.gameObject.SetActive(true);
+            ipText.text = ip;
+
+        }
+    }
+
 
     public void SetTankReference(Tank tank, int team, Role role){
         tankRef = tank;
@@ -257,7 +264,7 @@ public class Player : NetworkBehaviour
         tankRef.SetHealthSlider(healthSlider);
         ScoreCallBack(SyncListInt.Operation.OP_DIRTY,0,0);
 
-        ipCanvas.SetActive(false);
+        ipText.gameObject.SetActive(false);
 
         if(role == Role.Pilot){
             canvasGunner.SetActive(false);
@@ -289,14 +296,18 @@ public class Player : NetworkBehaviour
     }
 
     protected void onUpdateRightSlider(float value) {
-        rightAxis = Mathf.Clamp(-1,value,1);
-        if(tankRef != null)
-            tankRef.setAxis(leftAxis, rightAxis);
+        if(currentMode == Mode.Playing){
+            rightAxis = Mathf.Clamp(-1,value,1);
+            if(tankRef != null)
+                tankRef.setAxis(leftAxis, rightAxis);
+        }
     }
     protected void onUpdateLeftSlider(float value) {
-        leftAxis = Mathf.Clamp(-1,value,1);
-        if(tankRef != null)
-            tankRef.setAxis(leftAxis, rightAxis);
+        if(currentMode == Mode.Playing){
+            leftAxis = Mathf.Clamp(-1,value,1);
+            if(tankRef != null)
+                tankRef.setAxis(leftAxis, rightAxis);
+        }
     }
 
 
@@ -316,6 +327,59 @@ public class Player : NetworkBehaviour
 
             scoreText.text = newText;
         }
+    }
+
+
+    protected IEnumerator showMessage(TMPro.TextMeshProUGUI textRef, string message, Color colorToUse, float duration, float fadeIn, float fadeOut){
+        textRef.text = message;
+        Color colorToChange = colorToUse;
+        float counter = 0;
+        
+        
+        //Do fade in
+        if(fadeIn != 0) {
+            colorToChange.a = 0;
+            textRef.color = colorToChange;
+
+            while(counter < fadeIn){
+                counter += Time.deltaTime;
+                
+                colorToChange.a = counter/fadeIn;
+                textRef.color = colorToChange;
+
+                yield return null;        
+            }
+        }
+
+        colorToChange.a = 1;
+        textRef.color = colorToChange;
+
+        //Wait duration of message
+        counter = 0;
+        while(counter < duration){
+            counter += Time.deltaTime;
+
+            yield return null;
+        }
+
+        //Do fade out
+        counter = 0;
+        if(fadeOut != 0) {
+            while(counter < fadeOut){
+                counter += Time.deltaTime;
+
+                colorToChange.a = (fadeOut - counter)/fadeOut;
+                textRef.color = colorToChange;
+
+                yield return null;
+            }
+        }
+
+        colorToChange.a = 0;
+        textRef.color = colorToChange;
+
+
+
     }
 
 

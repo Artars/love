@@ -234,6 +234,10 @@ public class Tank : NetworkBehaviour
             speed *= axisMin;
 
             rgbd.velocity = myTransform.forward.normalized * speed;
+        } 
+        //Break the tank
+        else if(rightThreadOnGround && leftThreadOnGround){
+            rgbd.velocity = Vector3.zero;
         }
 
         //Rotation
