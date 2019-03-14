@@ -71,6 +71,13 @@ public class GameMode : NetworkBehaviour
         }
     }
 
+    void Update() {
+        if(!isServer) return;
+        if(!gameHasStarted && Input.GetKeyDown(KeyCode.Space)){
+            StartCountDown();
+        }
+    }
+
     #region Tank
 
     protected void spawnTanks(){
@@ -165,9 +172,9 @@ public class GameMode : NetworkBehaviour
 
         if(isServer){
             connectedNumberOfClients++;
-            if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
-                StartCountDown();
-            }
+            // if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
+            //     StartCountDown();
+            // }
             player.RpcObservePosition(spawnPoints[playerTeam % spawnPoints.Length].transform.position,10);
             player.RpcDisplayMessage("You are on Team " + (playerTeam+1) + " with role " + role.ToString(),timeToStartGame/2, 0.5f, 1f);
             player.RpcShowHostIp(hostIP);

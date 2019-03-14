@@ -51,12 +51,17 @@ MonoBehaviour:
   - {r: 0.3803922, g: 0.94189346, b: 1, a: 1}
   - {r: 0, g: 0.7924528, b: 0.06076486, a: 1}
   - {r: 0.9363882, g: 0.9528302, b: 0.17528482, a: 1}
-  numberOfPlayersToStartGame: 2
+  numberOfPlayersToStartGame: 4
   timeToStartGame: 5
+  timeToEndGame: 5
+  returnToLobby: 1
+  maxScore: 5
   tankPrefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
     type: 3}
   tanks: []
   players: []
+  localPlayer: {fileID: 0}
+  hostIP: 
   gameHasStarted: 0
 --- !u!114 &1094133066987509114
 MonoBehaviour:
