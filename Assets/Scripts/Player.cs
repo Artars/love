@@ -39,7 +39,9 @@ public class Player : NetworkBehaviour
     public GameObject canvasGunner;
     public Slider rightSlider;
     public Slider leftSlider;
-    
+    public FixedJoystick joyStick;
+    public bool buttonState = false;
+
     public GameObject canvasShared;
     public Slider healthSlider;
     public TMPro.TextMeshProUGUI scoreText;
@@ -241,7 +243,9 @@ public class Player : NetworkBehaviour
     protected void gunnerUpdate(float deltaTime) {
         fireCounter -= deltaTime;
 
-        if(fireCounter <= 0 && Input.GetButton("Jump")){
+        bool isPressing = Input.GetButton("Jump") || buttonState;
+
+        if(fireCounter <= 0 && isPressing){
             Debug.Log("Tried to shoot from " + tankRef.bulletSpawnPosition.position);
             CmdShootCannon();
             fireCounter = tankRef.timeToShoot;
@@ -249,6 +253,11 @@ public class Player : NetworkBehaviour
 
         float horizontalAxis = Input.GetAxis("Horizontal");
         float verticalAxis = Input.GetAxis("Vertical");
+
+        if(joyStick != null && joyStick.gameObject.activeInHierarchy){
+            horizontalAxis = joyStick.Horizontal;
+            verticalAxis = joyStick.Vertical;
+        }
 
         if(old_horizontal != horizontalAxis || old_vertical != verticalAxis){
             old_horizontal = horizontalAxis;
@@ -279,7 +288,10 @@ public class Player : NetworkBehaviour
 
         }
         else if(role == Role.Gunner){
+            #if UNITY_ANDROID
             canvasGunner.SetActive(true);
+            #endif
+            buttonState = false;
             canvasPilot.SetActive(false);
         }
     }
@@ -380,6 +392,14 @@ public class Player : NetworkBehaviour
 
 
 
+    }
+
+    public void OnShootButtonDown(){
+        buttonState = true;
+    }
+
+    public void OnShootButtonUp(){
+        buttonState = false;
     }
 
 

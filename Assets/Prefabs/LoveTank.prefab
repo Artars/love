@@ -310,13 +310,13 @@ MonoBehaviour:
   team: -1
   color: {r: 0, g: 0, b: 0, a: 0}
   turnCannonSpeed: 50
-  nivelCannonSpeed: 20
+  nivelCannonSpeed: 40
   minCannonNivel: -30
   maxCannonNivel: 30
   timeToShoot: 1
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
-  bulletSpeed: 30
+  bulletSpeed: 50
   bulletDamage: 20
   rotationPivot: {fileID: 5378618044769985994}
   cannonTransform: {fileID: 6425315987513618729}
@@ -330,7 +330,7 @@ MonoBehaviour:
   leftThreadEnd: {fileID: 5657618841033057013}
   forwardSpeed: 10
   backwardSpeed: 8
-  turnSpeed: 50
+  turnSpeed: 75
   distanceCheckGround: 0.5
   maxHeath: 100
   currentHealth: 0
@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.04
+  syncInterval: 0.2
   compressRotation: 1
 --- !u!114 &333933308631590521
 MonoBehaviour:
@@ -410,7 +410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.04
+  syncInterval: 0.2
   compressRotation: 0
   target: {fileID: 5378618044769985994}
 --- !u!114 &2820294478917895029
@@ -425,7 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.04
+  syncInterval: 0.2
   compressRotation: 0
   target: {fileID: 6425315987513618729}
 --- !u!114 &1921556458680749880
@@ -440,7 +440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.04
+  syncInterval: 0.2
   compressRotation: 0
   target: {fileID: 6425315988324887115}
 --- !u!114 &8578873811991647371
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.04
+  syncInterval: 0.2
   compressRotation: 1
   target: {fileID: 3555794513288403792}
 --- !u!114 &8906884757252864563
@@ -470,7 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.04
+  syncInterval: 0.2
   compressRotation: 1
   target: {fileID: 578997352582902687}
 --- !u!1 &5378618044769985989

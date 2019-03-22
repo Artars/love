@@ -73,7 +73,7 @@ public class GameMode : NetworkBehaviour
 
     void Update() {
         if(!isServer) return;
-        if(!gameHasStarted && Input.GetKeyDown(KeyCode.Space)){
+        if(!gameHasStarted && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))){
             StartCountDown();
         }
     }
