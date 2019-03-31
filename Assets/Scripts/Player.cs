@@ -64,10 +64,6 @@ public class Player : NetworkBehaviour
     protected float fireCounter = 0;
 
 
-
-    
-
-
     protected void Start() {
         //Update referece
         GameMode.instance.setPlayerReference(this);

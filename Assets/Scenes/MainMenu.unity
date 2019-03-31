@@ -1354,7 +1354,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 61.6
+  m_fontSize: 60.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1710,6 +1710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a35122f174a6a1b41bc7e0d3ee31f95e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  adressField: {fileID: 0}
   address: 127.0.0.1
   sceneToChange: TestMultiplayer
 --- !u!4 &1843832585
@@ -1924,7 +1925,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.28997803, y: -40}
+  m_AnchoredPosition: {x: -0.29003906, y: -40}
   m_SizeDelta: {x: -20.43, y: -120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2010017109
