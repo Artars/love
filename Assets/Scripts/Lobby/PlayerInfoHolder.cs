@@ -11,8 +11,10 @@ public class PlayerInfoHolder : MonoBehaviour
     public TMPro.TextMeshProUGUI textTank;
     public TMPro.TextMeshProUGUI textTeam;
     public Image imageRole;
+    public Image imageReady;
 
     public Sprite[] rolesSprites;
+    public Sprite[] readySprites;
 
     public void SetPlayerInfo(LobbyManager.PlayerInfo info){
         playerInfo = info;
@@ -24,5 +26,8 @@ public class PlayerInfoHolder : MonoBehaviour
         int roleToInt = (int) info.role;
         if(roleToInt < rolesSprites.Length) toUse = rolesSprites[roleToInt];
         imageRole.sprite = toUse;
+
+        toUse = (info.ready) ? readySprites[1] : readySprites[0];
+        imageReady.sprite = toUse;
     }
 }

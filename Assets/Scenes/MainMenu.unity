@@ -705,7 +705,7 @@ MonoBehaviour:
   startOnHeadless: 1
   showDebugMessages: 0
   offlineScene: MainMenu
-  onlineScene: MapTest
+  onlineScene: LobbyScene
   transport: {fileID: 1309190070}
   networkAddress: localhost
   maxConnections: 4

@@ -7,6 +7,10 @@ public class LobbyPlayer : NetworkBehaviour
 {
     [SyncVar]
     public string playerName = "Douce";
+    [SyncVar]
+    public int connectionID = -1;
+    [SyncVar]
+    public bool isReady = false;
     public List<LobbyManager.InfoTank> tanksInfo;
     public DictionaryIntPlayerInfo playersInfo;
 
@@ -21,6 +25,8 @@ public class LobbyPlayer : NetworkBehaviour
     public TMPro.TextMeshProUGUI textTankSelectRole;
     public UnityEngine.UI.Button[] buttonRoleSelection;
 
+    public UnityEngine.UI.Button buttonReady;
+
     public List<TankInfoHolder> tankInfoHolders;
     public Dictionary<int,PlayerInfoHolder> playerInfoHolders;
 
@@ -31,15 +37,16 @@ public class LobbyPlayer : NetworkBehaviour
     void Start()
     {
         if(isLocalPlayer){
+            canvas.SetActive(true);
             playersInfo = new DictionaryIntPlayerInfo();
             tanksInfo = new List<LobbyManager.InfoTank>();
             playerInfoHolders = new Dictionary<int,PlayerInfoHolder>();
-            selectRoleContainer.SetActive(true);
+            selectRoleContainer.SetActive(false);
             
 
             if(PlayerPrefs.HasKey("Name"))
                 playerName = PlayerPrefs.GetString("Name");
-            CmdJoinLobby(name);
+            CmdJoinLobby(playerName);
         }
         else{
             canvas.SetActive(false);
@@ -47,8 +54,25 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     [Command]
-    public void CmdJoinLobby(string name){
-        LobbyManager.instance.PlayerJoin(this,name);
+    public void CmdJoinLobby(string playerName){
+        if(LobbyManager.instance != null) {
+            LobbyManager.instance.PlayerJoin(this,playerName);
+        }
+        else {
+            RpcDestroyThis();
+            canvas.SetActive(false);
+        }
+    }
+
+    [ClientRpc]
+    public void RpcReceiveConnectionID(int id) {
+        connectionID = id;
+    }
+
+    [ClientRpc]
+    public void RpcDestroyThis(){
+        canvas.SetActive(false);
+        Destroy(this);
     }
 
     [ClientRpc]
@@ -60,7 +84,7 @@ public class LobbyPlayer : NetworkBehaviour
             else{
                 tanksInfo.Add(infoTank);
             }
-            UpdatePlayerInfo(index);
+            UpdateTankInfo(index);
         }
     }
 
@@ -73,6 +97,7 @@ public class LobbyPlayer : NetworkBehaviour
             else{
                 playersInfo.Add(index,playerInfo);
             }
+            UpdatePlayerInfo(index);
         }
     }
 
@@ -81,20 +106,31 @@ public class LobbyPlayer : NetworkBehaviour
         LobbyManager.instance.SelectTankRole(tankId,this,roleIndex);
     }
 
+    [Command]
+    public void CmdSetReady(bool isReady){
+        LobbyManager.instance.PlayerSetReady(this, isReady);
+    }
+
     protected void UpdatePlayerInfo(int index){
         if(!playerInfoHolders.ContainsKey(index)){
             GameObject infoHolder = GameObject.Instantiate(playerInfoContainerPrefab,playerInfoParent);
+            infoHolder.SetActive(true);
             playerInfoHolders.Add(index, infoHolder.GetComponent<PlayerInfoHolder>());
         }
 
         PlayerInfoHolder holder = playerInfoHolders[index];
         holder.SetPlayerInfo(playersInfo[index]);
+
+        if(playersInfo[index].connectionID == connectionID){
+            buttonReady.interactable = (playersInfo[index].tankID != -1);
+        }
     }
 
     protected void UpdateTankInfo(int index){
         TankInfoHolder holder;
-        if(tankInfoHolders.Count < index){
+        while(tankInfoHolders.Count <= index){
             GameObject infoHolder = GameObject.Instantiate(tankInfoContainerPrefab,tankInfoParent);
+            infoHolder.SetActive(true);
 
             holder = infoHolder.GetComponent<TankInfoHolder>();
             tankInfoHolders.Add(holder);
@@ -105,7 +141,7 @@ public class LobbyPlayer : NetworkBehaviour
 
         holder = tankInfoHolders[index];
 
-        holder.SetTankInfo(tanksInfo[index], connectionToServer.connectionId);
+        holder.SetTankInfo(tanksInfo[index], connectionID);
 
         //Update selection options if the player is selecting
         if(index == currentlySelectedTank){
@@ -115,15 +151,17 @@ public class LobbyPlayer : NetworkBehaviour
 
     protected void UpdateRoleSelectionButtons(){
         if(currentlySelectedTank != -1){
+            selectRoleContainer.SetActive(true);
+            
             LobbyManager.InfoTank infoTank = tanksInfo[currentlySelectedTank];
 
-            textTankSelectRole.text = "Tank " + infoTank.id;
+            textTankSelectRole.text = "Tank " + infoTank.id + "\nSelect your role:";
 
             int lowestIndex = buttonRoleSelection.Length;
             if(lowestIndex > infoTank.assigments.Length) lowestIndex = infoTank.assigments.Length;
 
             for(int i = 0; i < lowestIndex; i++){
-                buttonRoleSelection[i].enabled = (infoTank.assigments[i].playerAssigned == -1);
+                buttonRoleSelection[i].interactable = (infoTank.assigments[i].playerAssigned == -1);
             }
         }
     }
@@ -136,9 +174,28 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     public void ClickOnRoleSelection(int index) {
-        CmdSelectRole(currentlySelectedTank, index);
+        if(currentlySelectedTank != -1){
+            CmdSelectRole(currentlySelectedTank, index);
+        }
     }
 
+    public void ClickToggleReadyButton(){
+        isReady = !isReady;
+        CmdSetReady(isReady);
+
+        foreach(var holder in tankInfoHolders){
+            holder.selectButton.interactable = !isReady;
+        }
+
+        if(isReady) {
+            foreach(var button in buttonRoleSelection){
+                button.interactable = false;
+            }
+        }
+        else {
+            UpdateRoleSelectionButtons();
+        }
+    }
 
     
 }

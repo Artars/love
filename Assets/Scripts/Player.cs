@@ -66,17 +66,25 @@ public class Player : NetworkBehaviour
 
     protected void Start() {
         //Update referece
-        GameMode.instance.setPlayerReference(this);
-        
+        if(GameMode.instance != null) {
 
-        if(!isLocalPlayer){
-            firstPersonCamera.gameObject.SetActive(false);
-            observerPivot.gameObject.SetActive(false);
-            informationCanvas.SetActive(false);
+            GameMode.instance.setPlayerReference(this);
+            
+
+            if(!isLocalPlayer){
+                firstPersonCamera.gameObject.SetActive(false);
+                observerPivot.gameObject.SetActive(false);
+                informationCanvas.SetActive(false);
+            }
+            if(isLocalPlayer){
+                observerPivot.gameObject.SetActive(true);
+                informationCanvas.SetActive(true);
+            }
         }
-        if(isLocalPlayer){
-            observerPivot.gameObject.SetActive(true);
-            informationCanvas.SetActive(true);
+
+        //Wil disable comands for HUD
+        else {
+            currentMode = Mode.Selecting;
         }
     }
 

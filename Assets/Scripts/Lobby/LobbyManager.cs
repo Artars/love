@@ -97,6 +97,7 @@ public class LobbyManager : NetworkBehaviour
 
         //Save reference of this player
         playersConnected.Add(player);
+        player.RpcReceiveConnectionID(connectionID);
 
         //Send the current information
         for(int i = 0; i < infoTanks.Length; i++){
@@ -124,7 +125,10 @@ public class LobbyManager : NetworkBehaviour
     }
 
     public void UpdatePlayerInfo(int id, PlayerInfo playerInfo){
-        playersInfo.Add(id, playerInfo);
+        if(!playersInfo.ContainsKey(id))
+            playersInfo.Add(id, playerInfo);
+        else
+            playersInfo[id] = playerInfo;
 
         foreach(var player in playersConnected){
             player.RpcUpdatePlayerInfo(id,playerInfo);
@@ -173,11 +177,19 @@ public class LobbyManager : NetworkBehaviour
         playerInfo.ready = isReady;
 
         UpdatePlayerInfo(playerConnectionId,playerInfo);
+
+        if(isGameReady()){
+            StartGame();
+        }
     }
 
     #endregion
 
     #region StartGame
+
+    public void StartGame(){
+        NetworkManager.singleton.ServerChangeScene("Scenes/MapTest");
+    }
 
     public bool isGameReady() {
         bool everyoneIsReady = true;
