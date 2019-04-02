@@ -10,6 +10,8 @@ public class GameMode : NetworkBehaviour
     public int numTeams = 2;
     public Color[] teamColors = {new Color(1,0.3820755f,0.9357688f)};
     [SyncVar]
+    public float timeOutTime = 5;
+    [SyncVar]
     public int numberOfPlayersToStartGame = 2;
     [SyncVar]
     public float timeToStartGame = 5;
@@ -19,6 +21,12 @@ public class GameMode : NetworkBehaviour
     public bool returnToLobby = true;
     [SyncVar]
     public int maxScore = 5;
+
+    public List<LobbyManager.InfoTank> infoTanks;
+    public DictionaryIntPlayerInfo playersInfo;
+
+
+    public bool startGameOnCommand = false;
 
     [Header("Prefabs")]
     public GameObject tankPrefab;
@@ -68,12 +76,23 @@ public class GameMode : NetworkBehaviour
             Debug.Log("List: " + score);
             hostIP = getIPString();
 
+            numberOfPlayersToStartGame = MatchSettings.instance.connectedPlayers;
+            playersInfo = MatchSettings.instance.playersInfo;
+            infoTanks = MatchSettings.instance.infoTanks;
+
+            numTeams = infoTanks.Count;
+
         }
     }
 
     void Update() {
         if(!isServer) return;
-        if(!gameHasStarted && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))){
+        if(startGameOnCommand && !gameHasStarted && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))){
+            StartCountDown();
+        }
+        timeOutTime -= Time.deltaTime;
+
+        if(!gameHasStarted && timeOutTime < 0) {
             StartCountDown();
         }
     }
@@ -150,31 +169,28 @@ public class GameMode : NetworkBehaviour
         score.Callback += player.ScoreCallBack;
         
         int id;
-        if(isServer)
-            id = player.connectionToClient.connectionId - 1;
-        else
-            id = player.connectionToServer.connectionId - 1;
-        if(id < 0) id = 0; //Fix host
         
-        int playerTeam = id/2;
-        Player.Role role = (id % 2 == 0) ? Player.Role.Pilot : Player.Role.Gunner; 
-
-        player.team = playerTeam;
-        player.role = role;
-
+        
         if(player.isLocalPlayer) {
             localPlayer = player;
         }
 
-
-        if(teamPlayers[playerTeam] == null) teamPlayers[playerTeam] = new List<Player>();
-        teamPlayers[playerTeam].Add(player);
-
         if(isServer){
+            id = player.connectionToClient.connectionId;
+            int playerTeam = playersInfo[id].team;
+            Player.Role role = (Player.Role)((int)playersInfo[id].role - 1); //Roles from lobby start from 0
+
+            player.team = playerTeam;
+            player.role = role;
+
+            if(teamPlayers[playerTeam] == null) teamPlayers[playerTeam] = new List<Player>();
+                teamPlayers[playerTeam].Add(player);
+
             connectedNumberOfClients++;
-            // if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
-            //     StartCountDown();
-            // }
+            if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
+                StartCountDown();
+            }
+
             player.RpcObservePosition(spawnPoints[playerTeam % spawnPoints.Length].transform.position,10);
             player.RpcDisplayMessage("You are on Team " + (playerTeam+1) + " with role " + role.ToString(),timeToStartGame/2, 0.5f, 1f);
             player.RpcShowHostIp(hostIP);

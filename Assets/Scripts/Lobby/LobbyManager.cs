@@ -58,9 +58,10 @@ public class LobbyManager : NetworkBehaviour
 
     public int numTanks = 2;
     public int numTeams = 2;
-    public InfoTank[] infoTanks;
+    public List<InfoTank> infoTanks;
     public DictionaryIntPlayerInfo playersInfo;
     public List<LobbyPlayer> playersConnected;
+    public string ip;
 
     public void Awake(){
         //Creates singleton
@@ -71,21 +72,30 @@ public class LobbyManager : NetworkBehaviour
             Destroy(gameObject);
         }
 
-        infoTanks = new  InfoTank[numTanks];
-        for(int i = 0; i < numTanks; i++){
-            InfoTank tank = new InfoTank(i,(i+1)/numTeams,2);
-
-            //For assigning diferent places
-            tank.assigments[0].role = Role.Pilot;
-            tank.assigments[0].playerAssigned = -1;
-
-            tank.assigments[1].role = Role.Gunner;
-            tank.assigments[1].playerAssigned = -1;
-
-            infoTanks[i]= tank;
+        if(MatchSettings.instance != null && MatchSettings.instance.infoTanks.Count > 0) {
+            infoTanks = new List<InfoTank>(MatchSettings.instance.infoTanks);
         }
+
+        else {
+            infoTanks = new  List<InfoTank>();
+            for(int i = 0; i < numTanks; i++){
+                InfoTank tank = new InfoTank(i,(i+1)/numTeams,2);
+
+                //For assigning diferent places
+                tank.assigments[0].role = Role.Pilot;
+                tank.assigments[0].playerAssigned = -1;
+
+                tank.assigments[1].role = Role.Gunner;
+                tank.assigments[1].playerAssigned = -1;
+
+                infoTanks.Add(tank);
+            }
+        }
+
         playersInfo = new DictionaryIntPlayerInfo();
         playersConnected = new List<LobbyPlayer>();
+
+        ip = getIPString();
     }
 
 
@@ -100,7 +110,7 @@ public class LobbyManager : NetworkBehaviour
         player.RpcReceiveConnectionID(connectionID);
 
         //Send the current information
-        for(int i = 0; i < infoTanks.Length; i++){
+        for(int i = 0; i < infoTanks.Count; i++){
             player.RpcUpdateTankInfo(i,infoTanks[i]);
         }
 
@@ -112,6 +122,9 @@ public class LobbyManager : NetworkBehaviour
         //Send information from each position to this player
         PlayerInfo info = new PlayerInfo(connectionID,playerName);
         UpdatePlayerInfo(connectionID, info);
+
+        //Update IP text
+        player.RpcReceiveIP(ip);
     }
 
     public void UpdateTankInfo(int tankID, InfoTank infoTank){
@@ -188,6 +201,9 @@ public class LobbyManager : NetworkBehaviour
     #region StartGame
 
     public void StartGame(){
+        MatchSettings.instance.infoTanks = infoTanks;
+        MatchSettings.instance.playersInfo = playersInfo;
+        MatchSettings.instance.connectedPlayers = playersConnected.Count;
         NetworkManager.singleton.ServerChangeScene("Scenes/MapTest");
     }
 
@@ -205,4 +221,15 @@ public class LobbyManager : NetworkBehaviour
     }
 
     #endregion
+
+    protected string getIPString(){
+        string s;
+        // NetworkManager.singleton.transport.GetConnectionInfo(0, out s);
+        s = NetworkManager.singleton.networkAddress;
+        foreach (var ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList){//[0].ToString());
+            if(ip.ToString().Length < 17)
+                s = ip.ToString();
+        }
+        return s;
+    }
 }

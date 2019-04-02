@@ -30,6 +30,8 @@ public class LobbyPlayer : NetworkBehaviour
     public List<TankInfoHolder> tankInfoHolders;
     public Dictionary<int,PlayerInfoHolder> playerInfoHolders;
 
+    public TMPro.TextMeshProUGUI textIP;
+
 
     protected int currentlySelectedTank = -1;
 
@@ -99,6 +101,11 @@ public class LobbyPlayer : NetworkBehaviour
             }
             UpdatePlayerInfo(index);
         }
+    }
+
+    [ClientRpc]
+    public void RpcReceiveIP(string ip) {
+        textIP.text = "Lobby: " + ip;
     }
 
     [Command]
