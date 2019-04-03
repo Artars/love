@@ -182,6 +182,21 @@ public class LobbyManager : NetworkBehaviour
         UpdatePlayerInfo(playerConnectionId, playerInfo);
     }
 
+    public void PlayerDeselect(LobbyPlayer player) {
+        int playerConnectionId = player.connectionToClient.connectionId;
+        
+        PlayerInfo playerInfo = playersInfo[playerConnectionId];
+
+        //Try to set the previous selection to free
+        int previousTankId = playerInfo.tankID;
+        if(previousTankId != -1){
+            InfoTank previousTankInfo = infoTanks[previousTankId];
+
+            previousTankInfo.assigments[playerInfo.roleIndex].playerAssigned = -1;
+            UpdateTankInfo(previousTankId,previousTankInfo);
+        }
+    }
+
     public void PlayerSetReady(LobbyPlayer player, bool isReady) {
         int playerConnectionId = player.connectionToClient.connectionId;
 

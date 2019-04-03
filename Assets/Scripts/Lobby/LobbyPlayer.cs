@@ -35,6 +35,14 @@ public class LobbyPlayer : NetworkBehaviour
 
     protected int currentlySelectedTank = -1;
 
+    public override void OnNetworkDestroy () {
+        if(isServer){
+            if(LobbyManager.instance != null) {
+                LobbyManager.instance.PlayerDeselect(this);
+            }
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
