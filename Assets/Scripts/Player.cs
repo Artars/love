@@ -50,6 +50,9 @@ public class Player : NetworkBehaviour
     public TMPro.TextMeshProUGUI ipText;
     public TMPro.TextMeshProUGUI messageText;
 
+    public GameObject compassTank;
+    public GameObject compassCannon;
+
     [Header("Pilot")]
     public float axisSpeed = 2;
     protected float rightAxis;
@@ -209,6 +212,7 @@ public class Player : NetworkBehaviour
             }
         }
         else if(currentMode == Mode.Playing) {
+            UpdateHUD();
             if(role == Role.Pilot){
                 pilotUpdate(Time.deltaTime);
             }
@@ -294,6 +298,15 @@ public class Player : NetworkBehaviour
             buttonState = false;
             canvasPilot.SetActive(false);
         }
+
+        //Define a bússola
+        if(role == Role.Gunner)
+        {
+            compassCannon.GetComponent<Image>().color = Color.red;
+        }else
+        {
+            compassTank.GetComponent<Image>().color = Color.red;
+        }
     }
 
     protected void HideHUD(){
@@ -322,6 +335,11 @@ public class Player : NetworkBehaviour
         }
     }
 
+    void UpdateHUD()
+    {
+        compassTank.transform.eulerAngles = new Vector3(0, 0, -tankRef.tankTransform.eulerAngles.y - 180);
+        compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.cannonTransform.eulerAngles.y);
+    }
 
     public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
         Debug.Log("Callbacked");

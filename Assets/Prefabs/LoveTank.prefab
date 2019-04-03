@@ -320,6 +320,7 @@ MonoBehaviour:
   bulletDamage: 20
   rotationPivot: {fileID: 5378618044769985994}
   cannonTransform: {fileID: 6425315987513618729}
+  tankTransform: {fileID: 5378618044168448177}
   nivelTransform: {fileID: 6425315988324887115}
   bulletSpawnPosition: {fileID: 3555794513288403792}
   cameraPositionDriver: {fileID: 7862455469707825493}

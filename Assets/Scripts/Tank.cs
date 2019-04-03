@@ -30,6 +30,7 @@ public class Tank : NetworkBehaviour
     [Header("Transform references")]
     public Transform rotationPivot;
     public Transform cannonTransform;
+    public Transform tankTransform;
     public Transform nivelTransform;
     public Transform bulletSpawnPosition;
     public Transform cameraPositionDriver;
