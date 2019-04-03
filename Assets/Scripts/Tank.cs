@@ -163,8 +163,8 @@ public class Tank : NetworkBehaviour
     public void setAxis(float left, float right) {
         float newLeft = Mathf.Clamp(left,-1,1);
         float newRight = Mathf.Clamp(right,-1,1);
-        if(leftAxis - newLeft > Mathf.Epsilon) leftAxis = newLeft;
-        if(rightAxis - newRight > Mathf.Epsilon) leftAxis = newLeft;
+        if(leftAxis != newLeft) leftAxis = newLeft;
+        if(rightAxis != newRight) rightAxis = newRight;
     }
 
     public void setCannonAxis(float rotation, float nivel) {
