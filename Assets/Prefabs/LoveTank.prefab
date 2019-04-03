@@ -243,11 +243,6 @@ GameObject:
   - component: {fileID: 5378618044361311546}
   - component: {fileID: 8069897468372611511}
   - component: {fileID: 7224657846611481838}
-  - component: {fileID: 333933308631590521}
-  - component: {fileID: 2820294478917895029}
-  - component: {fileID: 1921556458680749880}
-  - component: {fileID: 8578873811991647371}
-  - component: {fileID: 8906884757252864563}
   m_Layer: 10
   m_Name: LoveTank
   m_TagString: Tank
@@ -305,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf48b6532cda55441908bb73763d06bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.05
+  syncInterval: 0
   players: []
   team: -1
   color: {r: 0, g: 0, b: 0, a: 0}
@@ -397,83 +392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.2
-  compressRotation: 1
---- !u!114 &333933308631590521
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5378618044361311542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.2
+  syncInterval: 0.1
   compressRotation: 0
-  target: {fileID: 5378618044769985994}
---- !u!114 &2820294478917895029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5378618044361311542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.2
-  compressRotation: 0
-  target: {fileID: 6425315987513618729}
---- !u!114 &1921556458680749880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5378618044361311542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.2
-  compressRotation: 0
-  target: {fileID: 6425315988324887115}
---- !u!114 &8578873811991647371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5378618044361311542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.2
-  compressRotation: 1
-  target: {fileID: 3555794513288403792}
---- !u!114 &8906884757252864563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5378618044361311542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.2
-  compressRotation: 1
-  target: {fileID: 578997352582902687}
 --- !u!1 &5378618044769985989
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,12 +598,6 @@ PrefabInstance:
       objectReference: {fileID: 5378618044361311543}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da97a165b96eb7d478db6ce4f289ef3e, type: 3}
---- !u!4 &578997352582902687 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 9185776736498112066, guid: da97a165b96eb7d478db6ce4f289ef3e,
-    type: 3}
-  m_PrefabInstance: {fileID: 8607342336103163357}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3555794513288403792 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5056368126628380301, guid: da97a165b96eb7d478db6ce4f289ef3e,
@@ -693,6 +607,12 @@ Transform:
 --- !u!4 &6425315987513618729 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3339457165545903348, guid: da97a165b96eb7d478db6ce4f289ef3e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8607342336103163357}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &578997352582902687 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9185776736498112066, guid: da97a165b96eb7d478db6ce4f289ef3e,
     type: 3}
   m_PrefabInstance: {fileID: 8607342336103163357}
   m_PrefabAsset: {fileID: 0}

@@ -16,7 +16,9 @@ public class Tank : NetworkBehaviour
     public float nivelCannonSpeed = 20;
     public float minCannonNivel = -30;
     public float maxCannonNivel = 30;
+    [SyncVar]
     protected float rotationAxis;
+    [SyncVar]
     protected float inclinationAxis;
     protected float currentInclinationAngle = 0;
 
@@ -60,12 +62,16 @@ public class Tank : NetworkBehaviour
     // protected float leftAxis;
     // protected float rightAxis;
     [Range(-1,1)]
+    [SyncVar]
     public float leftAxis;
     [Range(-1,1)]
+    [SyncVar]
     public float rightAxis;
     [SerializeField]
+    [SyncVar]
     protected bool rightThreadOnGround = true;
     [SerializeField]
+    [SyncVar]
     protected bool leftThreadOnGround = true;
     
 
@@ -110,6 +116,8 @@ public class Tank : NetworkBehaviour
         cannonTransform.rotation = Quaternion.identity;
         currentInclinationAngle = 0;
         nivelTransform.localRotation = Quaternion.Euler(0,currentInclinationAngle,0);
+
+        RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
 
 
@@ -147,19 +155,21 @@ public class Tank : NetworkBehaviour
         if(isServer) {
             checkGround();
             moveTank(Time.fixedDeltaTime);
-            updateCannonRotation(Time.fixedDeltaTime);
         }
+        updateCannonRotation(Time.fixedDeltaTime);
     }
 
 
     public void setAxis(float left, float right) {
-        leftAxis = Mathf.Clamp(left,-1,1);
-        rightAxis = Mathf.Clamp(right,-1,1);
+        float newLeft = Mathf.Clamp(left,-1,1);
+        float newRight = Mathf.Clamp(right,-1,1);
+        if(leftAxis - newLeft > Mathf.Epsilon) leftAxis = newLeft;
+        if(rightAxis - newRight > Mathf.Epsilon) leftAxis = newLeft;
     }
 
     public void setCannonAxis(float rotation, float nivel) {
-        rotationAxis = rotation;
-        inclinationAxis = nivel;
+        if(rotationAxis != rotation) rotationAxis = rotation;
+        if(inclinationAxis != nivel) inclinationAxis = nivel;
     }
 
     public void cannonShoot() {
@@ -189,9 +199,22 @@ public class Tank : NetworkBehaviour
         Debug.Log("Firing from: " + positionToUse);
 
         NetworkServer.Spawn(bullet);
+
+        RpcForceCannonRotationSync(cannonTransform.rotation, nivelTransform.rotation);
     }
 
     public virtual void updateCannonRotation(float deltaTime){
+        //Check rotation from tower
+        float realRightAxis = rightThreadOnGround ? rightAxis : 0;
+        float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
+
+        //Rotation
+        if( Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon){
+            float dif = realLeftAxis - realRightAxis;
+            dif *= turnSpeed * deltaTime * 0.5f;
+            cannonTransform.RotateAround(transform.position,transform.up.normalized, -dif);
+        }
+
         //Should rotate
         if(rotationAxis != 0){
             cannonTransform.RotateAround(transform.position, transform.up, rotationAxis * turnCannonSpeed * deltaTime);
@@ -206,6 +229,12 @@ public class Tank : NetworkBehaviour
         }
     } 
 
+    [ClientRpc]
+    public void RpcForceCannonRotationSync(Quaternion cannon, Quaternion nivel){
+        if(isServer) return;
+        cannonTransform.rotation = cannon;
+        nivelTransform.rotation = nivel;
+    }
 
 
     protected void checkGround(){
@@ -246,7 +275,7 @@ public class Tank : NetworkBehaviour
             float dif = realLeftAxis - realRightAxis;
             dif *= turnSpeed * deltaTime * 0.5f;
             myTransform.RotateAround(myTransform.position, myTransform.up.normalized, dif);
-            rotationPivot.RotateAround(rotationPivot.position,myTransform.up.normalized, -dif);
+            // rotationPivot.RotateAround(rotationPivot.position,myTransform.up.normalized, -dif);
         }
     }
 
