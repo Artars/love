@@ -367,6 +367,7 @@ MonoBehaviour:
     m_keys: 
     m_values: []
   playersConnected: []
+  ip: 
 --- !u!114 &1374557319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,10 +380,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneId: 0
   m_ServerOnly: 1
   m_LocalPlayerAuthority: 0
   m_AssetId: 
+  m_SceneId: 1598984190
 --- !u!4 &1374557320
 Transform:
   m_ObjectHideFlags: 0

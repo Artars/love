@@ -67,6 +67,12 @@ public class GameMode : NetworkBehaviour
     void Start(){
         spawnPoints = GameObject.FindObjectsOfType<SpawnPoint>();
         if(isServer) {
+            if(score == null)
+                score = new SyncListInt();
+            if(deaths == null)
+                deaths = new SyncListInt();
+            if(kills == null)
+                kills = new SyncListInt();
             for(int i = 0; i < numTeams; i++) {
                 score.Insert(i,0);
                 deaths.Insert(i,0);
@@ -320,8 +326,11 @@ public class GameMode : NetworkBehaviour
     }
 
     public void shutdownGame(){
-        // if(!returnToLobby)
-        NetworkManager.singleton.StopHost();
+
+        if(returnToLobby)
+            NetworkManager.singleton.ServerChangeScene("Scenes/LobbyScene");
+        else
+            NetworkManager.singleton.StopHost();
     }
 
 

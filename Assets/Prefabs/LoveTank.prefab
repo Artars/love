@@ -376,10 +376,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneId: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
   m_AssetId: 8f247f44c8780e247bb5fd169f0fbd11
+  m_SceneId: 0
 --- !u!114 &7224657846611481838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,11 +526,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5378618044769985994}
     m_Modifications:
-    - target: {fileID: 3339457165545903351, guid: da97a165b96eb7d478db6ce4f289ef3e,
-        type: 3}
-      propertyPath: m_Name
-      value: Cannon
-      objectReference: {fileID: 0}
     - target: {fileID: 3339457165545903348, guid: da97a165b96eb7d478db6ce4f289ef3e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -585,6 +580,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3339457165545903351, guid: da97a165b96eb7d478db6ce4f289ef3e,
+        type: 3}
+      propertyPath: m_Name
+      value: Cannon
       objectReference: {fileID: 0}
     - target: {fileID: 3339457166336955318, guid: da97a165b96eb7d478db6ce4f289ef3e,
         type: 3}

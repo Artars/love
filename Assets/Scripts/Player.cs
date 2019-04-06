@@ -228,15 +228,15 @@ public class Player : NetworkBehaviour
 
     protected void pilotUpdate(float deltaTime){
         if(!Input.GetButton("Jump")){
-            rightAxis += deltaTime * axisSpeed * Input.GetAxis("Vertical");
-            leftAxis += deltaTime * axisSpeed * Input.GetAxis("Vertical2");
+            rightAxis += deltaTime * axisSpeed * Input.GetAxisRaw("Vertical");
+            leftAxis += deltaTime * axisSpeed * Input.GetAxisRaw("Vertical2");
         }
         else {
             rightAxis = 0;
             leftAxis = 0;
         }
-        rightAxis = Mathf.Clamp(-1,rightAxis,1);
-        leftAxis = Mathf.Clamp(-1,leftAxis,1);
+        rightAxis = Mathf.Clamp(rightAxis,-1,1);
+        leftAxis = Mathf.Clamp(leftAxis,-1,1);
 
         if(rightSlider != null) rightSlider.value = rightAxis;
         if(leftSlider != null) leftSlider.value = leftAxis;

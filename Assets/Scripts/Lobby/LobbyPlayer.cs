@@ -69,7 +69,7 @@ public class LobbyPlayer : NetworkBehaviour
             LobbyManager.instance.PlayerJoin(this,playerName);
         }
         else {
-            RpcDestroyThis();
+            RpcDeactivateThis();
             canvas.SetActive(false);
         }
     }
@@ -80,9 +80,8 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcDestroyThis(){
+    public void RpcDeactivateThis(){
         canvas.SetActive(false);
-        Destroy(this);
     }
 
     [ClientRpc]

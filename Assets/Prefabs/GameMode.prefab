@@ -51,11 +51,17 @@ MonoBehaviour:
   - {r: 0.3803922, g: 0.94189346, b: 1, a: 1}
   - {r: 0, g: 0.7924528, b: 0.06076486, a: 1}
   - {r: 0.9363882, g: 0.9528302, b: 0.17528482, a: 1}
+  timeOutTime: 5
   numberOfPlayersToStartGame: 4
   timeToStartGame: 5
   timeToEndGame: 5
   returnToLobby: 1
   maxScore: 5
+  infoTanks: []
+  playersInfo:
+    m_keys: 
+    m_values: []
+  startGameOnCommand: 0
   tankPrefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
     type: 3}
   tanks: []
@@ -75,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneId: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
   m_AssetId: bb8bff03f39ff904aa9174e33d4c73d2
+  m_SceneId: 0

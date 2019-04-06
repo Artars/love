@@ -62,6 +62,7 @@ public class LobbyManager : NetworkBehaviour
     public DictionaryIntPlayerInfo playersInfo;
     public List<LobbyPlayer> playersConnected;
     public string ip;
+    public bool isGameStarting = false;
 
     public void Awake(){
         //Creates singleton
@@ -153,6 +154,8 @@ public class LobbyManager : NetworkBehaviour
     #region SelectionFunctions
 
     public void SelectTankRole(int tankID, LobbyPlayer player, int roleIndex){
+        if(isGameStarting) return; // Won't change if game is starting
+
         InfoTank tankInfo = infoTanks[tankID];
         int playerConnectionId = player.connectionToClient.connectionId;
         
@@ -183,6 +186,8 @@ public class LobbyManager : NetworkBehaviour
     }
 
     public void PlayerDeselect(LobbyPlayer player) {
+        if(isGameStarting) return; // Won't change if game is starting
+
         int playerConnectionId = player.connectionToClient.connectionId;
         
         PlayerInfo playerInfo = playersInfo[playerConnectionId];
@@ -216,6 +221,7 @@ public class LobbyManager : NetworkBehaviour
     #region StartGame
 
     public void StartGame(){
+        isGameStarting = true;
         MatchSettings.instance.infoTanks = infoTanks;
         MatchSettings.instance.playersInfo = playersInfo;
         MatchSettings.instance.connectedPlayers = playersConnected.Count;
