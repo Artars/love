@@ -341,8 +341,11 @@ public class Player : NetworkBehaviour
 
     void UpdateHUD()
     {
-        compassTank.transform.eulerAngles = new Vector3(0, 0, -tankRef.tankTransform.eulerAngles.y - 180);
-        compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.cannonTransform.eulerAngles.y);
+        if(tankRef != null)
+        {
+            compassTank.transform.eulerAngles = new Vector3(0, 0, -tankRef.tankTransform.eulerAngles.y - 180);
+            compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.cannonTransform.eulerAngles.y);
+        }
     }
 
     public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {

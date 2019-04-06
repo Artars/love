@@ -178,7 +178,7 @@ public class GameMode : NetworkBehaviour
         if(isServer){
             id = player.connectionToClient.connectionId;
             int playerTeam = playersInfo[id].team;
-            Player.Role role = (Player.Role)((int)playersInfo[id].role - 1); //Roles from lobby start from 0
+            Player.Role role = (Player.Role)((int)playersInfo[id].role - 1); //Roles from lobby start from 1
 
             player.team = playerTeam;
             player.role = role;

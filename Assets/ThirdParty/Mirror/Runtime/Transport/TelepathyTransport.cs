@@ -1,14 +1,17 @@
-﻿// wraps Telepathy for use as HLAPI TransportLayer
-using System;
+// wraps Telepathy for use as HLAPI TransportLayer
 using UnityEngine;
 namespace Mirror
 {
+    [HelpURL("https://github.com/vis2k/Telepathy/blob/master/README.md")]
     public class TelepathyTransport : Transport
     {
         public ushort port = 7777;
 
         [Tooltip("Nagle Algorithm can be disabled by enabling NoDelay")]
         public bool NoDelay = true;
+
+        [Tooltip("Protect against allocation attacks by keeping the max message size small. Otherwise an attacker might send multiple fake packets with 2GB headers, causing the server to run out of memory after allocating multiple large packets.")]
+        public int MaxMessageSize = 16 * 1024;
 
         protected Telepathy.Client client = new Telepathy.Client();
         protected Telepathy.Server server = new Telepathy.Server();
@@ -22,7 +25,9 @@ namespace Mirror
 
             // configure
             client.NoDelay = NoDelay;
+            client.MaxMessageSize = MaxMessageSize;
             server.NoDelay = NoDelay;
+            server.MaxMessageSize = MaxMessageSize;
 
             // HLAPI's local connection uses hard coded connectionId '0', so we
             // need to make sure that external connections always start at '1'
@@ -33,18 +38,16 @@ namespace Mirror
         }
 
         // client
-        public override bool ClientConnected() { return client.Connected; }
-        public override void ClientConnect(string address) { client.Connect(address, port); }
-        public override bool ClientSend(int channelId, byte[] data) { return client.Send(data); }
+        public override bool ClientConnected() => client.Connected;
+        public override void ClientConnect(string address) => client.Connect(address, port);
+        public override bool ClientSend(int channelId, byte[] data) => client.Send(data);
 
         bool ProcessClientMessage()
         {
-            Telepathy.Message message;
-            if (client.GetNextMessage(out message))
+            if (client.GetNextMessage(out Telepathy.Message message))
             {
                 switch (message.eventType)
                 {
-                    // convert Telepathy EventType to TransportEvent
                     case Telepathy.EventType.Connected:
                         OnClientConnected.Invoke();
                         break;
@@ -64,26 +67,32 @@ namespace Mirror
             }
             return false;
         }
-        public override void ClientDisconnect() { client.Disconnect(); }
+        public override void ClientDisconnect() => client.Disconnect();
 
+        // IMPORTANT: set script execution order to >1000 to call Transport's
+        //            LateUpdate after all others. Fixes race condition where
+        //            e.g. in uSurvival Transport would apply Cmds before
+        //            ShoulderRotation.LateUpdate, resulting in projectile
+        //            spawns at the point before shoulder rotation.
         public void LateUpdate()
         {
-            while (ProcessClientMessage()) { }
-            while (ProcessServerMessage()) { }
+            // note: we need to check enabled in case we set it to false
+            // when LateUpdate already started.
+            // (https://github.com/vis2k/Mirror/pull/379)
+            while (enabled && ProcessClientMessage()) {}
+            while (enabled && ProcessServerMessage()) {}
         }
 
         // server
-        public override bool ServerActive() { return server.Active; }
-        public override void ServerStart() { server.Start(port); }
-        public override bool ServerSend(int connectionId, int channelId, byte[] data) { return server.Send(connectionId, data); }
+        public override bool ServerActive() => server.Active;
+        public override void ServerStart() => server.Start(port);
+        public override bool ServerSend(int connectionId, int channelId, byte[] data) => server.Send(connectionId, data);
         public bool ProcessServerMessage()
         {
-            Telepathy.Message message;
-            if (server.GetNextMessage(out message))
+            if (server.GetNextMessage(out Telepathy.Message message))
             {
                 switch (message.eventType)
                 {
-                    // convert Telepathy EventType to TransportEvent
                     case Telepathy.EventType.Connected:
                         OnServerConnected.Invoke(message.connectionId);
                         break;
@@ -102,9 +111,9 @@ namespace Mirror
             }
             return false;
         }
-        public override bool ServerDisconnect(int connectionId) { return server.Disconnect(connectionId); }
-        public override bool GetConnectionInfo(int connectionId, out string address) { return server.GetConnectionInfo(connectionId, out address); }
-        public override void ServerStop() { server.Stop(); }
+        public override bool ServerDisconnect(int connectionId) => server.Disconnect(connectionId);
+        public override string ServerGetClientAddress(int connectionId) => server.GetClientAddress(connectionId);
+        public override void ServerStop() => server.Stop();
 
         // common
         public override void Shutdown()
