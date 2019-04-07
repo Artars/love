@@ -230,6 +230,7 @@ public class GameMode : NetworkBehaviour
             // toPosses.AssignClientAuthority(connection);
 
             player.SetTankReference(tanks[playerTeam], playerTeam, role);
+            tanks[playerTeam].AssignPlayer(player, role);
             player.RpcAssignPlayer(playerTeam, role, toPosses);
         }
     }

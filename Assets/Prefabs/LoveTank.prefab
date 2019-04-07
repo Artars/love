@@ -304,11 +304,13 @@ MonoBehaviour:
   players: []
   team: -1
   color: {r: 0, g: 0, b: 0, a: 0}
+  playerRoles: []
+  tankParameters: {fileID: 11400000, guid: 6161ec92fd19a8242b3ba9ed4740280c, type: 2}
   turnCannonSpeed: 50
   nivelCannonSpeed: 40
   minCannonNivel: -30
   maxCannonNivel: 30
-  timeToShoot: 1
+  shootCooldown: 1
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
   bulletSpeed: 50
@@ -526,6 +528,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5378618044769985994}
     m_Modifications:
+    - target: {fileID: 3339457165545903351, guid: da97a165b96eb7d478db6ce4f289ef3e,
+        type: 3}
+      propertyPath: m_Name
+      value: Cannon
+      objectReference: {fileID: 0}
     - target: {fileID: 3339457165545903348, guid: da97a165b96eb7d478db6ce4f289ef3e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -580,11 +587,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3339457165545903351, guid: da97a165b96eb7d478db6ce4f289ef3e,
-        type: 3}
-      propertyPath: m_Name
-      value: Cannon
       objectReference: {fileID: 0}
     - target: {fileID: 3339457166336955318, guid: da97a165b96eb7d478db6ce4f289ef3e,
         type: 3}

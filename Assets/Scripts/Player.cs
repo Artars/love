@@ -171,6 +171,14 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void RpcReceiveDamageFromDirection(float damage, float angle)
+    {
+        if(isLocalPlayer)
+        {
+            Debug.Log("Received " + damage + " damage from direction " + angle);
+        }
+    }
+
 
     public void SetTankReference(Tank tank, int team, Role role){
         tankRef = tank;
@@ -256,7 +264,7 @@ public class Player : NetworkBehaviour
         if(fireCounter <= 0 && isPressing){
             Debug.Log("Tried to shoot from " + tankRef.bulletSpawnPosition.position);
             CmdShootCannon();
-            fireCounter = tankRef.timeToShoot;
+            fireCounter = tankRef.shootCooldown;
         }
 
         float horizontalAxis = Input.GetAxis("Horizontal");

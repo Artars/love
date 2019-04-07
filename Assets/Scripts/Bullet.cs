@@ -9,6 +9,9 @@ public class Bullet : NetworkBehaviour
     public int team = -1;
     [SyncVar]
     public float damage;
+    [SyncVar]
+    public Vector3 velocityFired;
+    public float angleFired;
 
     public float lifeTime = 10;
 
@@ -34,6 +37,8 @@ public class Bullet : NetworkBehaviour
         transform.rotation = rotation;
 
         rgbd.velocity = velocity;
+        velocityFired = velocity;
+        angleFired = Mathf.Atan2(velocity.z,velocity.x);
     }
 
     public void fireWithVelocity(Vector3 velocity){

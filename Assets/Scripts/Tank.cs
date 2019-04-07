@@ -5,11 +5,44 @@ using Mirror;
 
 public class Tank : NetworkBehaviour
 {
+
+    [System.Serializable]
+    public class Assigment
+    {
+        public Player.Role role;
+        public Player playerRef = null;
+        public bool available {
+            get {
+                return playerRef == null;
+            }
+            set {
+
+            }
+        }
+
+        public Assigment (Player.Role role)
+        {
+            this.role = role;
+            playerRef = null;
+        }
+
+        public Assigment (Player.Role role, Player player) : this(role)
+        {
+            playerRef = player;
+        }
+    }
+
+    #region Variables
+
     [Header("Team")]
     public List<Player> players;
     [SyncVar]
     public int team = -1;
     public Color color;
+    public List<Assigment> playerRoles;
+
+    [Header("Parameters")]
+    public TankParameters tankParameters;
 
     [Header("Cannon")]
     public float turnCannonSpeed = 20;
@@ -23,7 +56,7 @@ public class Tank : NetworkBehaviour
     protected float currentInclinationAngle = 0;
 
     [Header("Shooting")]
-    public float timeToShoot = 1;
+    public float shootCooldown = 1;
     public GameObject bulletPrefab;
     public float bulletSpeed = 30;
     public float bulletDamage = 20;
@@ -80,6 +113,11 @@ public class Tank : NetworkBehaviour
     protected Transform myTransform;
 
 
+    #endregion
+
+    #region Messaging
+
+
     [ClientRpc]
     public void RpcUpdateTankReferenceRPC(int team){
         GameMode.instance.setTankReference(this, team);
@@ -89,6 +127,64 @@ public class Tank : NetworkBehaviour
     public void RpcSetColor(Color newColor) {
         color = newColor;
         ApplyColor();
+    }
+
+    [ClientRpc]
+    public void RpcOnChangeHealth(float health) {
+        if(healthSlider != null) {
+            healthSlider.value = health;
+        }
+    }
+
+    [ClientRpc]
+    public void RpcForceCannonRotationSync(Quaternion cannon, Quaternion nivel){
+        if(isServer) return;
+        cannonTransform.rotation = cannon;
+        nivelTransform.rotation = nivel;
+    }
+
+    #endregion
+
+    #region Initialization
+
+    void Awake(){
+        LoadTankParameters();
+        rgbd = GetComponent<Rigidbody>();
+        myTransform = transform;
+        if(team != -1) {
+            GameMode.instance.setTankReference(this,team);
+        }
+        if(isServer) {
+            currentHealth = maxHeath;
+        }
+
+        //Roles
+        playerRoles = new List<Assigment>();
+        playerRoles.Add(new Assigment(Player.Role.Pilot));
+        playerRoles.Add(new Assigment(Player.Role.Gunner));
+    }
+
+    protected void LoadTankParameters()
+    {
+        if(tankParameters == null) return;
+        this.forwardSpeed = tankParameters.forwardSpeed;
+        this.backwardSpeed = tankParameters.backwardSpeed;
+        this.turnSpeed = tankParameters.turnSpeed;
+        this.turnCannonSpeed = tankParameters.turnCannonSpeed;
+        this.nivelCannonSpeed = tankParameters.nivelCannonSpeed;
+        this.minCannonNivel = tankParameters.minCannonNivel;
+        this.maxCannonNivel = tankParameters.maxCannonNivel;
+        this.shootCooldown = tankParameters.shootCooldown;
+        this.bulletSpeed = tankParameters.bulletSpeed;
+        this.bulletDamage = tankParameters.bulletDamage;
+        this.maxHeath = tankParameters.maxHeath;
+    }
+
+    void Start(){
+        ApplyColor();
+        if(!isServer){
+            GetComponent<Rigidbody>().isKinematic = true;
+        }
     }
 
     public void ApplyColor(){
@@ -106,6 +202,10 @@ public class Tank : NetworkBehaviour
         RpcOnChangeHealth(currentHealth);
     }
 
+    /// <summary>
+    /// Reset tank position to be the one given. Will also reset rotation of guns
+    /// </summary>
+    /// <param name="position">Position to be placed</param>
     public void ResetTankPosition(Vector3 position) {
         ResetTank();
         transform.position = position;
@@ -120,34 +220,41 @@ public class Tank : NetworkBehaviour
         RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
 
+    public void AssignPlayer(Player player, Player.Role role) 
+    {
+        players.Add(player);
 
-    void Awake(){
-        rgbd = GetComponent<Rigidbody>();
-        myTransform = transform;
-        if(team != -1) {
-            GameMode.instance.setTankReference(this,team);
-        }
-        if(isServer) {
-            currentHealth = maxHeath;
+
+        for(int  i = 0; i < playerRoles.Count; i ++) {
+            if(playerRoles[i].role == role) {
+                playerRoles[i].playerRef = player;
+                break;
+            }
         }
     }
 
-    void Start(){
-        ApplyColor();
-        if(!isServer){
-            GetComponent<Rigidbody>().isKinematic = true;
+    public void RemovePlayer(Player player, Player.Role role)
+    {
+        players.Remove(player);
+
+        for(int  i = 0; i < playerRoles.Count; i ++) {
+            if(playerRoles[i].role == role) {
+                playerRoles[i].playerRef = null;
+                break;
+            }
         }
     }
+
+    #endregion
+
+
+
+    #region Update
 
     void Update(){
         if(!isServer) return;
 
         cannonShootCounter -= Time.deltaTime;
-
-        if(Input.GetKeyDown(KeyCode.K) && team == 0){
-            int otherTeam = (team == 1) ? 0 : 1;
-            killTank(otherTeam);
-        }
     }
 
 
@@ -175,7 +282,7 @@ public class Tank : NetworkBehaviour
     public void cannonShoot() {
         if(cannonShootCounter < 0){
             ShootCannon(team);
-            cannonShootCounter = timeToShoot;
+            cannonShootCounter = shootCooldown;
         }
     }
 
@@ -229,12 +336,7 @@ public class Tank : NetworkBehaviour
         }
     } 
 
-    [ClientRpc]
-    public void RpcForceCannonRotationSync(Quaternion cannon, Quaternion nivel){
-        if(isServer) return;
-        cannonTransform.rotation = cannon;
-        nivelTransform.rotation = nivel;
-    }
+    
 
 
     protected void checkGround(){
@@ -279,6 +381,9 @@ public class Tank : NetworkBehaviour
         }
     }
 
+    #endregion
+
+    #region Damage
 
 
     protected void OnTriggerEnter(Collider col) {
@@ -294,14 +399,14 @@ public class Tank : NetworkBehaviour
             if(bullet != null) {
                 Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
-                    DealDamage(bullet.damage, bullet.team);
+                    DealDamage(bullet.damage, bullet.team, bullet.angleFired);
                     NetworkServer.Destroy(col.gameObject);
                 }
             }
         }
     }
 
-    public void DealDamage(float damage, int otherTeam) {
+    public void DealDamage(float damage, int otherTeam, float angle) {
         Debug.Log("Tank from team " + team + " received " + damage + " damage!");
         currentHealth -= damage;
         if(currentHealth <= 0) {
@@ -310,6 +415,15 @@ public class Tank : NetworkBehaviour
         }
         else {
             RpcOnChangeHealth(currentHealth);
+            NotifyDamageToPlayers(damage,angle);
+        }
+    }
+
+    protected void NotifyDamageToPlayers(float damage, float angle)
+    {
+        foreach(Player player in players)
+        {
+            player.RpcReceiveDamageFromDirection(damage, angle);
         }
     }
 
@@ -325,12 +439,8 @@ public class Tank : NetworkBehaviour
     }
 
 
-    [ClientRpc]
-    public void RpcOnChangeHealth(float health) {
-        if(healthSlider != null) {
-            healthSlider.value = health;
-        }
-    }
+    #endregion
+
     
     protected void OnDrawGizmos() {
         Gizmos.color = Color.red;
