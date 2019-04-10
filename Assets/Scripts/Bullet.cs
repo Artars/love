@@ -43,6 +43,8 @@ public class Bullet : NetworkBehaviour
 
     public void fireWithVelocity(Vector3 velocity){
         rgbd.velocity = velocity;
+        velocityFired = velocity;
+        angleFired = Mathf.Atan2(velocity.z,velocity.x);
     }
 
     protected void OnCollisionEnter(Collision col) {
