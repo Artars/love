@@ -549,6 +549,8 @@ MonoBehaviour:
   firstPersonCamera: {fileID: 877316746407678512}
   canvasPilot: {fileID: 945030074137484879}
   canvasGunner: {fileID: 8337819128168634704}
+  hitPointer: {fileID: 5701937394257045613, guid: 551df492113500342a93d00a28879e54,
+    type: 3}
   rightSlider: {fileID: 945030074400270222}
   leftSlider: {fileID: 945030072350155240}
   joyStick: {fileID: 4226612651353688298}

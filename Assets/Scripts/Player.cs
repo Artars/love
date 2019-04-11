@@ -37,6 +37,7 @@ public class Player : NetworkBehaviour
     [Header("HUD")]
     public GameObject canvasPilot;
     public GameObject canvasGunner;
+    public GameObject hitPointer;
     public Slider rightSlider;
     public Slider leftSlider;
     public FixedJoystick joyStick;
@@ -171,14 +172,18 @@ public class Player : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
     public void RpcReceiveDamageFromDirection(float damage, float angle)
     {
         if(isLocalPlayer)
         {
             Debug.Log("Received " + damage + " damage from direction " + angle);
+            GameObject pointer = Instantiate(hitPointer, Vector3.zero, Quaternion.identity);
+            pointer.transform.parent = canvasShared.transform;
+            pointer.GetComponent<HitPointer>().hitAngle = angle;
+            pointer.GetComponent<HitPointer>().cameraTransform = firstPersonCamera;
         }
     }
-
 
     public void SetTankReference(Tank tank, int team, Role role){
         tankRef = tank;
