@@ -75,6 +75,16 @@ public class LobbyManager : NetworkBehaviour
 
         if(MatchSettings.instance != null && MatchSettings.instance.infoTanks.Count > 0) {
             infoTanks = new List<InfoTank>(MatchSettings.instance.infoTanks);
+
+            //Clear player choices
+            for (int i = 0; i < infoTanks.Count; i++)
+            {
+                InfoTank info = infoTanks[i];
+                for (int j = 0; j < info.assigments.Length; j++)
+                {
+                    info.assigments[j].playerAssigned = -1;
+                }
+            }
         }
 
         else {

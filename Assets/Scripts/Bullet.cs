@@ -15,26 +15,41 @@ public class Bullet : NetworkBehaviour
 
     public float lifeTime = 10;
 
+    protected Transform myTransform;
+    protected Vector3 lastPosition;
+    protected Vector3 estimatePosition;
+
     protected Rigidbody rgbd;
 
     void Awake(){
         rgbd = GetComponent<Rigidbody>();
+        myTransform = transform;
         if(isServer){
             StartCoroutine(waitDestroyTime(lifeTime));
         }
+        lastPosition = myTransform.position;
     }
 
     protected void Update() {
         //Rotate toward velocity
         if(isServer){
-            transform.LookAt(rgbd.velocity);
+            myTransform.LookAt(rgbd.velocity);
+        }
+        //Will estimate the velocity
+        else
+        {
+            Vector3 currentPosition = myTransform.position;
+            estimatePosition = currentPosition - lastPosition;
+            lastPosition = currentPosition;
+
+            myTransform.LookAt(estimatePosition);
         }
     }
 
     [ClientRpc]
     public void RpcFireWithVelocityRpc(Vector3 position, Quaternion rotation, Vector3 velocity){
-        transform.position = position;
-        transform.rotation = rotation;
+        myTransform.position = position;
+        myTransform.rotation = rotation;
 
         rgbd.velocity = velocity;
         velocityFired = velocity;

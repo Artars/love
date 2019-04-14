@@ -49,6 +49,7 @@ public class Player : NetworkBehaviour
     public Slider leftSlider;
     public FixedJoystick joyStick;
     public bool buttonState = false;
+    public GameObject[] mobileHUD;
 
     public GameObject canvasShared;
     public Slider healthSlider;
@@ -360,9 +361,7 @@ public class Player : NetworkBehaviour
 
         }
         else if(role == Role.Gunner){
-            #if UNITY_ANDROID
             canvasGunner.SetActive(true);
-            #endif
             buttonState = false;
             canvasPilot.SetActive(false);
         }
@@ -377,6 +376,20 @@ public class Player : NetworkBehaviour
             compassTank.GetComponent<Image>().color = Color.red;
             compassCannon.GetComponent<Image>().color = Color.white;
         }
+
+        //Set mobile HUD
+        bool isMobile = false;
+        #if UNITY_ANDROID
+            isMobile = true;
+        #endif
+
+        for(int i = 0 ; i < mobileHUD.Length; i++)
+        {
+            mobileHUD[i].SetActive(isMobile);
+        }
+
+
+        
     }
 
     protected void HideHUD(){
