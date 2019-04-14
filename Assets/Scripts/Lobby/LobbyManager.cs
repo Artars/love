@@ -63,6 +63,7 @@ public class LobbyManager : NetworkBehaviour
     public List<LobbyPlayer> playersConnected;
     public string ip;
     public bool isGameStarting = false;
+    public string mapName = "Scenes/MapTest";
 
     public void Awake(){
         //Creates singleton
@@ -225,7 +226,7 @@ public class LobbyManager : NetworkBehaviour
         MatchSettings.instance.infoTanks = infoTanks;
         MatchSettings.instance.playersInfo = playersInfo;
         MatchSettings.instance.connectedPlayers = playersConnected.Count;
-        NetworkManager.singleton.ServerChangeScene("Scenes/MapTest");
+        NetworkManager.singleton.ServerChangeScene(mapName);
     }
 
     public bool isGameReady() {
