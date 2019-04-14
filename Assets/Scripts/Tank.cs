@@ -224,6 +224,18 @@ public class Tank : NetworkBehaviour
     {
         players.Add(player);
 
+        bool hasOnlyOnePlayer = players.Count == 1;
+        if(hasOnlyOnePlayer)
+        {
+            player.canSwitchRoles = true;
+        }
+        else
+        {
+            foreach(var p in players)
+            {
+                p.canSwitchRoles = false;
+            }
+        }
 
         for(int  i = 0; i < playerRoles.Count; i ++) {
             if(playerRoles[i].role == role) {
@@ -237,10 +249,40 @@ public class Tank : NetworkBehaviour
     {
         players.Remove(player);
 
+        bool hasOnlyOnePlayer = players.Count == 1;
+        if(hasOnlyOnePlayer)
+        {
+            foreach(var p in players)
+            {
+                p.canSwitchRoles = true;
+                p.RpcDisplayMessage("You can change roles", 2, 0.1f, 0.5f);
+            }
+        }
+
         for(int  i = 0; i < playerRoles.Count; i ++) {
             if(playerRoles[i].role == role) {
                 playerRoles[i].playerRef = null;
                 break;
+            }
+        }
+    }
+
+    public void SwitchPlayerRole(Player player, Player.Role currentRole)
+    {
+        if(!player.canSwitchRoles) return; //Avoid changin if the player is not available
+        Player.Role roleToSwitch = (currentRole == Player.Role.Pilot) ? Player.Role.Gunner : Player.Role.Pilot;
+
+        for(int  i = 0; i < playerRoles.Count; i ++) {
+            //Remove current player role reference
+            if(playerRoles[i].role == currentRole) {
+                playerRoles[i].playerRef = null;
+            }
+            //Set new reference and switch player
+            else if(playerRoles[i].role == roleToSwitch)
+            {
+                playerRoles[i].playerRef = player;
+                player.role = roleToSwitch;
+                player.RpcAssignPlayer(team, roleToSwitch, GetComponent<NetworkIdentity>());
             }
         }
     }

@@ -26,6 +26,13 @@ public class Player : NetworkBehaviour
     public Role role = Role.Pilot;
     [SyncVar]
     public NetworkIdentity possesedObject;
+    [SyncVar]
+    public bool canSwitchRoles = false;
+
+
+    [Header("Controll")]
+    public float doubleClickTimeDelay = 0.2f;
+    protected float lastTimeClicked = 0;
 
 
     [Header("Camera")]
@@ -67,6 +74,16 @@ public class Player : NetworkBehaviour
     protected float old_vertical = -2;
     protected float fireCounter = 0;
 
+
+    //Remove player from the game
+    public override void OnNetworkDestroy () {
+        if(isServer){
+            if(tankRef != null)
+            {
+                tankRef.RemovePlayer(this, role);
+            }
+        }
+    }
 
     protected void Start() {
         //Update referece
@@ -191,6 +208,15 @@ public class Player : NetworkBehaviour
         this.role = role;
     }
 
+    [Command]
+    public void CmdSwitchRole(Role currentRole)
+    {
+        if(tankRef != null)
+        {
+            tankRef.SwitchPlayerRole(this, currentRole);
+        }
+    }
+
     //Input update on server
     [Command]
     public void CmdUpdateAxisPilot(float leftAxis, float rightAxis){
@@ -235,6 +261,11 @@ public class Player : NetworkBehaviour
             }
             else if(role == Role.Gunner){
                 gunnerUpdate(Time.deltaTime);
+            }
+
+            if(canSwitchRoles)
+            {
+                TrySwitchRole();
             }
         }
     }
@@ -288,6 +319,26 @@ public class Player : NetworkBehaviour
 
     }
 
+    protected void TrySwitchRole()
+    {
+        bool hasClickInput = false;
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            float currentTime = Time.time;
+            if(currentTime - lastTimeClicked < doubleClickTimeDelay)
+            {
+                hasClickInput = true;
+            }
+            lastTimeClicked = currentTime;
+        }
+
+        if(hasClickInput || Input.GetKeyDown(KeyCode.P))
+        {
+            CmdSwitchRole(role);
+        }
+    }
+
     protected void assignHUD() {
         canvasShared.SetActive(true);
         healthSlider.gameObject.SetActive(true);
@@ -319,10 +370,12 @@ public class Player : NetworkBehaviour
         //Define a bússola
         if(role == Role.Gunner)
         {
+            compassTank.GetComponent<Image>().color = Color.white;
             compassCannon.GetComponent<Image>().color = Color.red;
         }else
         {
             compassTank.GetComponent<Image>().color = Color.red;
+            compassCannon.GetComponent<Image>().color = Color.white;
         }
     }
 

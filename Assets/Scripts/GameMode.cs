@@ -11,6 +11,7 @@ public class GameMode : NetworkBehaviour
     public Color[] teamColors = {new Color(1,0.3820755f,0.9357688f)};
     [SyncVar]
     public float timeOutTime = 5;
+    protected float timeOutCounter = 10;
     [SyncVar]
     public int numberOfPlayersToStartGame = 2;
     [SyncVar]
@@ -85,6 +86,7 @@ public class GameMode : NetworkBehaviour
             numberOfPlayersToStartGame = MatchSettings.instance.connectedPlayers;
             playersInfo = MatchSettings.instance.playersInfo;
             infoTanks = MatchSettings.instance.infoTanks;
+            timeOutCounter = timeOutTime; 
 
             numTeams = infoTanks.Count;
 
@@ -96,9 +98,9 @@ public class GameMode : NetworkBehaviour
         if(startGameOnCommand && !gameHasStarted && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))){
             StartCountDown();
         }
-        timeOutTime -= Time.deltaTime;
+        timeOutCounter -= Time.deltaTime;
 
-        if(!gameHasStarted && timeOutTime < 0) {
+        if(!gameHasStarted && timeOutCounter < 0) {
             StartCountDown();
         }
     }
