@@ -33,12 +33,13 @@ public class HitPointer : MonoBehaviour
 
     void UpdateAngle()
     {
-        hitPointer.transform.eulerAngles = new Vector3(0, 0, cameraTransform.eulerAngles.y + hitAngle + hitAngle);//Corrigir depois
+        hitPointer.transform.eulerAngles = new Vector3(0, 0, cameraTransform.eulerAngles.y + hitAngle + 90);
     }
 
     void Start()
     {
         pointerImage = hitPointer.GetComponent<Image>();
+        hitPointer.transform.eulerAngles = new Vector3(0, 0, cameraTransform.eulerAngles.y + hitAngle + 90);
     }
 
     void Update()

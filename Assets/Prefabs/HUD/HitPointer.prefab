@@ -27,7 +27,7 @@ RectTransform:
   m_GameObject: {fileID: 4156379243651407726}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.0695746, y: 2.0695746, z: 2.0695746}
   m_Children: []
   m_Father: {fileID: 2639443369582976978}
   m_RootOrder: 0
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitPointer: {fileID: 4156379243651407726}
-  fadeSpeed: 0.1
+  fadeSpeed: 0.35
   pointerImage: {fileID: 0}
   hitAngle: 0
   cameraTransform: {fileID: 0}

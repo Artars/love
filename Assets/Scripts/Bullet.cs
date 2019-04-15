@@ -53,13 +53,13 @@ public class Bullet : NetworkBehaviour
 
         rgbd.velocity = velocity;
         velocityFired = velocity;
-        angleFired = Mathf.Atan2(velocity.z,velocity.x);
+        angleFired = Mathf.Atan2(velocity.z,velocity.x) * Mathf.Rad2Deg;
     }
 
     public void fireWithVelocity(Vector3 velocity){
         rgbd.velocity = velocity;
         velocityFired = velocity;
-        angleFired = Mathf.Atan2(velocity.z,velocity.x);
+        angleFired = Mathf.Atan2(velocity.z,velocity.x) * Mathf.Rad2Deg;
     }
 
     protected void OnCollisionEnter(Collision col) {
