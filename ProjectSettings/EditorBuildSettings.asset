@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LobbyScene.unity
     guid: 9ee336ec1ddb41e47ac548cb3cb282a6
+  - enabled: 1
+    path: Assets/Scenes/Burgsgrad.unity
+    guid: 59ac7b19f85cf9f46baf4ccced4895e7
   m_configObjects: {}

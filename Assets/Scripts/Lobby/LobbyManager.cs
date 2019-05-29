@@ -235,7 +235,7 @@ public class LobbyManager : NetworkBehaviour
         MatchSettings.instance.infoTanks = infoTanks;
         MatchSettings.instance.playersInfo = playersInfo;
         MatchSettings.instance.connectedPlayers = playersConnected.Count;
-        NetworkManager.singleton.ServerChangeScene("Scenes/MapTest");
+        NetworkManager.singleton.ServerChangeScene("Scenes/Burgsgrad");
     }
 
     public bool isGameReady() {
