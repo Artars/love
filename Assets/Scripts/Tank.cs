@@ -217,7 +217,7 @@ public class Tank : NetworkBehaviour
         currentInclinationAngle = 0;
         nivelTransform.localRotation = Quaternion.Euler(0,currentInclinationAngle,0);
 
-        RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
+        // RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
 
     public void AssignPlayer(Player player, Player.Role role) 
@@ -304,8 +304,8 @@ public class Tank : NetworkBehaviour
         if(isServer) {
             checkGround();
             moveTank(Time.fixedDeltaTime);
+            updateCannonRotation(Time.fixedDeltaTime);
         }
-        updateCannonRotation(Time.fixedDeltaTime);
     }
 
 
@@ -349,7 +349,7 @@ public class Tank : NetworkBehaviour
 
         NetworkServer.Spawn(bullet);
 
-        RpcForceCannonRotationSync(cannonTransform.rotation, nivelTransform.rotation);
+        // RpcForceCannonRotationSync(cannonTransform.rotation, nivelTransform.rotation);
     }
 
     public virtual void updateCannonRotation(float deltaTime){

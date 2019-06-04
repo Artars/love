@@ -19,7 +19,7 @@ public class MatchSettings : MonoBehaviour
 
     public int numtanks = 2;
     public int numTeams = 2;
-    public int connectedPlayers = 0;
+    public int connectedPlayers = 16;
 
     public List<LobbyManager.InfoTank> infoTanks;
     public DictionaryIntPlayerInfo playersInfo;
