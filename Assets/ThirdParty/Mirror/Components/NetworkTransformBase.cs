@@ -307,8 +307,10 @@ namespace Mirror
         bool HasMovedOrRotated()
         {
             // moved or rotated?
-            bool moved = lastPosition != targetComponent.transform.position;
-            bool rotated = lastRotation != targetComponent.transform.rotation;
+            bool moved = (!useLocalCoordinates) ? lastPosition != targetComponent.transform.position :
+            lastPosition != targetComponent.transform.localPosition;
+            bool rotated = (!useLocalCoordinates) ? lastRotation != targetComponent.transform.rotation :
+            lastRotation != targetComponent.transform.localRotation;
 
             // save last for next frame to compare
             // (only if change was detected. otherwise slow moving objects might
@@ -317,8 +319,16 @@ namespace Mirror
             bool change = moved || rotated;
             if (change)
             {
-                lastPosition = targetComponent.transform.position;
-                lastRotation = targetComponent.transform.rotation;
+                if(!useLocalCoordinates)
+                {
+                    lastPosition = targetComponent.transform.position;
+                    lastRotation = targetComponent.transform.rotation;
+                }
+                else
+                {
+                    lastPosition = targetComponent.transform.localPosition;
+                    lastRotation = targetComponent.transform.localRotation;
+                }
             }
             return change;
         }
@@ -398,8 +408,16 @@ namespace Mirror
                         }
                         else
                         {
-                            ApplyPositionAndRotation(InterpolatePosition(start, goal, targetComponent.transform.position),
-                                                     InterpolateRotation(start, goal, targetComponent.transform.rotation));
+                            if(useLocalCoordinates)
+                            {
+                                ApplyPositionAndRotation(InterpolatePosition(start, goal, targetComponent.transform.localPosition),
+                                                        InterpolateRotation(start, goal, targetComponent.transform.localRotation));
+                            }
+                            else
+                            {
+                                ApplyPositionAndRotation(InterpolatePosition(start, goal, targetComponent.transform.position),
+                                                        InterpolateRotation(start, goal, targetComponent.transform.rotation));
+                            }
                         }
                     }
                 }
