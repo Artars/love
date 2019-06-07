@@ -13,7 +13,7 @@ public class GameMode : NetworkBehaviour
     public float timeOutTime = 5;
     protected float timeOutCounter = 10;
     [SyncVar]
-    public int numberOfPlayersToStartGame = 2;
+    public int numberOfPlayersToStartGame = 16;
     [SyncVar]
     public float timeToStartGame = 5;
     [SyncVar]
@@ -53,7 +53,7 @@ public class GameMode : NetworkBehaviour
 
 
     protected float currentCountdown;
-    protected int connectedNumberOfClients = 1;
+    protected int connectedNumberOfClients = 0;
 
     public static GameMode instance = null;
 
@@ -96,11 +96,15 @@ public class GameMode : NetworkBehaviour
     void Update() {
         if(!isServer) return;
         if(startGameOnCommand && !gameHasStarted && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))){
+            Debug.Log("Started game due command of server");
+            
             StartCountDown();
         }
         timeOutCounter -= Time.deltaTime;
 
         if(!gameHasStarted && timeOutCounter < 0) {
+            Debug.Log("Started game due timer");
+
             StartCountDown();
         }
     }
@@ -196,6 +200,7 @@ public class GameMode : NetworkBehaviour
 
             connectedNumberOfClients++;
             if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
+                Debug.Log("Started game due number of players: " + connectedNumberOfClients + " / " + numberOfPlayersToStartGame);
                 StartCountDown();
             }
 

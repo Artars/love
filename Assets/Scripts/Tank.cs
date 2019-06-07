@@ -54,6 +54,8 @@ public class Tank : NetworkBehaviour
     [SyncVar]
     protected float inclinationAxis;
     protected float currentInclinationAngle = 0;
+    protected float currentRotationAngle = 0;
+
 
     [Header("Shooting")]
     public float shootCooldown = 1;
@@ -211,13 +213,14 @@ public class Tank : NetworkBehaviour
         transform.position = position;
         transform.rotation = Quaternion.identity;
         rgbd.velocity = Vector3.zero;
-        rotationPivot.rotation = Quaternion.identity;
+        currentRotationAngle = 0;
+        rotationPivot.localRotation = Quaternion.identity;
 
-        cannonTransform.rotation = Quaternion.identity;
+        cannonTransform.localRotation = Quaternion.identity;
         currentInclinationAngle = 0;
         nivelTransform.localRotation = Quaternion.Euler(0,currentInclinationAngle,0);
 
-        RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
+        // RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
 
     public void AssignPlayer(Player player, Player.Role role) 
@@ -304,8 +307,8 @@ public class Tank : NetworkBehaviour
         if(isServer) {
             checkGround();
             moveTank(Time.fixedDeltaTime);
+            updateCannonRotation(Time.fixedDeltaTime);
         }
-        updateCannonRotation(Time.fixedDeltaTime);
     }
 
 
@@ -349,7 +352,7 @@ public class Tank : NetworkBehaviour
 
         NetworkServer.Spawn(bullet);
 
-        RpcForceCannonRotationSync(cannonTransform.rotation, nivelTransform.rotation);
+        // RpcForceCannonRotationSync(cannonTransform.rotation, nivelTransform.rotation);
     }
 
     public virtual void updateCannonRotation(float deltaTime){
@@ -361,12 +364,17 @@ public class Tank : NetworkBehaviour
         if( Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon){
             float dif = realLeftAxis - realRightAxis;
             dif *= turnSpeed * deltaTime * 0.5f;
-            cannonTransform.RotateAround(transform.position,transform.up.normalized, -dif);
+            currentRotationAngle -= dif;
+            cannonTransform.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+            // cannonTransform.RotateAround(transform.position,transform.up.normalized, -dif);
         }
 
         //Should rotate
         if(rotationAxis != 0){
-            cannonTransform.RotateAround(transform.position, transform.up, rotationAxis * turnCannonSpeed * deltaTime);
+            currentRotationAngle += rotationAxis * turnCannonSpeed * deltaTime;
+            cannonTransform.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+
+            // cannonTransform.RotateAround(transform.position, transform.up, rotationAxis * turnCannonSpeed * deltaTime);
         }
 
         if(inclinationAxis != 0) {

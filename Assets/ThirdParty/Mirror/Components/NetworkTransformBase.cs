@@ -32,6 +32,8 @@ namespace Mirror
         [SerializeField] Compression compressRotation = Compression.Much;
         public enum Compression { None, Much, Lots , NoRotation }; // easily understandable and funny
 
+        public bool useLocalCoordinates; // Default behavior of UNET NetworkTransformChild = true. AR devs need local positions on everything, so expose bool in inspector for all NetworkTransforms
+
         // server
         Vector3 lastPosition;
         Quaternion lastRotation;
@@ -89,7 +91,13 @@ namespace Mirror
 
         public override bool OnSerialize(NetworkWriter writer, bool initialState)
         {
-            SerializeIntoWriter(writer, targetComponent.transform.position, targetComponent.transform.rotation, compressRotation);
+            if(useLocalCoordinates){
+                SerializeIntoWriter(writer, targetComponent.transform.localPosition, targetComponent.transform.localRotation, compressRotation);
+            }
+            else
+            {
+                SerializeIntoWriter(writer, targetComponent.transform.position, targetComponent.transform.rotation, compressRotation);
+            }
             return true;
         }
 
@@ -152,8 +160,8 @@ namespace Mirror
             {
                 start = new DataPoint{
                     timeStamp = Time.time - syncInterval,
-                    position = targetComponent.transform.position,
-                    rotation = targetComponent.transform.rotation,
+                    position = useLocalCoordinates ? targetComponent.transform.localPosition : targetComponent.transform.position,
+                    rotation = useLocalCoordinates ? targetComponent.transform.localRotation : targetComponent.transform.rotation,
                     movementSpeed = temp.movementSpeed
                 };
             }
@@ -197,9 +205,16 @@ namespace Mirror
                 // position if we aren't too far away
                 if (Vector3.Distance(targetComponent.transform.position, start.position) < oldDistance + newDistance)
                 {
-                    start.position = targetComponent.transform.position;
-                    start.rotation = targetComponent.transform.rotation;
-                }
+                    if(useLocalCoordinates){
+                        start.position = targetComponent.transform.localPosition;
+                        start.rotation = targetComponent.transform.localRotation;
+                    }
+                    else
+                    {
+                        start.position = targetComponent.transform.position;
+                        start.rotation = targetComponent.transform.rotation;
+                    }
+               }
             }
 
             // set new destination in any case. new data is best data.
@@ -292,8 +307,10 @@ namespace Mirror
         bool HasMovedOrRotated()
         {
             // moved or rotated?
-            bool moved = lastPosition != targetComponent.transform.position;
-            bool rotated = lastRotation != targetComponent.transform.rotation;
+            bool moved = (!useLocalCoordinates) ? lastPosition != targetComponent.transform.position :
+            lastPosition != targetComponent.transform.localPosition;
+            bool rotated = (!useLocalCoordinates) ? lastRotation != targetComponent.transform.rotation :
+            lastRotation != targetComponent.transform.localRotation;
 
             // save last for next frame to compare
             // (only if change was detected. otherwise slow moving objects might
@@ -302,8 +319,16 @@ namespace Mirror
             bool change = moved || rotated;
             if (change)
             {
-                lastPosition = targetComponent.transform.position;
-                lastRotation = targetComponent.transform.rotation;
+                if(!useLocalCoordinates)
+                {
+                    lastPosition = targetComponent.transform.position;
+                    lastRotation = targetComponent.transform.rotation;
+                }
+                else
+                {
+                    lastPosition = targetComponent.transform.localPosition;
+                    lastRotation = targetComponent.transform.localRotation;
+                }
             }
             return change;
         }
@@ -311,10 +336,21 @@ namespace Mirror
         // set position carefully depending on the target component
         void ApplyPositionAndRotation(Vector3 position, Quaternion rotation)
         {
-            targetComponent.transform.position = position;
-            if (Compression.NoRotation != compressRotation)
+            if (useLocalCoordinates)
             {
-                targetComponent.transform.rotation = rotation;
+                targetComponent.transform.localPosition = position;
+                if (Compression.NoRotation != compressRotation)
+                {
+                    targetComponent.transform.localRotation = rotation;
+                }
+            }
+            else
+            {
+                targetComponent.transform.position = position;
+                if (Compression.NoRotation != compressRotation)
+                {
+                    targetComponent.transform.rotation = rotation;
+                }
             }
         }
 
@@ -342,8 +378,14 @@ namespace Mirror
                         {
                             // serialize
                             NetworkWriter writer = new NetworkWriter();
-                            SerializeIntoWriter(writer, targetComponent.transform.position, targetComponent.transform.rotation, compressRotation);
-
+                            if(useLocalCoordinates)
+                            {
+                                SerializeIntoWriter(writer, targetComponent.transform.localPosition, targetComponent.transform.localRotation, compressRotation);
+                            }
+                            else
+                            {
+                                SerializeIntoWriter(writer, targetComponent.transform.position, targetComponent.transform.rotation, compressRotation);
+                            }
                             // send to server
                             CmdClientToServerSync(writer.ToArray());
                         }
@@ -366,8 +408,16 @@ namespace Mirror
                         }
                         else
                         {
-                            ApplyPositionAndRotation(InterpolatePosition(start, goal, targetComponent.transform.position),
-                                                     InterpolateRotation(start, goal, targetComponent.transform.rotation));
+                            if(useLocalCoordinates)
+                            {
+                                ApplyPositionAndRotation(InterpolatePosition(start, goal, targetComponent.transform.localPosition),
+                                                        InterpolateRotation(start, goal, targetComponent.transform.localRotation));
+                            }
+                            else
+                            {
+                                ApplyPositionAndRotation(InterpolatePosition(start, goal, targetComponent.transform.position),
+                                                        InterpolateRotation(start, goal, targetComponent.transform.rotation));
+                            }
                         }
                     }
                 }
