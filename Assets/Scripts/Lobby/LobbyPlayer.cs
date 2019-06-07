@@ -6,7 +6,7 @@ using Mirror;
 public class LobbyPlayer : NetworkBehaviour
 {
     [SyncVar]
-    public string playerName = "Douce";
+    public string playerName = "Deuce";
     [SyncVar]
     public int connectionID = -1;
     [SyncVar]

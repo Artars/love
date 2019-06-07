@@ -178,6 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   compressRotation: 1
+  useLocalCoordinates: 0
 --- !u!65 &7840505459286740528
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -189,8 +190,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.24534535, y: 0.23052168, z: 0.84875536}
-  m_Center: {x: 0, y: 0, z: 0.077353895}
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &7716936044706581032
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -202,5 +203,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.42829195, y: 0.4019401, z: 0.9648979}
-  m_Center: {x: 0, y: 0, z: 0.08020103}
+  m_Size: {x: 0.2, y: 0.2, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

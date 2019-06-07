@@ -20,13 +20,13 @@ public class Tank : NetworkBehaviour
             }
         }
 
-        public Assigment (Player.Role role)
+        public Assigment(Player.Role role)
         {
             this.role = role;
             playerRef = null;
         }
 
-        public Assigment (Player.Role role, Player player) : this(role)
+        public Assigment(Player.Role role, Player player) : this(role)
         {
             playerRef = player;
         }
@@ -82,7 +82,7 @@ public class Tank : NetworkBehaviour
     public float forwardSpeed = 10;
     public float backwardSpeed = 5;
     public float turnSpeed = 10;
-    public float distanceCheckGround = 0.5f;
+    public float distanceCheckGround = 0.1f;
 
 
 
@@ -96,10 +96,10 @@ public class Tank : NetworkBehaviour
     //Movement variables
     // protected float leftAxis;
     // protected float rightAxis;
-    [Range(-1,1)]
+    [Range(-1, 1)]
     [SyncVar]
     public float leftAxis;
-    [Range(-1,1)]
+    [Range(-1, 1)]
     [SyncVar]
     public float rightAxis;
     [SerializeField]
@@ -108,7 +108,7 @@ public class Tank : NetworkBehaviour
     [SerializeField]
     [SyncVar]
     protected bool leftThreadOnGround = true;
-    
+
 
     //Components references
     protected Rigidbody rgbd;
@@ -121,7 +121,7 @@ public class Tank : NetworkBehaviour
 
 
     [ClientRpc]
-    public void RpcUpdateTankReferenceRPC(int team){
+    public void RpcUpdateTankReferenceRPC(int team) {
         GameMode.instance.setTankReference(this, team);
     }
 
@@ -133,14 +133,14 @@ public class Tank : NetworkBehaviour
 
     [ClientRpc]
     public void RpcOnChangeHealth(float health) {
-        if(healthSlider != null) {
+        if (healthSlider != null) {
             healthSlider.value = health;
         }
     }
 
     [ClientRpc]
-    public void RpcForceCannonRotationSync(Quaternion cannon, Quaternion nivel){
-        if(isServer) return;
+    public void RpcForceCannonRotationSync(Quaternion cannon, Quaternion nivel) {
+        if (isServer) return;
         cannonTransform.rotation = cannon;
         nivelTransform.rotation = nivel;
     }
@@ -149,14 +149,14 @@ public class Tank : NetworkBehaviour
 
     #region Initialization
 
-    void Awake(){
+    void Awake() {
         LoadTankParameters();
         rgbd = GetComponent<Rigidbody>();
         myTransform = transform;
-        if(team != -1) {
-            GameMode.instance.setTankReference(this,team);
+        if (team != -1) {
+            GameMode.instance.setTankReference(this, team);
         }
-        if(isServer) {
+        if (isServer) {
             currentHealth = maxHeath;
         }
 
@@ -168,7 +168,7 @@ public class Tank : NetworkBehaviour
 
     protected void LoadTankParameters()
     {
-        if(tankParameters == null) return;
+        if (tankParameters == null) return;
         this.forwardSpeed = tankParameters.forwardSpeed;
         this.backwardSpeed = tankParameters.backwardSpeed;
         this.turnSpeed = tankParameters.turnSpeed;
@@ -182,16 +182,16 @@ public class Tank : NetworkBehaviour
         this.maxHeath = tankParameters.maxHeath;
     }
 
-    void Start(){
+    void Start() {
         ApplyColor();
-        if(!isServer){
+        if (!isServer) {
             GetComponent<Rigidbody>().isKinematic = true;
         }
     }
 
-    public void ApplyColor(){
+    public void ApplyColor() {
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        foreach(Renderer r in renderers) {
+        foreach (Renderer r in renderers) {
             r.material.color = color;
         }
     }
@@ -218,30 +218,30 @@ public class Tank : NetworkBehaviour
 
         cannonTransform.localRotation = Quaternion.identity;
         currentInclinationAngle = 0;
-        nivelTransform.localRotation = Quaternion.Euler(0,currentInclinationAngle,0);
+        nivelTransform.localRotation = Quaternion.Euler(0, currentInclinationAngle, 0);
 
         // RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
 
-    public void AssignPlayer(Player player, Player.Role role) 
+    public void AssignPlayer(Player player, Player.Role role)
     {
         players.Add(player);
 
         bool hasOnlyOnePlayer = players.Count == 1;
-        if(hasOnlyOnePlayer)
+        if (hasOnlyOnePlayer)
         {
             player.canSwitchRoles = true;
         }
         else
         {
-            foreach(var p in players)
+            foreach (var p in players)
             {
                 p.canSwitchRoles = false;
             }
         }
 
-        for(int  i = 0; i < playerRoles.Count; i ++) {
-            if(playerRoles[i].role == role) {
+        for (int i = 0; i < playerRoles.Count; i++) {
+            if (playerRoles[i].role == role) {
                 playerRoles[i].playerRef = player;
                 break;
             }
@@ -253,17 +253,17 @@ public class Tank : NetworkBehaviour
         players.Remove(player);
 
         bool hasOnlyOnePlayer = players.Count == 1;
-        if(hasOnlyOnePlayer)
+        if (hasOnlyOnePlayer)
         {
-            foreach(var p in players)
+            foreach (var p in players)
             {
                 p.canSwitchRoles = true;
                 p.RpcDisplayMessage("You can change roles", 2, 0.1f, 0.5f);
             }
         }
 
-        for(int  i = 0; i < playerRoles.Count; i ++) {
-            if(playerRoles[i].role == role) {
+        for (int i = 0; i < playerRoles.Count; i++) {
+            if (playerRoles[i].role == role) {
                 playerRoles[i].playerRef = null;
                 break;
             }
@@ -272,16 +272,16 @@ public class Tank : NetworkBehaviour
 
     public void SwitchPlayerRole(Player player, Player.Role currentRole)
     {
-        if(!player.canSwitchRoles) return; //Avoid changin if the player is not available
+        if (!player.canSwitchRoles) return; //Avoid changin if the player is not available
         Player.Role roleToSwitch = (currentRole == Player.Role.Pilot) ? Player.Role.Gunner : Player.Role.Pilot;
 
-        for(int  i = 0; i < playerRoles.Count; i ++) {
+        for (int i = 0; i < playerRoles.Count; i++) {
             //Remove current player role reference
-            if(playerRoles[i].role == currentRole) {
+            if (playerRoles[i].role == currentRole) {
                 playerRoles[i].playerRef = null;
             }
             //Set new reference and switch player
-            else if(playerRoles[i].role == roleToSwitch)
+            else if (playerRoles[i].role == roleToSwitch)
             {
                 playerRoles[i].playerRef = player;
                 player.role = roleToSwitch;
@@ -296,15 +296,15 @@ public class Tank : NetworkBehaviour
 
     #region Update
 
-    void Update(){
-        if(!isServer) return;
+    void Update() {
+        if (!isServer) return;
 
         cannonShootCounter -= Time.deltaTime;
     }
 
 
-    void FixedUpdate(){
-        if(isServer) {
+    void FixedUpdate() {
+        if (isServer) {
             checkGround();
             moveTank(Time.fixedDeltaTime);
             updateCannonRotation(Time.fixedDeltaTime);
@@ -313,19 +313,19 @@ public class Tank : NetworkBehaviour
 
 
     public void setAxis(float left, float right) {
-        float newLeft = Mathf.Clamp(left,-1,1);
-        float newRight = Mathf.Clamp(right,-1,1);
-        if(leftAxis != newLeft) leftAxis = newLeft;
-        if(rightAxis != newRight) rightAxis = newRight;
+        float newLeft = Mathf.Clamp(left, -1, 1);
+        float newRight = Mathf.Clamp(right, -1, 1);
+        if (leftAxis != newLeft) leftAxis = newLeft;
+        if (rightAxis != newRight) rightAxis = newRight;
     }
 
     public void setCannonAxis(float rotation, float nivel) {
-        if(rotationAxis != rotation) rotationAxis = rotation;
-        if(inclinationAxis != nivel) inclinationAxis = nivel;
+        if (rotationAxis != rotation) rotationAxis = rotation;
+        if (inclinationAxis != nivel) inclinationAxis = nivel;
     }
 
     public void cannonShoot() {
-        if(cannonShootCounter < 0){
+        if (cannonShootCounter < 0) {
             ShootCannon(team);
             cannonShootCounter = shootCooldown;
         }
@@ -342,7 +342,7 @@ public class Tank : NetworkBehaviour
         bullet.transform.position = positionToUse;
         bullet.transform.rotation = rotationToUse;
 
-        
+
         Bullet bulletScript = bullet.GetComponent<Bullet>();
         bulletScript.team = team;
         bulletScript.damage = bulletDamage;
@@ -355,13 +355,13 @@ public class Tank : NetworkBehaviour
         // RpcForceCannonRotationSync(cannonTransform.rotation, nivelTransform.rotation);
     }
 
-    public virtual void updateCannonRotation(float deltaTime){
+    public virtual void updateCannonRotation(float deltaTime) {
         //Check rotation from tower
         float realRightAxis = rightThreadOnGround ? rightAxis : 0;
         float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
 
         //Rotation
-        if( Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon){
+        if (Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon) {
             float dif = realLeftAxis - realRightAxis;
             dif *= turnSpeed * deltaTime * 0.5f;
             currentRotationAngle -= dif;
@@ -370,26 +370,26 @@ public class Tank : NetworkBehaviour
         }
 
         //Should rotate
-        if(rotationAxis != 0){
+        if (rotationAxis != 0) {
             currentRotationAngle += rotationAxis * turnCannonSpeed * deltaTime;
             cannonTransform.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
             // cannonTransform.RotateAround(transform.position, transform.up, rotationAxis * turnCannonSpeed * deltaTime);
         }
 
-        if(inclinationAxis != 0) {
+        if (inclinationAxis != 0) {
             currentInclinationAngle += inclinationAxis * nivelCannonSpeed * deltaTime;
             currentInclinationAngle = Mathf.Clamp(currentInclinationAngle, minCannonNivel, maxCannonNivel);
-            if(nivelTransform != null) {
-                nivelTransform.localRotation = Quaternion.Euler(0,currentInclinationAngle,0);
+            if (nivelTransform != null) {
+                nivelTransform.localRotation = Quaternion.Euler(-currentInclinationAngle, 0, 0); //For some reason, positive means downward
             }
         }
-    } 
-
-    
+    }
 
 
-    protected void checkGround(){
+
+
+    protected void checkGround() {
 
         bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, distanceCheckGround);
         bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, distanceCheckGround);
