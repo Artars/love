@@ -82,7 +82,7 @@ public class Tank : NetworkBehaviour
     public float forwardSpeed = 10;
     public float backwardSpeed = 5;
     public float turnSpeed = 10;
-    public float distanceCheckGround = 0.1f;
+    public float distanceCheckGround = 0.01f;
 
 
 
