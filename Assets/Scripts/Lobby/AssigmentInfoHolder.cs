@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class AssigmentInfoHolder : MonoBehaviour
 {
 
-    public LobbyManager.InfoTank infoTank;
+    public LobbyManager.RoleAssigment assigmInfo;
 
     [Header("References")]
     public Button button;
@@ -21,6 +21,7 @@ public class AssigmentInfoHolder : MonoBehaviour
 
     public void SetAssigmentInfo(LobbyManager.RoleAssigment info, DictionaryIntPlayerInfo playerDict, int playerConnectionId)
     {
+        assigmInfo = info;
         int roleInInt = (int) info.role;
         roleImage.sprite = rolesSprites[roleInInt];
 

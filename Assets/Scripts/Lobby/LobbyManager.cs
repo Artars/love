@@ -31,6 +31,7 @@ public class LobbyManager : NetworkBehaviour
             for (int i = 0; i < tankOption.tankRoles.Length; i++)
             {
                 assigments[i].role = tankOption.tankRoles[i];
+                assigments[i].playerAssigned = -1;
             }
         }
 
@@ -40,6 +41,7 @@ public class LobbyManager : NetworkBehaviour
     public struct RoleAssigment {
         public Role role;
         public int playerAssigned;
+
     }
     
 

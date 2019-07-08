@@ -360,6 +360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  tankCollection: {fileID: 11400000, guid: 8ee9146f28a416b47955744ad9642fd9, type: 2}
   numTanks: 2
   numTeams: 2
   infoTanks: []
@@ -368,6 +369,7 @@ MonoBehaviour:
     m_values: []
   playersConnected: []
   ip: 
+  isGameStarting: 0
 --- !u!114 &1374557319
 MonoBehaviour:
   m_ObjectHideFlags: 0

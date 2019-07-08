@@ -39,6 +39,7 @@ public class LobbyPlayer : NetworkBehaviour
     public List<AssigmentInfoHolder> assigmentInfoHolder;
 
     [Header("Other References")]
+    public TMPro.TextMeshProUGUI assigmentTankText;
     public TMPro.TextMeshProUGUI textIP; 
     public UnityEngine.UI.Button buttonReady;
 
@@ -210,13 +211,14 @@ public class LobbyPlayer : NetworkBehaviour
             LobbyManager.InfoTank infoTank = tanksInfo[currentlySelectedTank];
 
             while(assigmentInfoHolder.Count <= infoTank.assigments.Length){
+                int index = assigmentInfoHolder.Count;
                 GameObject infoHolder = GameObject.Instantiate(assigmentContainerPrefab, assigmentInfoParent);
                 infoHolder.SetActive(true);
 
                 AssigmentInfoHolder holder = infoHolder.GetComponent<AssigmentInfoHolder>();
                 assigmentInfoHolder.Add(holder);
 
-                holder.button.onClick.AddListener(() => ClickOnTankButton(assigmentInfoHolder.Count-1));
+                holder.button.onClick.AddListener(() => ClickOnRoleSelection(index));
             }
 
             for (int i = 0; i < assigmentInfoHolder.Count; i++)
@@ -244,13 +246,14 @@ public class LobbyPlayer : NetworkBehaviour
         roleAssigmentCanvas.SetActive(true);
 
         currentlySelectedTank = index;
+        assigmentTankText.text = "Tank " + index;
         UpdateRoleSelectionButtons();
     }
 
     public void ClickCloseAssigmentWindow()
     {
         assigmentWindowOpen = false;
-        roleAssigmentCanvas.SetActive(true);
+        roleAssigmentCanvas.SetActive(false);
 
         currentlySelectedTank = -1;
 
@@ -290,6 +293,11 @@ public class LobbyPlayer : NetworkBehaviour
         else {
             UpdateRoleSelectionButtons();
         }
+    }
+
+    public void ClickExitButton()
+    {
+        NetworkManager.Shutdown();
     }
 
     
