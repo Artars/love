@@ -10,15 +10,30 @@ public class LobbyManager : NetworkBehaviour
 
     [Serializable]
     public struct InfoTank {
+        public int prefabID;
         public int id;
         public int team;
         public RoleAssigment[] assigments;
 
-        public InfoTank(int id, int team, int numPlaces) {
+        public InfoTank(int id, int team, int numPlaces, int prefabID) {
             this.id = id;
             this.team = team;
             assigments = new RoleAssigment[numPlaces];
+            this.prefabID = prefabID;
         }
+
+        public InfoTank(int id, int team, TankOption tankOption) {
+            this.id = id;
+            this.team = team;
+            assigments = new RoleAssigment[tankOption.tankRoles.Length];
+            this.prefabID = tankOption.prefabID;
+
+            for (int i = 0; i < tankOption.tankRoles.Length; i++)
+            {
+                assigments[i].role = tankOption.tankRoles[i];
+            }
+        }
+
     }
 
     [Serializable]
@@ -26,9 +41,7 @@ public class LobbyManager : NetworkBehaviour
         public Role role;
         public int playerAssigned;
     }
-    public enum Role {
-        None,Pilot,Gunner
-    }
+    
 
     [Serializable]
     public struct PlayerInfo {
@@ -56,6 +69,7 @@ public class LobbyManager : NetworkBehaviour
 
     public static LobbyManager instance = null;
 
+    public TankOptionCollection tankCollection;
     public int numTanks = 2;
     public int numTeams = 2;
     public List<InfoTank> infoTanks;
@@ -90,14 +104,7 @@ public class LobbyManager : NetworkBehaviour
         else {
             infoTanks = new  List<InfoTank>();
             for(int i = 0; i < numTanks; i++){
-                InfoTank tank = new InfoTank(i,(i+1)/numTeams,2);
-
-                //For assigning diferent places
-                tank.assigments[0].role = Role.Pilot;
-                tank.assigments[0].playerAssigned = -1;
-
-                tank.assigments[1].role = Role.Gunner;
-                tank.assigments[1].playerAssigned = -1;
+                InfoTank tank = new InfoTank(i,(i+1)/numTeams, tankCollection.tankOptions[i % tankCollection.tankOptions.Length]);
 
                 infoTanks.Add(tank);
             }
@@ -156,6 +163,57 @@ public class LobbyManager : NetworkBehaviour
 
         foreach(var player in playersConnected){
             player.RpcUpdatePlayerInfo(id,playerInfo);
+        }
+    }
+
+    public void RemoveTankInfo(int tankID)
+    {
+        if(infoTanks.Count < tankID)
+        {
+            infoTanks.RemoveAt(tankID);
+            
+            foreach(var player in playersConnected){
+                player.RpcRemoveTankInfo(infoTanks.Count);
+            }
+
+            for(int i = tankID; i < infoTanks.Count; i++)
+            {
+                InfoTank toChange = infoTanks[i];
+                toChange.id = i-1;
+
+
+                foreach(RoleAssigment r in toChange.assigments)
+                {
+                    if(r.playerAssigned != -1)
+                    {
+                        if(playersInfo.ContainsKey(r.playerAssigned))
+                        {
+                            PlayerInfo playerInfo = playersInfo[r.playerAssigned];
+                            playerInfo.tankID = i;
+                            UpdatePlayerInfo(playerInfo.connectionID, playerInfo);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void RemovePlayer(LobbyPlayer removedPlayer)
+    {
+        //Deselect if selefted before
+        PlayerDeselect(removedPlayer);
+
+        //Remove from lists
+        playersConnected.Remove(removedPlayer);
+        playersInfo.Remove(removedPlayer.connectionID);
+
+        //Call everyone to remove that player from the list
+        foreach (var player in playersConnected)
+        {
+            if(player != removedPlayer)
+            {
+                player.RpcRemovePlayerInfo(removedPlayer.connectionID);
+            }
         }
     }
     

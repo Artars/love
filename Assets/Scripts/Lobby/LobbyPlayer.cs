@@ -5,6 +5,7 @@ using Mirror;
 
 public class LobbyPlayer : NetworkBehaviour
 {
+    [Header("Game Info")]
     [SyncVar]
     public string playerName = "Douce";
     [SyncVar]
@@ -14,31 +15,41 @@ public class LobbyPlayer : NetworkBehaviour
     public List<LobbyManager.InfoTank> tanksInfo;
     public DictionaryIntPlayerInfo playersInfo;
 
+    [Space]
     [Header("CanvasReferences")]
-    public GameObject canvas;
+    public GameObject rootCanvas;
+    public GameObject mainCanvas;
+    public GameObject roleAssigmentCanvas;
+    
+
+    [Header("Prefabs")]
     public GameObject playerInfoContainerPrefab;
     public GameObject tankInfoContainerPrefab;
+    public GameObject assigmentContainerPrefab;
+
+    [Header("Containers")]
     public Transform playerInfoParent;
-    public Transform tankInfoParent;
+    public Transform tankInfoParentTeam1;
+    public Transform tankInfoParentTeam2;
+    public Transform assigmentInfoParent;
 
-    public GameObject selectRoleContainer;
-    public TMPro.TextMeshProUGUI textTankSelectRole;
-    public UnityEngine.UI.Button[] buttonRoleSelection;
-
-    public UnityEngine.UI.Button buttonReady;
-
+    [Header("Holders reference")]
     public List<TankInfoHolder> tankInfoHolders;
     public Dictionary<int,PlayerInfoHolder> playerInfoHolders;
+    public List<AssigmentInfoHolder> assigmentInfoHolder;
 
-    public TMPro.TextMeshProUGUI textIP;
+    [Header("Other References")]
+    public TMPro.TextMeshProUGUI textIP; 
+    public UnityEngine.UI.Button buttonReady;
 
 
     protected int currentlySelectedTank = -1;
+    protected bool assigmentWindowOpen = false;
 
     public override void OnNetworkDestroy () {
         if(isServer){
             if(LobbyManager.instance != null) {
-                LobbyManager.instance.PlayerDeselect(this);
+                LobbyManager.instance.RemovePlayer(this);
             }
         }
     }
@@ -47,11 +58,13 @@ public class LobbyPlayer : NetworkBehaviour
     void Start()
     {
         if(isLocalPlayer){
-            canvas.SetActive(true);
+            rootCanvas.SetActive(true);
             playersInfo = new DictionaryIntPlayerInfo();
             tanksInfo = new List<LobbyManager.InfoTank>();
             playerInfoHolders = new Dictionary<int,PlayerInfoHolder>();
-            selectRoleContainer.SetActive(false);
+            assigmentInfoHolder = new List<AssigmentInfoHolder>();
+
+            roleAssigmentCanvas.SetActive(false);
             
 
             if(PlayerPrefs.HasKey("Name"))
@@ -59,7 +72,7 @@ public class LobbyPlayer : NetworkBehaviour
             CmdJoinLobby(playerName);
         }
         else{
-            canvas.SetActive(false);
+            rootCanvas.SetActive(false);
         }
     }
 
@@ -70,7 +83,7 @@ public class LobbyPlayer : NetworkBehaviour
         }
         else {
             RpcDeactivateThis();
-            canvas.SetActive(false);
+            rootCanvas.SetActive(false);
         }
     }
 
@@ -81,7 +94,7 @@ public class LobbyPlayer : NetworkBehaviour
 
     [ClientRpc]
     public void RpcDeactivateThis(){
-        canvas.SetActive(false);
+        rootCanvas.SetActive(false);
     }
 
     [ClientRpc]
@@ -94,6 +107,18 @@ public class LobbyPlayer : NetworkBehaviour
                 tanksInfo.Add(infoTank);
             }
             UpdateTankInfo(index);
+        }
+    }
+
+    [ClientRpc]
+    public void RpcRemoveTankInfo(int newCount)
+    {
+        if(isLocalPlayer)
+        {
+            while(tanksInfo.Count > newCount)
+            {
+                tanksInfo.RemoveAt(tanksInfo.Count-1);
+            }
         }
     }
 
@@ -111,6 +136,13 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     [ClientRpc]
+    public void RpcRemovePlayerInfo(int removedPlayerID)
+    {
+        Destroy(playerInfoHolders[removedPlayerID].gameObject);
+        playerInfoHolders.Remove(removedPlayerID);
+    }
+
+    [ClientRpc]
     public void RpcReceiveIP(string ip) {
         textIP.text = "Lobby: " + ip;
     }
@@ -118,6 +150,12 @@ public class LobbyPlayer : NetworkBehaviour
     [Command]
     public void CmdSelectRole(int tankId, int roleIndex) {
         LobbyManager.instance.SelectTankRole(tankId,this,roleIndex);
+    }
+
+    [Command]
+    public void CmdDeselectRole()
+    {
+        LobbyManager.instance.PlayerDeselect(this);
     }
 
     [Command]
@@ -142,8 +180,11 @@ public class LobbyPlayer : NetworkBehaviour
 
     protected void UpdateTankInfo(int index){
         TankInfoHolder holder;
+
         while(tankInfoHolders.Count <= index){
-            GameObject infoHolder = GameObject.Instantiate(tankInfoContainerPrefab,tankInfoParent);
+            Transform parentContainer;
+            parentContainer = (tanksInfo[index].team == 1) ? tankInfoParentTeam1 : tankInfoParentTeam2;
+            GameObject infoHolder = GameObject.Instantiate(tankInfoContainerPrefab, parentContainer);
             infoHolder.SetActive(true);
 
             holder = infoHolder.GetComponent<TankInfoHolder>();
@@ -165,31 +206,67 @@ public class LobbyPlayer : NetworkBehaviour
 
     protected void UpdateRoleSelectionButtons(){
         if(currentlySelectedTank != -1){
-            selectRoleContainer.SetActive(true);
             
             LobbyManager.InfoTank infoTank = tanksInfo[currentlySelectedTank];
 
-            textTankSelectRole.text = "Tank " + infoTank.id + "\nSelect your role:";
+            while(assigmentInfoHolder.Count <= infoTank.assigments.Length){
+                GameObject infoHolder = GameObject.Instantiate(assigmentContainerPrefab, assigmentInfoParent);
+                infoHolder.SetActive(true);
 
-            int lowestIndex = buttonRoleSelection.Length;
-            if(lowestIndex > infoTank.assigments.Length) lowestIndex = infoTank.assigments.Length;
+                AssigmentInfoHolder holder = infoHolder.GetComponent<AssigmentInfoHolder>();
+                assigmentInfoHolder.Add(holder);
 
-            for(int i = 0; i < lowestIndex; i++){
-                buttonRoleSelection[i].interactable = (infoTank.assigments[i].playerAssigned == -1);
+                holder.button.onClick.AddListener(() => ClickOnTankButton(assigmentInfoHolder.Count-1));
             }
+
+            for (int i = 0; i < assigmentInfoHolder.Count; i++)
+            {
+                if(i < infoTank.assigments.Length)
+                {
+                    assigmentInfoHolder[i].gameObject.SetActive(true);
+                    assigmentInfoHolder[i].SetAssigmentInfo(infoTank.assigments[i],playersInfo, connectionID);
+                    if(isReady)
+                    {
+                        assigmentInfoHolder[i].button.interactable = false;
+                    }
+                }
+                else
+                {
+                    assigmentInfoHolder[i].gameObject.SetActive(false);
+                }
+            }
+
         }
     }
 
     public void ClickOnTankButton(int index){
-        if(currentlySelectedTank != index){
-            currentlySelectedTank = index;
-            UpdateRoleSelectionButtons();
-        }
+        assigmentWindowOpen = true;
+        roleAssigmentCanvas.SetActive(true);
+
+        currentlySelectedTank = index;
+        UpdateRoleSelectionButtons();
     }
+
+    public void ClickCloseAssigmentWindow()
+    {
+        assigmentWindowOpen = false;
+        roleAssigmentCanvas.SetActive(true);
+
+        currentlySelectedTank = -1;
+
+    }
+
 
     public void ClickOnRoleSelection(int index) {
         if(currentlySelectedTank != -1){
-            CmdSelectRole(currentlySelectedTank, index);
+            if(tanksInfo[currentlySelectedTank].assigments[index].playerAssigned == -1)
+            {
+                CmdSelectRole(currentlySelectedTank, index);
+            }
+            else if(tanksInfo[currentlySelectedTank].assigments[index].playerAssigned == connectionID)
+            {
+                CmdDeselectRole();
+            }
         }
     }
 
@@ -202,8 +279,12 @@ public class LobbyPlayer : NetworkBehaviour
         }
 
         if(isReady) {
-            foreach(var button in buttonRoleSelection){
-                button.interactable = false;
+            if(assigmentWindowOpen)
+            {
+                foreach(AssigmentInfoHolder info in assigmentInfoHolder)
+                {
+                    info.button.interactable = false;
+                }
             }
         }
         else {
