@@ -4,4 +4,4 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class DictionaryIntPlayerInfo : SerializableDictionary<int,LobbyManager.PlayerInfo> {}
+public class DictionaryIntPlayerInfo : SerializableDictionary<int, PlayerInfo> {}

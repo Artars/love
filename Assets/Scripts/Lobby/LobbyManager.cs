@@ -4,71 +4,11 @@ using UnityEngine;
 using Mirror;
 using System;
 
+/// <summary>
+/// Singleton server only class used to manage the status of lobby
+/// </summary>
 public class LobbyManager : NetworkBehaviour
 {
-    #region ClassDefinitions
-
-    [Serializable]
-    public struct InfoTank {
-        public int prefabID;
-        public int id;
-        public int team;
-        public RoleAssigment[] assigments;
-
-        public InfoTank(int id, int team, int numPlaces, int prefabID) {
-            this.id = id;
-            this.team = team;
-            assigments = new RoleAssigment[numPlaces];
-            this.prefabID = prefabID;
-        }
-
-        public InfoTank(int id, int team, TankOption tankOption) {
-            this.id = id;
-            this.team = team;
-            assigments = new RoleAssigment[tankOption.tankRoles.Length];
-            this.prefabID = tankOption.prefabID;
-
-            for (int i = 0; i < tankOption.tankRoles.Length; i++)
-            {
-                assigments[i].role = tankOption.tankRoles[i];
-                assigments[i].playerAssigned = -1;
-            }
-        }
-
-    }
-
-    [Serializable]
-    public struct RoleAssigment {
-        public Role role;
-        public int playerAssigned;
-
-    }
-    
-
-    [Serializable]
-    public struct PlayerInfo {
-        public int connectionID;
-        public string name;
-        public int tankID;
-        public int team;
-        public Role role;
-        public int roleIndex;
-        public bool ready;
-
-        public PlayerInfo(int connectionID, string name){
-            this.connectionID = connectionID;
-            this.name = name;
-            tankID = -1;
-            team = -1;
-            role = Role.None;
-            roleIndex = -1;
-            ready = false;
-        }
-
-    }
-
-    #endregion
-
     public static LobbyManager instance = null;
 
     public TankOptionCollection tankCollection;
@@ -121,6 +61,11 @@ public class LobbyManager : NetworkBehaviour
 
     #region UpdateInformation
 
+    /// <summary>
+    /// Adds the player to the current server information
+    /// </summary>
+    /// <param name="player">The reference to the player</param>
+    /// <param name="playerName">The player name</param>
     public void PlayerJoin(LobbyPlayer player, string playerName) {
         int connectionID = player.connectionToClient.connectionId;
         
@@ -147,6 +92,11 @@ public class LobbyManager : NetworkBehaviour
         player.RpcReceiveIP(ip);
     }
 
+    /// <summary>
+    /// Updates the tank info for every player
+    /// </summary>
+    /// <param name="tankID">The id of the tank that was changed</param>
+    /// <param name="infoTank">The new tank information</param>
     public void UpdateTankInfo(int tankID, InfoTank infoTank){
         //Go for each player and update
         infoTanks[tankID] = infoTank;
@@ -157,6 +107,11 @@ public class LobbyManager : NetworkBehaviour
 
     }
 
+    /// <summary>
+    /// Update the player information for every player
+    /// </summary>
+    /// <param name="id">The id of the player</param>
+    /// <param name="playerInfo">The information of that player</param>
     public void UpdatePlayerInfo(int id, PlayerInfo playerInfo){
         if(!playersInfo.ContainsKey(id))
             playersInfo.Add(id, playerInfo);
@@ -168,6 +123,10 @@ public class LobbyManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Remove the information of a given tank
+    /// </summary>
+    /// <param name="tankID">The ID of the tank to remove</param>
     public void RemoveTankInfo(int tankID)
     {
         if(infoTanks.Count < tankID)
@@ -200,6 +159,10 @@ public class LobbyManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Remove for one player in the match
+    /// </summary>
+    /// <param name="removedPlayer">The reference of the player that must me removed</param>
     public void RemovePlayer(LobbyPlayer removedPlayer)
     {
         //Deselect if selefted before
@@ -223,6 +186,12 @@ public class LobbyManager : NetworkBehaviour
 
     #region SelectionFunctions
 
+    /// <summary>
+    /// Make a role selection for a given player
+    /// </summary>
+    /// <param name="tankID">The ID of the tank selected</param>
+    /// <param name="player">The reference to the player that made the selection</param>
+    /// <param name="roleIndex">The ID of the role selected on the tank</param>
     public void SelectTankRole(int tankID, LobbyPlayer player, int roleIndex){
         if(isGameStarting) return; // Won't change if game is starting
 
@@ -255,6 +224,10 @@ public class LobbyManager : NetworkBehaviour
         UpdatePlayerInfo(playerConnectionId, playerInfo);
     }
 
+    /// <summary>
+    /// Remove a selection for that given player
+    /// </summary>
+    /// <param name="player"></param>
     public void PlayerDeselect(LobbyPlayer player) {
         if(isGameStarting) return; // Won't change if game is starting
 
@@ -272,6 +245,11 @@ public class LobbyManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Set a player ready status. May trigger the start of the match
+    /// </summary>
+    /// <param name="player">The player reference of the player that connected to the match</param>
+    /// <param name="isReady">Whatever the player is ready or not</param>
     public void PlayerSetReady(LobbyPlayer player, bool isReady) {
         int playerConnectionId = player.connectionToClient.connectionId;
 
@@ -290,6 +268,9 @@ public class LobbyManager : NetworkBehaviour
 
     #region StartGame
 
+    /// <summary>
+    /// Start the transition to the match
+    /// </summary>
     public void StartGame(){
         isGameStarting = true;
         MatchSettings.instance.infoTanks = infoTanks;
@@ -298,13 +279,25 @@ public class LobbyManager : NetworkBehaviour
         NetworkManager.singleton.ServerChangeScene("Scenes/MapTest");
     }
 
+    /// <summary>
+    /// Will return if everyone that has choosen a role is ready
+    /// </summary>
+    /// <returns>Is everybody ready</returns>
     public bool isGameReady() {
         bool everyoneIsReady = true;
 
-        foreach(var player in playersInfo){
-            if(!player.Value.ready){
-                everyoneIsReady = false;
-                break;
+        foreach (var tank in infoTanks)
+        {
+            foreach (var assigment in tank.assigments)
+            {
+                if(assigment.playerAssigned != -1 && playersInfo.ContainsKey(assigment.playerAssigned))
+                {
+                    if(!playersInfo[assigment.playerAssigned].ready)
+                    {
+                        everyoneIsReady = false;
+                        break;
+                    }
+                }
             }
         }
 
@@ -313,6 +306,10 @@ public class LobbyManager : NetworkBehaviour
 
     #endregion
 
+    /// <summary>
+    /// Get the IP of the server by using the DNS table
+    /// </summary>
+    /// <returns>The IP of the host as a string</returns>
     protected string getIPString(){
         string s;
         // NetworkManager.singleton.transport.GetConnectionInfo(0, out s);

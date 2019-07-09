@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class AssigmentInfoHolder : MonoBehaviour
 {
 
-    public LobbyManager.RoleAssigment assigmInfo;
+    public  RoleAssigment assigmInfo;
 
     [Header("References")]
     public Button button;
@@ -19,7 +19,7 @@ public class AssigmentInfoHolder : MonoBehaviour
     public Color colorOcupied = Color.red;
     public Color colorUserSeletion = Color.green;
 
-    public void SetAssigmentInfo(LobbyManager.RoleAssigment info, DictionaryIntPlayerInfo playerDict, int playerConnectionId)
+    public void SetAssigmentInfo( RoleAssigment info, DictionaryIntPlayerInfo playerDict, int playerConnectionId)
     {
         assigmInfo = info;
         int roleInInt = (int) info.role;

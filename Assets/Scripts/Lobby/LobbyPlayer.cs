@@ -12,7 +12,7 @@ public class LobbyPlayer : NetworkBehaviour
     public int connectionID = -1;
     [SyncVar]
     public bool isReady = false;
-    public List<LobbyManager.InfoTank> tanksInfo;
+    public List< InfoTank> tanksInfo;
     public DictionaryIntPlayerInfo playersInfo;
 
     [Space]
@@ -61,7 +61,7 @@ public class LobbyPlayer : NetworkBehaviour
         if(isLocalPlayer){
             rootCanvas.SetActive(true);
             playersInfo = new DictionaryIntPlayerInfo();
-            tanksInfo = new List<LobbyManager.InfoTank>();
+            tanksInfo = new List< InfoTank>();
             playerInfoHolders = new Dictionary<int,PlayerInfoHolder>();
             assigmentInfoHolder = new List<AssigmentInfoHolder>();
 
@@ -99,7 +99,7 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcUpdateTankInfo(int index, LobbyManager.InfoTank infoTank){
+    public void RpcUpdateTankInfo(int index,  InfoTank infoTank){
         if(isLocalPlayer){
             if(index < tanksInfo.Count){
                 tanksInfo[index] = infoTank;
@@ -124,7 +124,7 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcUpdatePlayerInfo(int index, LobbyManager.PlayerInfo playerInfo){
+    public void RpcUpdatePlayerInfo(int index,  PlayerInfo playerInfo){
         if(isLocalPlayer){
             if(playersInfo.ContainsKey(index)){
                 playersInfo[index] = playerInfo;
@@ -208,7 +208,7 @@ public class LobbyPlayer : NetworkBehaviour
     protected void UpdateRoleSelectionButtons(){
         if(currentlySelectedTank != -1){
             
-            LobbyManager.InfoTank infoTank = tanksInfo[currentlySelectedTank];
+             InfoTank infoTank = tanksInfo[currentlySelectedTank];
 
             while(assigmentInfoHolder.Count <= infoTank.assigments.Length){
                 int index = assigmentInfoHolder.Count;

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class TankInfoHolder : MonoBehaviour
 {
-    public LobbyManager.InfoTank infoTank;
+    public  InfoTank infoTank;
 
     [Header("Refences")]
     public TMPro.TextMeshProUGUI textTank;
@@ -20,7 +20,7 @@ public class TankInfoHolder : MonoBehaviour
     public Color colorUserSeletion = Color.green;
 
 
-    public void SetTankInfo(LobbyManager.InfoTank info, int playerConnectionId){
+    public void SetTankInfo( InfoTank info, int playerConnectionId){
         infoTank = info;
 
         textTank.text = "Tank " + (info.team).ToString();

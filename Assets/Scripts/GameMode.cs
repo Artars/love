@@ -5,6 +5,7 @@ using Mirror;
 
 public class GameMode : NetworkBehaviour
 {
+    
     [Header("Game settings")]
     [SyncVar]
     public int numTeams = 2;
@@ -23,7 +24,7 @@ public class GameMode : NetworkBehaviour
     [SyncVar]
     public int maxScore = 5;
 
-    public List<LobbyManager.InfoTank> infoTanks;
+    public List<InfoTank> infoTanks;
     public DictionaryIntPlayerInfo playersInfo;
 
 
