@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e4dde3dd33b9e146af29e1ff107f526, type: 3}
-  m_Name: TankCollection
+  m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
+  m_Name: TestMap
   m_EditorClassIdentifier: 
-  tankOptions:
-  - {fileID: 11400000, guid: 61e6b19171e191445a8fd10e68e1f155, type: 2}
-  - {fileID: 11400000, guid: 19aca3fec20c05e4cbee5a4b9b703cc5, type: 2}
+  scene: LobbyTest
+  mapName: Test lobby
+  mapThumbnail: {fileID: 0}

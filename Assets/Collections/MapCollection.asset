@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e4dde3dd33b9e146af29e1ff107f526, type: 3}
-  m_Name: TankCollection
+  m_Script: {fileID: 11500000, guid: 374872602dd5b0d4a8e4a65eae976faf, type: 3}
+  m_Name: MapCollection
   m_EditorClassIdentifier: 
-  tankOptions:
-  - {fileID: 11400000, guid: 61e6b19171e191445a8fd10e68e1f155, type: 2}
-  - {fileID: 11400000, guid: 19aca3fec20c05e4cbee5a4b9b703cc5, type: 2}
+  mapOptions:
+  - {fileID: 11400000, guid: 149cb03b3ecc4a845b3205218a53724c, type: 2}

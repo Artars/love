@@ -1,10 +1,9 @@
 fileFormatVersion: 2
-guid: 27cb1c330d2dfb74d8f6c7d7e3fb6401
+guid: 5e4dde3dd33b9e146af29e1ff107f526
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - tankCollection: {fileID: 11400000, guid: 8ee9146f28a416b47955744ad9642fd9, type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
