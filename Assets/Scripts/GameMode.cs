@@ -311,10 +311,10 @@ public class GameMode : NetworkBehaviour
                 foreach(Player p in teamPlayers[i])
                 {
                     if(i == winnerTeam){
-                        p.RpcDisplayMessage("You achieved love!", 10, 0.1f, 1);
+                        p.RpcDisplayMessage("Outstanding performance, comrades! We have won this battle!", 10, 0.1f, 1);
                     }
                     else
-                        p.RpcDisplayMessage("You tried your best, but the team " + winnerTeam + " achieved love and you don't"
+                        p.RpcDisplayMessage("A shameful display! " + winnerTeam + " has beaten us this time!"
                         , 10, 0.1f, 1);
                 }
             }

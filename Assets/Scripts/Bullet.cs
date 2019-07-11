@@ -33,7 +33,8 @@ public class Bullet : NetworkBehaviour
     protected void Update() {
         //Rotate toward velocity
         if(isServer){
-            myTransform.LookAt(rgbd.velocity);
+            transform.rotation = Quaternion.LookRotation(rgbd.velocity);
+            // myTransform.LookAt(rgbd.velocity);
         }
         //Will estimate the velocity
         else
@@ -42,7 +43,8 @@ public class Bullet : NetworkBehaviour
             estimatePosition = currentPosition - lastPosition;
             lastPosition = currentPosition;
 
-            myTransform.LookAt(estimatePosition);
+            //myTransform.LookAt(estimatePosition);
+            transform.rotation = Quaternion.LookRotation(estimatePosition);
         }
     }
 

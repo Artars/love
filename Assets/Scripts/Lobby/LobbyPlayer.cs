@@ -7,7 +7,7 @@ public class LobbyPlayer : NetworkBehaviour
 {
     [Header("Game Info")]
     [SyncVar]
-    public string playerName = "Douce";
+    public string playerName = "Deuce";
     [SyncVar]
     public int connectionID = -1;
     [SyncVar]
