@@ -2101,7 +2101,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000008464207}
+  m_AnchoredPosition: {x: 0, y: 0.000029084757}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1398053273779163216
@@ -4991,11 +4991,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ec2ef1905c93474e9b5efa75a78aa57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoTank:
-    prefabID: 0
-    id: 0
-    team: 0
-    assigments: []
+  assigmInfo:
+    role: 0
+    playerAssigned: 0
   button: {fileID: 5339051271812810865}
   playerText: {fileID: 8458001007742244573}
   roleImage: {fileID: 223268793887709721}
@@ -5041,7 +5039,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000008464207}
+  m_AnchoredPosition: {x: 0, y: 0.000029084757}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8399481016222347042
