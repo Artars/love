@@ -10,7 +10,7 @@ public class GameStatus : NetworkBehaviour
     public SyncListInt score;
     public SyncListInt deaths;
     public SyncListInt kills;
-    public SyncList<GameMode.KillPair> killHistory;
+    // public SyncList<GameMode.KillPair> killHistory;
 
 
     [Header("Game settings")]
@@ -28,10 +28,10 @@ public class GameStatus : NetworkBehaviour
             Destroy(this);
         }
 
-        score = new SyncListInt();
-        deaths = new SyncListInt();
-        kills = new SyncListInt();
-        killHistory = new SyncListSTRUCT<GameMode.KillPair>();
+        // score = new SyncListInt();
+        // deaths = new SyncListInt();
+        // kills = new SyncListInt();
+        // killHistory = new GameMode.SyncListKillPair();
     }
 
     public void Setup(MatchSetting MatchSetting)
@@ -40,7 +40,7 @@ public class GameStatus : NetworkBehaviour
         score.Clear();
         deaths.Clear();
         kills.Clear();
-        killHistory.Clear();
+        // killHistory.Clear();
 
         for (int i = 0; i < MatchSetting.numTeams; i++)
         {

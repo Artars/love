@@ -8,10 +8,10 @@ using UnityEngine.Events;
 namespace Mirror
 {
     // UnityEvent definitions
-    [Serializable] public class UnityEventByteArray : UnityEvent<byte[]> {}
+    [Serializable] public class UnityEventArraySegment : UnityEvent<ArraySegment<byte>> {}
     [Serializable] public class UnityEventException : UnityEvent<Exception> {}
     [Serializable] public class UnityEventInt : UnityEvent<int> {}
-    [Serializable] public class UnityEventIntByteArray : UnityEvent<int, byte[]> {}
+    [Serializable] public class UnityEventIntArraySegment : UnityEvent<int, ArraySegment<byte>> {}
     [Serializable] public class UnityEventIntException : UnityEvent<int, Exception> {}
 
     public abstract class Transport : MonoBehaviour
@@ -28,10 +28,10 @@ namespace Mirror
         }
 
         // client
-        [HideInInspector] public UnityEvent OnClientConnected;
-        [HideInInspector] public UnityEventByteArray OnClientDataReceived;
-        [HideInInspector] public UnityEventException OnClientError;
-        [HideInInspector] public UnityEvent OnClientDisconnected;
+        [HideInInspector] public UnityEvent OnClientConnected = new UnityEvent();
+        [HideInInspector] public UnityEventArraySegment OnClientDataReceived = new UnityEventArraySegment();
+        [HideInInspector] public UnityEventException OnClientError = new UnityEventException();
+        [HideInInspector] public UnityEvent OnClientDisconnected = new UnityEvent();
 
         public abstract bool ClientConnected();
         public abstract void ClientConnect(string address);
@@ -39,10 +39,10 @@ namespace Mirror
         public abstract void ClientDisconnect();
 
         // server
-        [HideInInspector] public UnityEventInt OnServerConnected;
-        [HideInInspector] public UnityEventIntByteArray OnServerDataReceived;
-        [HideInInspector] public UnityEventIntException OnServerError;
-        [HideInInspector] public UnityEventInt OnServerDisconnected;
+        [HideInInspector] public UnityEventInt OnServerConnected = new UnityEventInt();
+        [HideInInspector] public UnityEventIntArraySegment OnServerDataReceived = new UnityEventIntArraySegment();
+        [HideInInspector] public UnityEventIntException OnServerError = new UnityEventIntException();
+        [HideInInspector] public UnityEventInt OnServerDisconnected = new UnityEventInt();
 
         public abstract bool ServerActive();
         public abstract void ServerStart();

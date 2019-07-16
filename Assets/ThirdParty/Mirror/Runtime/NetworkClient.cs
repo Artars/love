@@ -119,13 +119,13 @@ namespace Mirror
             connection?.InvokeHandler(new DisconnectMessage());
         }
 
-        internal static void OnDataReceived(byte[] data)
+        internal static void OnDataReceived(ArraySegment<byte> data)
         {
             if (connection != null)
             {
                 connection.TransportReceive(data);
             }
-            else Debug.LogError("Skipped Data message handling because m_Connection is null.");
+            else Debug.LogError("Skipped Data message handling because connection is null.");
         }
 
         static void OnConnected()
@@ -141,7 +141,7 @@ namespace Mirror
                 NetworkTime.UpdateClient();
                 connection.InvokeHandler(new ConnectMessage());
             }
-            else Debug.LogError("Skipped Connect message handling because m_Connection is null.");
+            else Debug.LogError("Skipped Connect message handling because connection is null.");
         }
 
         public static void Disconnect()
@@ -195,7 +195,7 @@ namespace Mirror
             return false;
         }
 
-        public static bool Send<T>(T message) where T : IMessageBase
+        public static bool Send<T>(T message, int channelId = Channels.DefaultReliable) where T : IMessageBase
         {
             if (connection != null)
             {
@@ -204,7 +204,7 @@ namespace Mirror
                     Debug.LogError("NetworkClient Send when not connected to a server");
                     return false;
                 }
-                return connection.Send(message);
+                return connection.Send(message, channelId);
             }
             Debug.LogError("NetworkClient Send with no connection");
             return false;
@@ -219,7 +219,7 @@ namespace Mirror
                 while (localClientPacketQueue.Count > 0)
                 {
                     byte[] packet = localClientPacketQueue.Dequeue();
-                    OnDataReceived(packet);
+                    OnDataReceived(new ArraySegment<byte>(packet));
                 }
             }
             else
@@ -293,7 +293,6 @@ namespace Mirror
             {
                 RegisterHandler<ObjectDestroyMessage>(ClientScene.OnLocalClientObjectDestroy);
                 RegisterHandler<ObjectHideMessage>(ClientScene.OnLocalClientObjectHide);
-                RegisterHandler<OwnerMessage>((conn, msg) => {});
                 RegisterHandler<NetworkPongMessage>((conn, msg) => {});
                 RegisterHandler<SpawnPrefabMessage>(ClientScene.OnLocalClientSpawnPrefab);
                 RegisterHandler<SpawnSceneObjectMessage>(ClientScene.OnLocalClientSpawnSceneObject);
@@ -305,7 +304,6 @@ namespace Mirror
             {
                 RegisterHandler<ObjectDestroyMessage>(ClientScene.OnObjectDestroy);
                 RegisterHandler<ObjectHideMessage>(ClientScene.OnObjectHide);
-                RegisterHandler<OwnerMessage>(ClientScene.OnOwnerMessage);
                 RegisterHandler<NetworkPongMessage>(NetworkTime.OnClientPong);
                 RegisterHandler<SpawnPrefabMessage>(ClientScene.OnSpawnPrefab);
                 RegisterHandler<SpawnSceneObjectMessage>(ClientScene.OnSpawnSceneObject);
@@ -341,10 +339,7 @@ namespace Mirror
             {
                 if (LogFilter.Debug) Debug.Log("NetworkClient.RegisterHandler replacing " + handler + " - " + msgType);
             }
-            handlers[msgType] = (networkMessage) =>
-            {
-                handler(networkMessage.conn, networkMessage.ReadMessage<T>());
-            };
+            handlers[msgType] = MessagePacker.MessageHandler<T>(handler);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Use UnregisterHandler<T> instead")]

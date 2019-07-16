@@ -9,7 +9,7 @@ namespace Mirror
     [AddComponentMenu("")]
     public class NetworkBehaviour : MonoBehaviour
     {
-        float m_LastSendTime;
+        float lastSyncTime;
 
         // sync interval for OnSerialize (in seconds)
         // hidden because NetworkBehaviourInspector shows it only if has OnSerialize.
@@ -28,21 +28,26 @@ namespace Mirror
         protected ulong syncVarDirtyBits { get; private set; }
         protected bool syncVarHookGuard { get; set; }
 
+        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Use syncObjects instead.")]
+        protected List<SyncObject> m_SyncObjects => syncObjects;
         // objects that can synchronize themselves,  such as synclists
-        protected readonly List<SyncObject> m_SyncObjects = new List<SyncObject>();
+        protected readonly List<SyncObject> syncObjects = new List<SyncObject>();
 
         // NetworkIdentity component caching for easier access
-        NetworkIdentity m_netIdentity;
+        NetworkIdentity netIdentityCache;
         public NetworkIdentity netIdentity
         {
             get
             {
-                m_netIdentity = m_netIdentity ?? GetComponent<NetworkIdentity>();
-                if (m_netIdentity == null)
+                if (netIdentityCache == null)
+                {
+                    netIdentityCache = GetComponent<NetworkIdentity>();
+                }
+                if (netIdentityCache == null)
                 {
                     Debug.LogError("There is no NetworkIdentity on " + name + ". Please add one.");
                 }
-                return m_netIdentity;
+                return netIdentityCache;
             }
         }
 
@@ -50,14 +55,18 @@ namespace Mirror
         {
             get
             {
-                int index = Array.FindIndex(netIdentity.NetworkBehaviours, component => component == this);
-                if (index < 0)
+                // note: FindIndex causes allocations, we search manually instead
+                for (int i = 0; i < netIdentity.NetworkBehaviours.Length; i++)
                 {
-                    // this should never happen
-                    Debug.LogError("Could not find component in GameObject. You should not add/remove components in networked objects dynamically", this);
+                    NetworkBehaviour component = netIdentity.NetworkBehaviours[i];
+                    if (component == this)
+                        return i;
                 }
 
-                return index;
+                // this should never happen
+                Debug.LogError("Could not find component in GameObject. You should not add/remove components in networked objects dynamically", this);
+
+                return -1;
             }
         }
 
@@ -66,10 +75,22 @@ namespace Mirror
         // We collect all of them and we synchronize them with OnSerialize/OnDeserialize
         protected void InitSyncObject(SyncObject syncObject)
         {
-            m_SyncObjects.Add(syncObject);
+            syncObjects.Add(syncObject);
         }
 
         #region Commands
+
+        private static int GetMethodHash(Type invokeClass, string methodName)
+        {
+            // (invokeClass + ":" + cmdName).GetStableHashCode() would cause allocations.
+            // so hash1 + hash2 is better.
+            unchecked
+            {
+                int hash = invokeClass.FullName.GetStableHashCode();
+                return hash * 503 + methodName.GetStableHashCode();
+            }
+        }
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected void SendCommandInternal(Type invokeClass, string cmdName, NetworkWriter writer, int channelId)
         {
@@ -99,8 +120,8 @@ namespace Mirror
             {
                 netId = netId,
                 componentIndex = ComponentIndex,
-                functionHash = (invokeClass + ":" + cmdName).GetStableHashCode(), // type+func so Inventory.RpcUse != Equipment.RpcUse
-                payload = writer.ToArray()
+                functionHash = GetMethodHash(invokeClass, cmdName), // type+func so Inventory.RpcUse != Equipment.RpcUse
+                payload = writer.ToArraySegment() // segment to avoid reader allocations
             };
 
             ClientScene.readyConnection.Send(message, channelId);
@@ -135,8 +156,8 @@ namespace Mirror
             {
                 netId = netId,
                 componentIndex = ComponentIndex,
-                functionHash = (invokeClass + ":" + rpcName).GetStableHashCode(), // type+func so Inventory.RpcUse != Equipment.RpcUse
-                payload = writer.ToArray()
+                functionHash = GetMethodHash(invokeClass, rpcName), // type+func so Inventory.RpcUse != Equipment.RpcUse
+                payload = writer.ToArraySegment() // segment to avoid reader allocations
             };
 
             NetworkServer.SendToReady(netIdentity, message, channelId);
@@ -174,8 +195,8 @@ namespace Mirror
             {
                 netId = netId,
                 componentIndex = ComponentIndex,
-                functionHash = (invokeClass + ":" + rpcName).GetStableHashCode(), // type+func so Inventory.RpcUse != Equipment.RpcUse
-                payload = writer.ToArray()
+                functionHash = GetMethodHash(invokeClass, rpcName), // type+func so Inventory.RpcUse != Equipment.RpcUse
+                payload = writer.ToArraySegment() // segment to avoid reader allocations
             };
 
             conn.Send(message, channelId);
@@ -203,8 +224,8 @@ namespace Mirror
             {
                 netId = netId,
                 componentIndex = ComponentIndex,
-                functionHash = (invokeClass + ":" + eventName).GetStableHashCode(), // type+func so Inventory.RpcUse != Equipment.RpcUse
-                payload = writer.ToArray()
+                functionHash = GetMethodHash(invokeClass, eventName), // type+func so Inventory.RpcUse != Equipment.RpcUse
+                payload = writer.ToArraySegment() // segment to avoid reader allocations
             };
 
             NetworkServer.SendToReady(netIdentity,message, channelId);
@@ -233,7 +254,7 @@ namespace Mirror
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected static void RegisterDelegate(Type invokeClass, string cmdName, MirrorInvokeType invokerType, CmdDelegate func)
         {
-            int cmdHash = (invokeClass + ":" + cmdName).GetStableHashCode(); // type+func so Inventory.RpcUse != Equipment.RpcUse
+            int cmdHash = GetMethodHash(invokeClass, cmdName); // type+func so Inventory.RpcUse != Equipment.RpcUse
 
             if (cmdHandlerDelegates.ContainsKey(cmdHash))
             {
@@ -402,8 +423,7 @@ namespace Mirror
         protected void SetSyncVar<T>(T value, ref T fieldValue, ulong dirtyBit)
         {
             // newly initialized or changed value?
-            if ((value == null && fieldValue != null) ||
-                (value != null && !value.Equals(fieldValue)))
+            if (!EqualityComparer<T>.Default.Equals(value, fieldValue))
             {
                 if (LogFilter.Debug) Debug.Log("SetSyncVar " + GetType().Name + " bit [" + dirtyBit + "] " + fieldValue + "->" + value);
                 SetDirtyBit(dirtyBit);
@@ -420,16 +440,16 @@ namespace Mirror
 
         public void ClearAllDirtyBits()
         {
-            m_LastSendTime = Time.time;
+            lastSyncTime = Time.time;
             syncVarDirtyBits = 0L;
 
             // flush all unsynchronized changes in syncobjects
             // note: don't use List.ForEach here, this is a hot path
             // List.ForEach: 432b/frame
             // for: 231b/frame
-            for (int i = 0; i < m_SyncObjects.Count; ++i)
+            for (int i = 0; i < syncObjects.Count; ++i)
             {
-                m_SyncObjects[i].Flush();
+                syncObjects[i].Flush();
             }
         }
 
@@ -438,9 +458,9 @@ namespace Mirror
             // note: don't use Linq here. 1200 networked objects:
             //   Linq: 187KB GC/frame;, 2.66ms time
             //   for: 8KB GC/frame; 1.28ms time
-            for (int i = 0; i < m_SyncObjects.Count; ++i)
+            for (int i = 0; i < syncObjects.Count; ++i)
             {
-                if (m_SyncObjects[i].IsDirty)
+                if (syncObjects[i].IsDirty)
                 {
                     return true;
                 }
@@ -450,7 +470,7 @@ namespace Mirror
 
         internal bool IsDirty()
         {
-            if (Time.time - m_LastSendTime >= syncInterval)
+            if (Time.time - lastSyncTime >= syncInterval)
             {
                 return syncVarDirtyBits != 0L || AnySyncObjectDirty();
             }
@@ -484,9 +504,9 @@ namespace Mirror
         ulong DirtyObjectBits()
         {
             ulong dirtyObjects = 0;
-            for (int i = 0; i < m_SyncObjects.Count; i++)
+            for (int i = 0; i < syncObjects.Count; i++)
             {
-                SyncObject syncObject = m_SyncObjects[i];
+                SyncObject syncObject = syncObjects[i];
                 if (syncObject.IsDirty)
                 {
                     dirtyObjects |= 1UL << i;
@@ -498,9 +518,9 @@ namespace Mirror
         public bool SerializeObjectsAll(NetworkWriter writer)
         {
             bool dirty = false;
-            for (int i = 0; i < m_SyncObjects.Count; i++)
+            for (int i = 0; i < syncObjects.Count; i++)
             {
-                SyncObject syncObject = m_SyncObjects[i];
+                SyncObject syncObject = syncObjects[i];
                 syncObject.OnSerializeAll(writer);
                 dirty = true;
             }
@@ -513,9 +533,9 @@ namespace Mirror
             // write the mask
             writer.WritePackedUInt64(DirtyObjectBits());
             // serializable objects, such as synclists
-            for (int i = 0; i < m_SyncObjects.Count; i++)
+            for (int i = 0; i < syncObjects.Count; i++)
             {
-                SyncObject syncObject = m_SyncObjects[i];
+                SyncObject syncObject = syncObjects[i];
                 if (syncObject.IsDirty)
                 {
                     syncObject.OnSerializeDelta(writer);
@@ -527,9 +547,9 @@ namespace Mirror
 
         void DeSerializeObjectsAll(NetworkReader reader)
         {
-            for (int i = 0; i < m_SyncObjects.Count; i++)
+            for (int i = 0; i < syncObjects.Count; i++)
             {
-                SyncObject syncObject = m_SyncObjects[i];
+                SyncObject syncObject = syncObjects[i];
                 syncObject.OnDeserializeAll(reader);
             }
         }
@@ -537,9 +557,9 @@ namespace Mirror
         void DeSerializeObjectsDelta(NetworkReader reader)
         {
             ulong dirty = reader.ReadPackedUInt64();
-            for (int i = 0; i < m_SyncObjects.Count; i++)
+            for (int i = 0; i < syncObjects.Count; i++)
             {
-                SyncObject syncObject = m_SyncObjects[i];
+                SyncObject syncObject = syncObjects[i];
                 if ((dirty & (1UL << i)) != 0)
                 {
                     syncObject.OnDeserializeDelta(reader);

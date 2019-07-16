@@ -38,11 +38,6 @@ namespace Mirror
     // Original UNET name is SyncListStruct and original Weaver weavers anything
     // that contains the name 'SyncListStruct', without considering the name-
     // space.
-    //
-    // In other words, we need another name until the original Weaver is removed
-    // in Unity 2019.1.
-    //
-    // TODO rename back to SyncListStruct after 2019.1!
     [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Use SyncList<MyStruct> instead")]
     public class SyncListSTRUCT<T> : SyncList<T> where T : struct
     {
@@ -50,7 +45,7 @@ namespace Mirror
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public abstract class SyncList<T> : IList<T>, SyncObject
+    public abstract class SyncList<T> : IList<T>, IReadOnlyList<T>, SyncObject
     {
         public delegate void SyncListChanged(Operation op, int itemIndex, T item);
 
@@ -157,25 +152,18 @@ namespace Mirror
                 switch (change.operation)
                 {
                     case Operation.OP_ADD:
+                    case Operation.OP_REMOVE:
                         SerializeItem(writer, change.item);
                         break;
 
                     case Operation.OP_CLEAR:
                         break;
 
-                    case Operation.OP_INSERT:
-                        writer.WritePackedUInt32((uint)change.index);
-                        SerializeItem(writer, change.item);
-                        break;
-
-                    case Operation.OP_REMOVE:
-                        SerializeItem(writer, change.item);
-                        break;
-
                     case Operation.OP_REMOVEAT:
                         writer.WritePackedUInt32((uint)change.index);
                         break;
 
+                    case Operation.OP_INSERT:
                     case Operation.OP_SET:
                     case Operation.OP_DIRTY:
                         writer.WritePackedUInt32((uint)change.index);
@@ -310,6 +298,14 @@ namespace Mirror
 
         public int IndexOf(T item) => objects.IndexOf(item);
 
+        public int FindIndex(Predicate<T> match)
+        {
+            for (int i = 0; i < objects.Count; ++i)
+                if (match(objects[i]))
+                    return i;
+            return -1;
+        }
+
         public void Insert(int index, T item)
         {
             objects.Insert(index, item);
@@ -342,22 +338,9 @@ namespace Mirror
             get => objects[i];
             set
             {
-                bool changed = false;
-                if (objects[i] == null)
+                if (!EqualityComparer<T>.Default.Equals(objects[i], value))
                 {
-                    if (value == null)
-                        return;
-                    else
-                        changed = true;
-                }
-                else
-                {
-                    changed = !objects[i].Equals(value);
-                }
-
-                objects[i] = value;
-                if (changed)
-                {
+                    objects[i] = value;
                     AddOperation(Operation.OP_SET, i, value);
                 }
             }

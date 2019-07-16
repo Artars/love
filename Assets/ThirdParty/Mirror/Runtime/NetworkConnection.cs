@@ -7,7 +7,7 @@ namespace Mirror
 {
     public class NetworkConnection : IDisposable
     {
-        public HashSet<NetworkIdentity> visList = new HashSet<NetworkIdentity>();
+        public readonly HashSet<NetworkIdentity> visList = new HashSet<NetworkIdentity>();
 
         Dictionary<int, NetworkMessageDelegate> messageHandlers;
 
@@ -16,7 +16,7 @@ namespace Mirror
         public string address;
         public float lastMessageTime;
         public NetworkIdentity playerController { get; internal set; }
-        public HashSet<uint> clientOwnedObjects;
+        public readonly HashSet<uint> clientOwnedObjects = new HashSet<uint>();
         public bool logNetworkMessages;
 
         // this is always true for regular connections, false for local
@@ -59,17 +59,14 @@ namespace Mirror
 
         protected virtual void Dispose(bool disposing)
         {
-            if (clientOwnedObjects != null)
+            foreach (uint netId in clientOwnedObjects)
             {
-                foreach (uint netId in clientOwnedObjects)
+                if (NetworkIdentity.spawned.TryGetValue(netId, out NetworkIdentity identity))
                 {
-                    if (NetworkIdentity.spawned.TryGetValue(netId, out NetworkIdentity identity))
-                    {
-                        identity.clientAuthorityOwner = null;
-                    }
+                    identity.clientAuthorityOwner = null;
                 }
             }
-            clientOwnedObjects = null;
+            clientOwnedObjects.Clear();
         }
 
         public void Disconnect()
@@ -102,6 +99,7 @@ namespace Mirror
             messageHandlers = handlers;
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Use NetworkClient/NetworkServer.RegisterHandler<T> instead")]
         public void RegisterHandler(short msgType, NetworkMessageDelegate handler)
         {
             if (messageHandlers.ContainsKey(msgType))
@@ -111,6 +109,7 @@ namespace Mirror
             messageHandlers[msgType] = handler;
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never), Obsolete("Use NetworkClient/NetworkServer.UnregisterHandler<T> instead")]
         public void UnregisterHandler(short msgType)
         {
             messageHandlers.Remove(msgType);
@@ -150,7 +149,7 @@ namespace Mirror
                 return false;
             }
 
-            return TransportSend(channelId, bytes, out byte error);
+            return TransportSend(channelId, bytes);
         }
 
         public override string ToString()
@@ -192,7 +191,7 @@ namespace Mirror
             return InvokeHandler(msgType, null);
         }
 
-        public bool InvokeHandler(int msgType, NetworkReader reader)
+        internal bool InvokeHandler(int msgType, NetworkReader reader)
         {
             if (messageHandlers.TryGetValue(msgType, out NetworkMessageDelegate msgDelegate))
             {
@@ -224,49 +223,30 @@ namespace Mirror
         //       -> in other words, we always receive 1 message per Receive call, never two.
         //       -> can be tested easily with a 1000ms send delay and then logging amount received in while loops here
         //          and in NetworkServer/Client Update. HandleBytes already takes exactly one.
-        public virtual void TransportReceive(byte[] buffer)
+        public virtual void TransportReceive(ArraySegment<byte> buffer)
         {
-            // protect against DOS attacks if attackers try to send invalid
-            // data packets to crash the server/client. there are a thousand
-            // ways to cause an exception in data handling:
-            // - invalid headers
-            // - invalid message ids
-            // - invalid data causing exceptions
-            // - negative ReadBytesAndSize prefixes
-            // - invalid utf8 strings
-            // - etc.
-            //
-            // let's catch them all and then disconnect that connection to avoid
-            // further attacks.
-            try
+            // unpack message
+            NetworkReader reader = new NetworkReader(buffer);
+            if (MessagePacker.UnpackMessage(reader, out int msgType))
             {
-                // unpack message
-                NetworkReader reader = new NetworkReader(buffer);
-                if (MessagePacker.UnpackMessage(reader, out int msgType))
-                {
-                    if (logNetworkMessages)
-                    {
-                        Debug.Log("ConnectionRecv con:" + connectionId + " msgType:" + msgType + " content:" + BitConverter.ToString(buffer));
-                    }
+                // logging
+                if (logNetworkMessages) Debug.Log("ConnectionRecv con:" + connectionId + " msgType:" + msgType + " content:" + BitConverter.ToString(buffer.Array, buffer.Offset, buffer.Count));
 
-                    // try to invoke the handler for that message
-                    if (InvokeHandler(msgType, reader))
-                    {
-                        lastMessageTime = Time.time;
-                    }
+                // try to invoke the handler for that message
+                if (InvokeHandler(msgType, reader))
+                {
+                    lastMessageTime = Time.time;
                 }
-                else Debug.LogError("HandleBytes UnpackMessage failed for: " + BitConverter.ToString(buffer));
             }
-            catch (Exception exception)
+            else
             {
+                Debug.LogError("Closed connection: " + connectionId + ". Invalid message header.");
                 Disconnect();
-                Debug.LogWarning("Closed connection: " + connectionId + ". This can happen if the other side accidentally (or an attacker intentionally) sent invalid data. Reason: " + exception);
             }
         }
 
-        public virtual bool TransportSend(int channelId, byte[] bytes, out byte error)
+        public virtual bool TransportSend(int channelId, byte[] bytes)
         {
-            error = 0;
             if (Transport.activeTransport.ClientConnected())
             {
                 return Transport.activeTransport.ClientSend(channelId, bytes);
@@ -280,13 +260,12 @@ namespace Mirror
 
         internal void AddOwnedObject(NetworkIdentity obj)
         {
-            clientOwnedObjects = clientOwnedObjects ?? new HashSet<uint>();
             clientOwnedObjects.Add(obj.netId);
         }
 
         internal void RemoveOwnedObject(NetworkIdentity obj)
         {
-            clientOwnedObjects?.Remove(obj.netId);
+            clientOwnedObjects.Remove(obj.netId);
         }
     }
 }

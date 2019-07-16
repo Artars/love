@@ -99,7 +99,6 @@ public class Player : NetworkBehaviour
             if(isLocalPlayer){
                 observerPivot.gameObject.SetActive(true);
                 informationCanvas.SetActive(true);
-                TryToAssignCallback();
             }
         }
 
@@ -128,6 +127,8 @@ public class Player : NetworkBehaviour
         Debug.Log("Assigning player team " + team + " with role " + role.ToString());
 
         if(!isLocalPlayer) return;
+
+        TryToAssignCallback();
 
         observerPivot.gameObject.SetActive(false);
         firstPersonCamera.gameObject.SetActive(true);

@@ -25,7 +25,7 @@ public class GameMode : NetworkBehaviour
             matchTime = time;
         }
     }
-    
+       
     [Header("Game settings")]
     [SyncVar]
     public MatchSetting matchSettings;
@@ -332,7 +332,7 @@ public class GameMode : NetworkBehaviour
         GameStatus.instance.deaths[ownerId]++;
         KillPair newKill = new KillPair(enemyId,ownerId,matchTime);
         killHistory.Add(newKill);
-        GameStatus.instance.killHistory.Add(newKill);
+        // GameStatus.instance.killHistory.Add(newKill);
 
         BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f);
 
@@ -358,10 +358,10 @@ public class GameMode : NetworkBehaviour
 
     
 
-    public void ResetTank(int team){
-        Tank tankToReset = tanks[team];
+    public void ResetTank(int tankId){
+        Tank tankToReset = tanks[tankId];
 
-        Transform positionToSpawn = GetSpawnPosition(team);
+        Transform positionToSpawn = GetSpawnPosition(tankToReset.team);
 
         tankToReset.ResetTankPosition(positionToSpawn.position);
 
