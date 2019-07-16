@@ -9,7 +9,7 @@ public class Tank : NetworkBehaviour
     [System.Serializable]
     public class Assigment
     {
-        public Player.Role role;
+        public Role role;
         public Player playerRef = null;
         public bool available {
             get {
@@ -20,13 +20,13 @@ public class Tank : NetworkBehaviour
             }
         }
 
-        public Assigment(Player.Role role)
+        public Assigment(Role role)
         {
             this.role = role;
             playerRef = null;
         }
 
-        public Assigment(Player.Role role, Player player) : this(role)
+        public Assigment(Role role, Player player) : this(role)
         {
             playerRef = player;
         }
@@ -34,8 +34,12 @@ public class Tank : NetworkBehaviour
 
     #region Variables
 
+    public TankOption tankOption;
+
     [Header("Team")]
     public List<Player> players;
+    [SyncVar]
+    public int tankId = -1;
     [SyncVar]
     public int team = -1;
     public Color color;
@@ -121,11 +125,6 @@ public class Tank : NetworkBehaviour
 
 
     [ClientRpc]
-    public void RpcUpdateTankReferenceRPC(int team) {
-        GameMode.instance.setTankReference(this, team);
-    }
-
-    [ClientRpc]
     public void RpcSetColor(Color newColor) {
         color = newColor;
         ApplyColor();
@@ -153,17 +152,18 @@ public class Tank : NetworkBehaviour
         LoadTankParameters();
         rgbd = GetComponent<Rigidbody>();
         myTransform = transform;
-        if (team != -1) {
-            GameMode.instance.setTankReference(this, team);
-        }
         if (isServer) {
             currentHealth = maxHeath;
         }
 
         //Roles
         playerRoles = new List<Assigment>();
-        playerRoles.Add(new Assigment(Player.Role.Pilot));
-        playerRoles.Add(new Assigment(Player.Role.Gunner));
+        foreach(var role in tankOption.tankRoles)
+        {
+            playerRoles.Add(new Assigment(role));
+            playerRoles.Add(new Assigment(role));
+        }
+        
     }
 
     protected void LoadTankParameters()
@@ -183,7 +183,7 @@ public class Tank : NetworkBehaviour
     }
 
     void Start() {
-        ApplyColor();
+        // ApplyColor();
         if (!isServer) {
             GetComponent<Rigidbody>().isKinematic = true;
         }
@@ -223,7 +223,7 @@ public class Tank : NetworkBehaviour
         // RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
 
-    public void AssignPlayer(Player player, Player.Role role)
+    public void AssignPlayer(Player player, Role role)
     {
         players.Add(player);
 
@@ -248,7 +248,7 @@ public class Tank : NetworkBehaviour
         }
     }
 
-    public void RemovePlayer(Player player, Player.Role role)
+    public void RemovePlayer(Player player, Role role)
     {
         players.Remove(player);
 
@@ -270,10 +270,10 @@ public class Tank : NetworkBehaviour
         }
     }
 
-    public void SwitchPlayerRole(Player player, Player.Role currentRole)
+    public void SwitchPlayerRole(Player player, Role currentRole)
     {
         if (!player.canSwitchRoles) return; //Avoid changin if the player is not available
-        Player.Role roleToSwitch = (currentRole == Player.Role.Pilot) ? Player.Role.Gunner : Player.Role.Pilot;
+        Role roleToSwitch = (currentRole == Role.Pilot) ? Role.Gunner : Role.Pilot;
 
         for (int i = 0; i < playerRoles.Count; i++) {
             //Remove current player role reference
@@ -345,6 +345,7 @@ public class Tank : NetworkBehaviour
 
         Bullet bulletScript = bullet.GetComponent<Bullet>();
         bulletScript.team = team;
+        bulletScript.tankId = tankId;
         bulletScript.damage = bulletDamage;
         bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
 
@@ -449,19 +450,19 @@ public class Tank : NetworkBehaviour
             if(bullet != null) {
                 Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
-                    DealDamage(bullet.damage, bullet.team, bullet.angleFired);
+                    DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
                     NetworkServer.Destroy(col.gameObject);
                 }
             }
         }
     }
 
-    public void DealDamage(float damage, int otherTeam, float angle) {
+    public void DealDamage(float damage, int otherTank, float angle) {
         Debug.Log("Tank from team " + team + " received " + damage + " damage!");
         currentHealth -= damage;
         if(currentHealth <= 0) {
             Debug.Log("Is ded. RIP team " + team);
-            killTank(otherTeam);
+            killTank(otherTank);
         }
         else {
             RpcOnChangeHealth(currentHealth);
@@ -477,8 +478,8 @@ public class Tank : NetworkBehaviour
         }
     }
 
-    protected void killTank(int oposingTeam){
-        GameMode.instance.tankKilled(team,oposingTeam);
+    protected void killTank(int otherTank){
+        GameMode.instance.TankKilled(tankId,otherTank);
     }
 
     public void SetHealthSlider(UnityEngine.UI.Slider slider) {

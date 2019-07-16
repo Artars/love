@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2180,7 +2180,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 57.35
+  m_fontSize: 61.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2700,8 +2700,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   adressField: {fileID: 1585429385}
   mapCollection: {fileID: 11400000, guid: de069ced1d9d3bc4a844b8ad780447dd, type: 2}
-  address: 127.0.0.1
-  sceneToChange: TestMultiplayer
+  address: localhost
+  sceneToChange: 
 --- !u!4 &1843832585
 Transform:
   m_ObjectHideFlags: 0

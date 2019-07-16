@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 18332451572104374}
   - component: {fileID: 18332451572104375}
   - component: {fileID: 1094133066987509114}
+  - component: {fileID: 7165874172282429829}
   m_Layer: 0
   m_Name: GameMode
   m_TagString: Untagged
@@ -28,7 +29,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 443.70264, y: 258.68427, z: 5.652993}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 6269615099947831946}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -45,30 +47,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  numTeams: 2
-  teamColors:
-  - {r: 1, g: 0.3820755, b: 0.9357688, a: 1}
-  - {r: 0.3803922, g: 0.94189346, b: 1, a: 1}
-  - {r: 0, g: 0.7924528, b: 0.06076486, a: 1}
-  - {r: 0.9363882, g: 0.9528302, b: 0.17528482, a: 1}
-  timeOutTime: 5
-  numberOfPlayersToStartGame: 4
+  matchSettings:
+    mapIndex: 0
+    numTeams: 0
+    maxPoints: 0
+    maxTime: 0
+    timeToSetup: 0
   timeToStartGame: 5
   timeToEndGame: 5
   returnToLobby: 1
-  maxScore: 5
   infoTanks: []
   playersInfo:
     m_keys: 
     m_values: []
-  startGameOnCommand: 0
-  tankPrefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
-    type: 3}
+  tankColection: {fileID: 11400000, guid: 8ee9146f28a416b47955744ad9642fd9, type: 2}
+  mapCollection: {fileID: 11400000, guid: de069ced1d9d3bc4a844b8ad780447dd, type: 2}
+  spectatorPosition: {fileID: 6269615099947831946}
+  spectatorDistance: 10
   tanks: []
   players: []
-  localPlayer: {fileID: 0}
+  spectators: []
   hostIP: 
-  gameHasStarted: 0
+  gameStage: 0
+  score: []
+  deaths: 
+  kills: 
+  matchTime: 0
 --- !u!114 &1094133066987509114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,7 +85,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ServerOnly: 0
+  m_ServerOnly: 1
   m_LocalPlayerAuthority: 0
   m_AssetId: bb8bff03f39ff904aa9174e33d4c73d2
   m_SceneId: 0
+--- !u!114 &7165874172282429829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18332451572104369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cb1c330d2dfb74d8f6c7d7e3fb6401, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  tankCollection: {fileID: 11400000, guid: 8ee9146f28a416b47955744ad9642fd9, type: 2}
+  numTanks: 2
+  numTeams: 2
+  infoTanks: []
+  playersInfo:
+    m_keys: 
+    m_values: []
+  playersConnected: []
+  ip: 
+  isGameStarting: 0
+--- !u!1 &6606420569100382117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6269615099947831946}
+  m_Layer: 0
+  m_Name: Spectator WatchingPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6269615099947831946
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6606420569100382117}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 18332451572104374}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

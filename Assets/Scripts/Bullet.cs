@@ -8,6 +8,8 @@ public class Bullet : NetworkBehaviour
     [SyncVar]
     public int team = -1;
     [SyncVar]
+    public int tankId = -1;
+    [SyncVar]
     public float damage;
     [SyncVar]
     public Vector3 velocityFired;

@@ -4,15 +4,6 @@ using UnityEngine;
 
 public class SpawnPoint : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [Tooltip("Use -1 for spawn valid for every team")]
+    public int team = -1;
 }

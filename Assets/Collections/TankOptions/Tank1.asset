@@ -16,4 +16,5 @@ MonoBehaviour:
   tankSprite: {fileID: 0}
   tankRoles: 0100000002000000
   prefabID: 0
-  tankPrefab: {fileID: 0}
+  tankPrefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
+    type: 3}

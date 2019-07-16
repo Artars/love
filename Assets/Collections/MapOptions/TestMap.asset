@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
   m_Name: TestMap
   m_EditorClassIdentifier: 
-  scene: LobbyTest
-  mapName: Test lobby
+  scene: Burgsgrad
+  mapName: Burgsgrad
   mapThumbnail: {fileID: 0}

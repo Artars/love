@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 462328839255144788}
   - component: {fileID: 462328839252277620}
   - component: {fileID: 462328839253375924}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -362,7 +362,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5857236579592352198}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 8828008339206530547}
   m_Layer: 10
   m_Name: Model
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -534,9 +534,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0
+  tankOption: {fileID: 11400000, guid: 61e6b19171e191445a8fd10e68e1f155, type: 2}
   players: []
+  tankId: -1
   team: -1
-  color: {r: 0, g: 0, b: 0, a: 0}
+  color: {r: 1, g: 1, b: 1, a: 0}
   playerRoles: []
   tankParameters: {fileID: 11400000, guid: 6161ec92fd19a8242b3ba9ed4740280c, type: 2}
   turnCannonSpeed: 50
@@ -716,7 +718,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 507560451021067165}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SpawnPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -871,7 +873,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5841641100988809219}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GunnerCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -902,7 +904,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9024271889383960201}
   - component: {fileID: 7755197802657628272}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}

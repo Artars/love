@@ -8,16 +8,13 @@ public class Player : NetworkBehaviour
 {
 
     public enum Mode {
-        Selecting, Observing, Playing
+        Selecting, Observing, Playing, Spectator
     }
 
-    public enum Role
-    {
-        Pilot, Gunner
-    }
-
-
-    public Mode currentMode = Mode.Observing;
+    [SyncVar]
+    public PlayerInfo playerInfo;
+    [SyncVar]
+    public Mode currentMode = Mode.Selecting;
     public Tank tankRef;
     public Cannon cannonRef;
     [SyncVar]
@@ -30,7 +27,7 @@ public class Player : NetworkBehaviour
     public bool canSwitchRoles = false;
 
 
-    [Header("Controll")]
+    [Header("Control")]
     public float doubleClickTimeDelay = 0.2f;
     protected float lastTimeClicked = 0;
 
@@ -75,6 +72,10 @@ public class Player : NetworkBehaviour
     protected float old_vertical = -2;
     protected float fireCounter = 0;
 
+    //Other
+    protected bool assignedCallback = false;
+    protected Coroutine messageCoroutine = null;
+
 
     //Remove player from the game
     public override void OnNetworkDestroy () {
@@ -90,9 +91,6 @@ public class Player : NetworkBehaviour
         //Update referece
         if(GameMode.instance != null) {
 
-            GameMode.instance.setPlayerReference(this);
-            
-
             if(!isLocalPlayer){
                 firstPersonCamera.gameObject.SetActive(false);
                 observerPivot.gameObject.SetActive(false);
@@ -101,6 +99,7 @@ public class Player : NetworkBehaviour
             if(isLocalPlayer){
                 observerPivot.gameObject.SetActive(true);
                 informationCanvas.SetActive(true);
+                TryToAssignCallback();
             }
         }
 
@@ -112,10 +111,11 @@ public class Player : NetworkBehaviour
 
 
     [ClientRpc]
-    public void RpcObservePosition(Vector3 position, float speed) {
+    public void RpcObservePosition(Vector3 position, float speed, float angle, float distance) {
         if(isLocalPlayer){
             Debug.Log("Will observe " + position);
             currentMode = Mode.Observing;
+            HideHUD();
             firstPersonCamera.gameObject.SetActive(false);
             observerPivot.gameObject.SetActive(true);
             pointToObserve = position;
@@ -176,7 +176,9 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcDisplayMessage(string message, float duration, float fadeIn, float fadeOut){
         if(isLocalPlayer){
-            StartCoroutine(showMessage(messageText, message, messageText.color, duration, fadeIn, fadeOut));
+            if(messageCoroutine != null)
+                StopCoroutine(messageCoroutine);
+            messageCoroutine = StartCoroutine(showMessage(messageText, message, messageText.color, duration, fadeIn, fadeOut));
         }
     }
 
@@ -344,7 +346,7 @@ public class Player : NetworkBehaviour
         canvasShared.SetActive(true);
         healthSlider.gameObject.SetActive(true);
         tankRef.SetHealthSlider(healthSlider);
-        ScoreCallBack(SyncListInt.Operation.OP_DIRTY,0,0);
+        TryToAssignCallback();
 
         ipText.gameObject.SetActive(false);
 
@@ -427,10 +429,26 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void TryToAssignCallback()
+    {
+        if(!assignedCallback)
+        {
+            if(GameStatus.instance != null)
+            {
+                assignedCallback = true;
+                GameStatus.instance.score.Callback += ScoreCallBack;
+            }
+        }
+        if(assignedCallback)
+        {
+            ScoreCallBack(SyncListInt.Operation.OP_DIRTY,0,0);
+        }
+    }
+
     public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
         Debug.Log("Callbacked");
         if(scoreText != null && team != -1){
-            SyncListInt syncList = GameMode.instance.score;
+            SyncListInt syncList = GameStatus.instance.score;
 
             if(syncList == null || syncList.Count < 1) return;
 
@@ -494,7 +512,7 @@ public class Player : NetworkBehaviour
         colorToChange.a = 0;
         textRef.color = colorToChange;
 
-
+        messageCoroutine = null;
 
     }
 

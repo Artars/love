@@ -3,7 +3,10 @@ guid: 6e09d979acc6f44449490fd1b0660408
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - tankColection: {fileID: 11400000, guid: 8ee9146f28a416b47955744ad9642fd9, type: 2}
+  - mapCollection: {fileID: 11400000, guid: de069ced1d9d3bc4a844b8ad780447dd, type: 2}
+  - spectatorPosition: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

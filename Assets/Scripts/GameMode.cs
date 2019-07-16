@@ -2,55 +2,62 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEditor;
 
 public class GameMode : NetworkBehaviour
 {
+
+    public enum GameStage
+    {
+        Lobby,Setup,Match,End
+    }
+
+    public struct KillPair
+    {
+        public int killerId;
+        public int killedId;
+        public float matchTime;
+
+        public KillPair(int killer, int killed, float time)
+        {
+            killedId = killed;
+            killerId = killer;
+            matchTime = time;
+        }
+    }
     
     [Header("Game settings")]
     [SyncVar]
-    public int numTeams = 2;
-    public Color[] teamColors = {new Color(1,0.3820755f,0.9357688f)};
-    [SyncVar]
-    public float timeOutTime = 5;
-    protected float timeOutCounter = 10;
-    [SyncVar]
-    public int numberOfPlayersToStartGame = 16;
-    [SyncVar]
+    public MatchSetting matchSettings;
     public float timeToStartGame = 5;
-    [SyncVar]
     public float timeToEndGame = 5;
-    [SyncVar]
     public bool returnToLobby = true;
-    [SyncVar]
-    public int maxScore = 5;
 
     public List<InfoTank> infoTanks;
     public DictionaryIntPlayerInfo playersInfo;
 
 
-    public bool startGameOnCommand = false;
-
-    [Header("Prefabs")]
-    public GameObject tankPrefab;
-
     [Header("References")]
+    public TankOptionCollection tankColection;
+    public MapCollection mapCollection;
+    public Transform spectatorPosition;
+    public float spectatorDistance = 10;
     public Tank[] tanks;
     public List<Player> players;
-    public Player localPlayer;
+    public List<Player> spectators;
     public List<Player>[] teamPlayers;
-    protected SpawnPoint[] spawnPoints;
-    protected bool tanksSpawned;
+    protected Dictionary<int,List<SpawnPoint>> spawnPoints;
 
     [Header("Game State")]
-    [SyncVar]
     public string hostIP;
     [SyncVar]
-    public bool gameHasStarted;
-    public SyncListInt score;
-    public SyncListInt deaths;
-    public SyncListInt kills;
+    public GameStage gameStage = GameStage.Lobby;
+    public List<float> score;
+    public List<int> deaths;
+    public List<int> kills;
+    public List<KillPair> killHistory;
+    public float matchTime;
     
-
 
 
     protected float currentCountdown;
@@ -59,264 +66,407 @@ public class GameMode : NetworkBehaviour
     public static GameMode instance = null;
 
     protected void Awake(){
-        if(instance == null) instance = this;
-            else if(instance != this) Destroy(gameObject);
-        tanks = new Tank[numTeams];
-        players = new List<Player>();
-        teamPlayers = new List<Player>[numTeams];
-    }
-
-    void Start(){
-        spawnPoints = GameObject.FindObjectsOfType<SpawnPoint>();
-        if(isServer) {
-            if(score == null)
-                score = new SyncListInt();
-            if(deaths == null)
-                deaths = new SyncListInt();
-            if(kills == null)
-                kills = new SyncListInt();
-            for(int i = 0; i < numTeams; i++) {
-                score.Insert(i,0);
-                deaths.Insert(i,0);
-                kills.Insert(i,0);
-            }
-
-            Debug.Log("List: " + score);
-            hostIP = getIPString();
-
-            numberOfPlayersToStartGame = MatchSettings.instance.connectedPlayers;
-            playersInfo = MatchSettings.instance.playersInfo;
-            infoTanks = MatchSettings.instance.infoTanks;
-            timeOutCounter = timeOutTime; 
-
-            numTeams = infoTanks.Count;
-
-        }
+        //Initialize singleton
+        if(instance == null) 
+            instance = this;
+        else if(instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        } 
+        
     }
 
     void Update() {
-        if(!isServer) return;
-        if(startGameOnCommand && !gameHasStarted && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))){
-            Debug.Log("Started game due command of server");
+        if(gameStage == GameStage.Match)
+        {
+            matchTime += Time.deltaTime;
+            if(matchTime > matchSettings.maxTime)
+            {
+                MatchTimeEnded();
+            }
+        }
+    }
+
+    public void BroadcastMessageToAllConnected(string message, float duration, float fadeIn = 0.5f, float fadeOut = 1f)
+    {
+        foreach(Player p in players)
+        {
+            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+        }
+        foreach(Player p in spectators)
+        {
+            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+        }
+    }
+
+    public void BroadcastMessageToTeam(int team, string message, float duration, float fadeIn = 0.5f, float fadeOut = 1f)
+    {
+        foreach(Player p in teamPlayers[team])
+        {
+            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+        }
+    }
+
+    public void BroadcastMessageToPlayers(string message, float duration, float fadeIn = 0.5f, float fadeOut = 1f)
+    {
+        foreach(Player p in players)
+        {
+            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+        }
+    }
+
+    public void BroadcastMessageToSpectators(string message, float duration, float fadeIn = 0.5f, float fadeOut = 1f)
+    {
+        foreach(Player p in spectators)
+        {
+            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+        }
+    }
+
+    public void TryToJoinAsSpectator(Player player)
+    {
+        if(gameStage != GameStage.Lobby)
+        {
+            AssignPlayerToSpectator(player);
+        }
+    }
+
+    #region Setup
+
+    public void StartMatchSetup()
+    {
+        gameStage = GameStage.Setup;
+        InitializeVariables();
+        SpawnTanks();
+        SetupPlayers();
+        StartCoroutine(WaitMatchPresentation());
+
+    }
+
+    protected void EndMatchSetup()
+    {
+        AssignPlayersToTanks();
+
+        matchTime = 0;
+        gameStage = GameStage.Match;
+        
+        BroadcastMessageToAllConnected("Match has started!", 2f);
+    }
+
+    protected void InitializeVariables()
+    {
+        MatchConfiguration matchConfiguration = MatchConfiguration.instance;
+        matchSettings = matchConfiguration.matchSetting;
+
+        score = new List<float>();
+        deaths = new List<int>();
+        kills = new List<int>();
+        killHistory = new List<KillPair>();
+        for (int i = 0; i < matchConfiguration.numTanks; i++)
+        {
+            deaths.Add(0);
+            kills.Add(0);
+        }
+        for (int i = 0; i < matchSettings.numTeams; i++)
+        {
+            score.Add(0);
+        }
+
+        tanks = new Tank[matchConfiguration.numTanks];
+        players = new List<Player>();
+        spectators = new List<Player>();
+        teamPlayers = new List<Player>[matchConfiguration.matchSetting.numTeams];
+        spawnPoints = new Dictionary<int, List<SpawnPoint>>();
+        //Can have -1 team
+        for (int i = -1; i < matchSettings.numTeams; i++)
+        {
+            spawnPoints.Add(i, new List<SpawnPoint>());
+        }
+
+        GameStatus.instance.Setup(matchSettings);
+    }
+
+    protected void SpawnTanks()
+    {
+        SpawnPoint[] allSpawnPoints = GameObject.FindObjectsOfType<SpawnPoint>();
+        foreach(SpawnPoint spawn in allSpawnPoints)
+        {
+            if(spawn.team == -1)
+            {
+                for (int i = 0; i < matchSettings.numTeams; i++)
+                {
+                    spawnPoints[i].Add(spawn);
+                }
+            }
+            spawnPoints[spawn.team].Add(spawn);
             
-            StartCountDown();
         }
-        timeOutCounter -= Time.deltaTime;
 
-        if(!gameHasStarted && timeOutCounter < 0) {
-            Debug.Log("Started game due timer");
-
-            StartCountDown();
+        foreach(InfoTank tankInfo in MatchConfiguration.instance.infoTanks)
+        {
+            SpawnTank(tankInfo);
         }
+
+
     }
 
-    #region Tank
+    protected void SpawnTank(InfoTank tankInfo)
+    {
+        Transform spawnPosition = GetSpawnPosition(tankInfo.team);
+        GameObject tankPrefab = tankColection.tankOptions[tankInfo.prefabID].tankPrefab;
 
-    protected void spawnTanks(){
-        int index = 0;
-        if(spawnPoints.Length < 1){
-            Debug.LogWarning("NO SPAWN POINTS");
-            return;
-        }
-
-        for(int i= 0; i < numTeams; i++) {
-            spawnTank(spawnPoints[index % spawnPoints.Length].transform, i);
-            index++;
-        }
-    }
-
-    /// <summary>
-    /// Should be called by the server to spawn a tank of a given team in the right position
-    /// </summary>
-    /// <param name="position"></param>
-    /// <param name="team"></param>
-    protected void spawnTank(Transform position, int team){
-        GameObject tank = GameObject.Instantiate(tankPrefab,position.position,Quaternion.identity);
+        GameObject tank = GameObject.Instantiate(tankPrefab, spawnPosition.position, spawnPosition.rotation);
         Tank tankRef = tank.GetComponent<Tank>();
-        tankRef.team = team;
-        tanks[team] = tankRef;
-        tankRef.color = teamColors[team % teamColors.Length];
-        tankRef.ApplyColor();
+        tankRef.team = tankInfo.team;
+        tankRef.tankId = tankInfo.id;
+        tanks[tankInfo.id] = tankRef;
         tankRef.ResetTank();
         NetworkServer.Spawn(tank);
-
-        tankRef.RpcUpdateTankReferenceRPC(team);
-        tankRef.RpcSetColor(tankRef.color);
     }
 
-    public void tankKilled(int ownerTeam, int oposingTeam) {
-        kills[oposingTeam]++;
-        deaths[ownerTeam]++;
-        updateScore();
+    public Transform GetSpawnPosition (int team)
+    {
+        if(!spawnPoints.ContainsKey(team))
+        {
+            return null;
+        }
 
-        ResetTank(ownerTeam);
+        return spawnPoints[team][Random.Range(0,spawnPoints[team].Count)].transform;
+
     }
+
+    protected void SetupPlayers()
+    {
+        foreach(var connection in NetworkServer.connections)
+        {
+            int playerID = connection.Value.connectionId;
+            NetworkIdentity identity = connection.Value.playerController;
+            Player playerRef = identity.GetComponent<Player>();
+    
+            if(!MatchConfiguration.instance.playersInfo.ContainsKey(playerID)
+            || !MatchConfiguration.instance.playersInfo[playerID].HasAssigment())
+            {
+                AssignPlayerToSpectator(playerRef);
+            }
+            else
+            {
+                players.Add(playerRef);
+
+                PlayerInfo playerInfo = MatchConfiguration.instance.playersInfo[playerID];
+
+                playerRef.team = playerInfo.team;
+                playerRef.role = playerInfo.role;
+                playerRef.playerInfo = playerInfo;
+
+
+                if(teamPlayers[playerInfo.team] == null) teamPlayers[playerInfo.team] = new List<Player>();
+                    teamPlayers[playerInfo.team].Add(playerRef);
+
+                playerRef.RpcObservePosition(tanks[playerInfo.tankID].transform.position,10,45,10);
+                playerRef.RpcDisplayMessage("You are on Team " + (playerInfo.team+1) + " with role " + playerInfo.role.ToString(),timeToStartGame/2, 0.5f, 1f);
+            }
+        }
+    }
+
+    protected void AssignPlayerToSpectator(Player player)
+    {
+        if(player != null)
+        {
+            if(!spectators.Contains(player))
+                spectators.Add(player);
+            player.RpcObservePosition(spectatorPosition.position, 0, 90f, spectatorDistance);
+            player.currentMode = Player.Mode.Spectator;
+        }
+    }
+
+    protected void AssignPlayersToTanks()
+    {
+        foreach(Player player in players)
+        {
+            {
+                AssignPlayerToTank(player);
+            }
+        }
+    }
+
+    protected void AssignPlayerToTank(Player player)
+    {
+        if(player != null)
+        {
+            player.SetTankReference(tanks[player.playerInfo.tankID], player.playerInfo.team, player.playerInfo.role);
+            Tank toAssing = tanks[player.playerInfo.tankID];
+            toAssing.AssignPlayer(player, player.playerInfo.role);
+            player.RpcAssignPlayer(player.playerInfo.team, player.playerInfo.role, toAssing.GetComponent<NetworkIdentity>());
+        }
+        else
+        {
+            Debug.LogWarning("Tried to assign null player!");
+        }
+    }
+
+    protected IEnumerator WaitMatchPresentation()
+    {
+        float counter = 0;
+        float endTime = matchSettings.timeToSetup;
+
+        while(counter < endTime)
+        {
+            counter += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        EndMatchSetup();
+    }
+
+    #endregion
+
+
+
+    #region Match
+    
+    public void TankKilled(int ownerId, int enemyId) {
+        kills[enemyId]++;
+        GameStatus.instance.kills[enemyId]++;
+        deaths[ownerId]++;
+        GameStatus.instance.deaths[ownerId]++;
+        KillPair newKill = new KillPair(enemyId,ownerId,matchTime);
+        killHistory.Add(newKill);
+        GameStatus.instance.killHistory.Add(newKill);
+
+        BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f);
+
+        ResetTank(ownerId);
+        
+        UpdateScore();
+    }
+
+    public virtual void UpdateScore(){
+        for(int i = 0; i < matchSettings.numTeams; i++) {
+            int count = 0;
+            for (int j = 0; j < kills.Count; j++)
+            {
+                int team = MatchConfiguration.instance.infoTanks[j].team;
+                if(team == i)
+                    count+=kills[j];
+            }
+            score[i] = count;
+            GameStatus.instance.score[i] = count;
+        }
+        CheckWinCondition();
+    }
+
+    
 
     public void ResetTank(int team){
         Tank tankToReset = tanks[team];
 
-        Transform positionToSpawn = spawnPoints[Random.Range(0,spawnPoints.Length)].transform;
+        Transform positionToSpawn = GetSpawnPosition(team);
 
         tankToReset.ResetTankPosition(positionToSpawn.position);
 
     }
 
-    public void setTankReference(Tank tank, int team) {
-        tanks[team]  = tank;
-    }
 
-    public Tank getTank(int team) {
+    public Tank GetTank(int id) {
         if(tanks == null) {
             Debug.LogWarning("Couldn't find tank array");
             return null;
         }
-        return tanks[team];
+        return tanks[id];
     }
 
-    #endregion
-
-    #region Player
-
-    public void setPlayerReference(Player player) {
-        players.Add(player);
-        score.Callback += player.ScoreCallBack;
-        
-        int id;
-        
-        
-        if(player.isLocalPlayer) {
-            localPlayer = player;
-        }
-
-        if(isServer){
-            id = player.connectionToClient.connectionId;
-            int playerTeam = playersInfo[id].team;
-            Player.Role role = (Player.Role)((int)playersInfo[id].role - 1); //Roles from lobby start from 1
-
-            player.team = playerTeam;
-            player.role = role;
-
-            if(teamPlayers[playerTeam] == null) teamPlayers[playerTeam] = new List<Player>();
-                teamPlayers[playerTeam].Add(player);
-
-            connectedNumberOfClients++;
-            if(connectedNumberOfClients > numberOfPlayersToStartGame && !gameHasStarted){
-                Debug.Log("Started game due number of players: " + connectedNumberOfClients + " / " + numberOfPlayersToStartGame);
-                StartCountDown();
-            }
-
-            player.RpcObservePosition(spawnPoints[playerTeam % spawnPoints.Length].transform.position,10);
-            player.RpcDisplayMessage("You are on Team " + (playerTeam+1) + " with role " + role.ToString(),timeToStartGame/2, 0.5f, 1f);
-            player.RpcShowHostIp(hostIP);
-        }
-
-    }
-
-    public void assignPlayers() {
-        if(isServer){
-            Debug.Log("Trying to assing");
-            foreach (KeyValuePair<int, NetworkConnection> pair in NetworkServer.connections){
-                Debug.Log("Connected: " + pair.Key);
-                assignPlayer(pair.Value);
-            }
-        }
-    }
-
-    protected void assignPlayer(NetworkConnection connection) {
-        int id = connection.connectionId - 1;
-        if(id < 0) id = 0; //Fix host
-
-        Player player = connection.playerController.GetComponent<Player>();
-        if(player != null) {
-            int playerTeam = player.team;
-            Player.Role role = player.role; 
-
-            NetworkIdentity toPosses = tanks[playerTeam].GetComponent<NetworkIdentity>();
-            // NetworkIdentity toPosses = role == Player.Role.Pilot ? 
-            // tanks[playerTeam].GetComponent<NetworkIdentity>() : cannons[playerTeam].GetComponent<NetworkIdentity>();
-
-            // toPosses.AssignClientAuthority(connection);
-
-            player.SetTankReference(tanks[playerTeam], playerTeam, role);
-            tanks[playerTeam].AssignPlayer(player, role);
-            player.RpcAssignPlayer(playerTeam, role, toPosses);
-        }
-    }
-
-    public void makeUsersObservePoint(Vector3 position, float speed) {
-        if(isServer){
-            foreach(Player p in players) {
-                p.RpcObservePosition(position, speed);
-            }
-        }
-
-    }
-
-    private IEnumerator waitToAssignBack(float time, NetworkConnection toAssing) {
+    private IEnumerator waitToAssignBack(float time, Player toAssing) {
         currentCountdown = time;
         while(currentCountdown > 0) {
             currentCountdown -= Time.deltaTime;
             yield return null;
         }
 
-        assignPlayer(toAssing);
+        AssignPlayerToTank(toAssing);
     }
 
     #endregion
 
-    #region GameFlow
+    #region End
 
-    private void StartCountDown() {
-        Debug.Log("Game will start in "+ timeToStartGame + " seconds");
-        StartCoroutine(doCountdown(timeToStartGame));
-        spawnTanks();
-        gameHasStarted = true;
-        // makeUsersObservePoint();
-    }
-
-    private IEnumerator doCountdown(float time) {
-        currentCountdown = time;
-        while(currentCountdown > 0) {
-            currentCountdown -= Time.deltaTime;
-            yield return null;
-        }
-
-        startGame();
-    }
-
-    public void startGame(){
-        Debug.Log("Starting game");
-        assignPlayers();
-    }
-
-    public virtual void updateScore(){
-        for(int i = 0; i < numTeams; i++) {
-            score[i] = kills[i];
-        }
-        checkWinCondition();
-    }
-
-    public virtual void checkWinCondition() {
-        for(int i = 0; i < numTeams; i++) {
-            if(score[i] >= maxScore){
-                endGame(i);
-                break;
+    public virtual void CheckWinCondition() {
+        List<int> winner = new List<int>();
+        for(int i = 0; i < score.Count; i++) {
+            if(score[i] >= matchSettings.maxPoints){
+                winner.Add(i);
             }
         }
+        if(winner.Count > 0)
+        {
+            EndGame(winner, winner.Count > 1);
+        }
     }
 
-    public void endGame(int winnerTeam){
-        for(int i = 0; i < numTeams; i ++){
+    public virtual void MatchTimeEnded()
+    {
+        List<int> winningTeams = new List<int>();
+        float highestScore = Mathf.NegativeInfinity;
+        bool hasDraw = false;
+        for (int i = 0; i < score.Count; i++)
+        {
+            if(score[i] > highestScore)
+            {
+                winningTeams.Clear();
+                winningTeams.Add(i);
+                hasDraw = false;
+            }
+            else if(score[i] == highestScore)
+            {
+                winningTeams.Add(i);
+                hasDraw = true;
+            }
+        }
+
+        EndGame(winningTeams, hasDraw);
+        
+    }
+
+    public virtual void EndGame(List<int> winningTeams, bool hasDraw = false){
+        gameStage = GameStage.End;
+        
+        string winningString = winningTeams[0].ToString();
+        for (int i = 1; i < winningTeams.Count; i++)
+        {
+            winningString += " & " + winningTeams[i];
+        }
+
+        for(int i = 0; i < teamPlayers.Length; i ++){
             if(teamPlayers[i] != null){
-                foreach(Player p in teamPlayers[i])
+
+                if(!hasDraw)
                 {
-                    if(i == winnerTeam){
-                        p.RpcDisplayMessage("Outstanding performance, comrades! We have won this battle!", 10, 0.1f, 1);
+                    foreach(Player p in teamPlayers[i])
+                    {
+                        if(winningTeams.Contains(i)){
+                            p.RpcDisplayMessage("Outstanding performance, comrades! We have won this battle!", 10, 0.1f, 1);
+                        }
+                        else
+                            p.RpcDisplayMessage("A shameful display! " + winningString + " has beaten us this time!"
+                            , 10, 0.1f, 1);
                     }
-                    else
-                        p.RpcDisplayMessage("A shameful display! " + winnerTeam + " has beaten us this time!"
-                        , 10, 0.1f, 1);
                 }
+                else
+                {
+                    foreach(Player p in teamPlayers[i])
+                    {
+                            p.RpcDisplayMessage("I can't believe it, a Draw! Nice work teams " + winningString + "!", 10, 0.1f, 1);
+                    }
+                }
+            }
+        }
+
+        //Spectators
+        for (int i = 0; i < spectators.Count; i++)
+        {
+            if(spectators[i] != null)
+            {
+                spectators[i].RpcDisplayMessage("Nice work teams " + winningString + "!", 10, 0.1f, 1);
             }
         }
 
@@ -337,7 +487,7 @@ public class GameMode : NetworkBehaviour
     public void shutdownGame(){
 
         if(returnToLobby)
-            NetworkManager.singleton.ServerChangeScene("Scenes/LobbyScene");
+            NetworkManager.singleton.ServerChangeScene(mapCollection.mapOptions[matchSettings.mapIndex].scene);
         else
             NetworkManager.singleton.StopHost();
     }
@@ -346,15 +496,17 @@ public class GameMode : NetworkBehaviour
     #endregion
 
 
-    protected string getIPString(){
-        string s;
-        // NetworkManager.singleton.transport.GetConnectionInfo(0, out s);
-        s = NetworkManager.singleton.networkAddress;
-        foreach (var ip in System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName()).AddressList){//[0].ToString());
-            if(ip.ToString().Length < 17)
-                s = ip.ToString();
-        }
-        return s;
+    #region DEBUG
+
+    #if UNITY_EDITOR
+
+    [MenuItem("Debug/Kill tank 0")]
+    public static void KillTank0()
+    {
+        instance.TankKilled(0,1);
     }
 
+    #endif
+
+    #endregion
 }

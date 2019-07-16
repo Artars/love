@@ -29,8 +29,8 @@ public class LobbyManager : NetworkBehaviour
             Destroy(gameObject);
         }
 
-        if(MatchSettings.instance != null && MatchSettings.instance.infoTanks.Count > 0) {
-            infoTanks = new List<InfoTank>(MatchSettings.instance.infoTanks);
+        if(MatchConfiguration.instance != null && MatchConfiguration.instance.infoTanks.Count > 0) {
+            infoTanks = new List<InfoTank>(MatchConfiguration.instance.infoTanks);
 
             //Clear player choices
             for (int i = 0; i < infoTanks.Count; i++)
@@ -68,6 +68,8 @@ public class LobbyManager : NetworkBehaviour
     /// <param name="playerName">The player name</param>
     public void PlayerJoin(LobbyPlayer player, string playerName) {
         int connectionID = player.connectionToClient.connectionId;
+
+     
         
 
         //Save reference of this player
@@ -84,12 +86,21 @@ public class LobbyManager : NetworkBehaviour
             player.RpcUpdatePlayerInfo(pairValue.Key, pairValue.Value);
         }
 
+        //Update IP text
+        player.RpcReceiveIP(ip);
+
+        //Do not update other fields if game already started, hide hud
+        if(isGameStarting)
+        {
+            player.RpcDeactivateThis();
+            return;
+        }
+
         //Send information from each position to this player
         PlayerInfo info = new PlayerInfo(connectionID,playerName);
         UpdatePlayerInfo(connectionID, info);
 
-        //Update IP text
-        player.RpcReceiveIP(ip);
+        
     }
 
     /// <summary>
@@ -243,6 +254,12 @@ public class LobbyManager : NetworkBehaviour
             previousTankInfo.assigments[playerInfo.roleIndex].playerAssigned = -1;
             UpdateTankInfo(previousTankId,previousTankInfo);
         }
+        playerInfo.role = Role.None;
+        playerInfo.roleIndex = -1;
+        playerInfo.tankID = -1;
+        playerInfo.ready = false;
+        playerInfo.team = -1;
+        UpdatePlayerInfo(playerInfo.connectionID, playerInfo);
     }
 
     /// <summary>
@@ -273,10 +290,13 @@ public class LobbyManager : NetworkBehaviour
     /// </summary>
     public void StartGame(){
         isGameStarting = true;
-        MatchSettings.instance.infoTanks = infoTanks;
-        MatchSettings.instance.playersInfo = playersInfo;
-        MatchSettings.instance.connectedPlayers = playersConnected.Count;
-        NetworkManager.singleton.ServerChangeScene("Scenes/Burgsgrad");
+        MatchConfiguration.instance.infoTanks = infoTanks;
+        MatchConfiguration.instance.playersInfo = playersInfo;
+        MatchConfiguration.instance.matchSetting = new MatchSetting(0,2,5);
+        GameMode.instance.StartMatchSetup();
+        HideLobbyForAllPlayers();
+        // MatchSettings.instance.connectedPlayers = playersConnected.Count;
+        // NetworkManager.singleton.ServerChangeScene("Scenes/Burgsgrad");
     }
 
     /// <summary>
@@ -302,6 +322,14 @@ public class LobbyManager : NetworkBehaviour
         }
 
         return everyoneIsReady;
+    }
+
+    public void HideLobbyForAllPlayers()
+    {
+        foreach(LobbyPlayer player in playersConnected)
+        {
+            player.RpcDeactivateThis();
+        }
     }
 
     #endregion
