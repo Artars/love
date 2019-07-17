@@ -204,18 +204,21 @@ public struct MatchSetting
     public int maxPoints;
     public float maxTime;
     public float timeToSetup;
+    public float timeToRespawn;
 
     public MatchSetting(int mapIndex = 0, 
     int numTeams = 2, 
     int maxPoints = 5, 
-    float maxTime = Mathf.Infinity, 
-    float timeToSetup = 4)
+    float maxTime = Mathf.Infinity,
+    float timeToRespawn = 4f, 
+    float timeToSetup = 4f)
     {
         this.mapIndex = 0;
         this.numTeams = numTeams;
         this.maxPoints = maxPoints;
         this.maxTime = maxTime;
         this.timeToSetup = timeToSetup;
+        this.timeToRespawn = timeToRespawn;
     }
 
 

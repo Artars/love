@@ -83,6 +83,8 @@ public class Tank : NetworkBehaviour
 
 
     [Header("Movement")]
+    [SyncVar]
+    public bool canBeControlled = true;
     public float forwardSpeed = 10;
     public float backwardSpeed = 5;
     public float turnSpeed = 10;
@@ -270,6 +272,14 @@ public class Tank : NetworkBehaviour
         }
     }
 
+    public void ClearPlayerAssigments()
+    {
+        foreach(var assigment in playerRoles)
+        {
+            assigment.playerRef = null;
+        }
+    }
+
     public void SwitchPlayerRole(Player player, Role currentRole)
     {
         if (!player.canSwitchRoles) return; //Avoid changin if the player is not available
@@ -325,7 +335,7 @@ public class Tank : NetworkBehaviour
     }
 
     public void cannonShoot() {
-        if (cannonShootCounter < 0) {
+        if (cannonShootCounter < 0 && canBeControlled) {
             ShootCannon(team);
             cannonShootCounter = shootCooldown;
         }
@@ -404,6 +414,7 @@ public class Tank : NetworkBehaviour
 
     //Move the tank based on the axis inputs. Should be called from the fixed updates
     protected void moveTank(float deltaTime) {
+        if(!canBeControlled) return;
         float realRightAxis = rightThreadOnGround ? rightAxis : 0;
         float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
 
@@ -460,7 +471,7 @@ public class Tank : NetworkBehaviour
     public void DealDamage(float damage, int otherTank, float angle) {
         Debug.Log("Tank from team " + team + " received " + damage + " damage!");
         currentHealth -= damage;
-        if(currentHealth <= 0) {
+        if(currentHealth <= 0 && canBeControlled) {
             Debug.Log("Is ded. RIP team " + team);
             killTank(otherTank);
         }

@@ -163,13 +163,19 @@ public class Player : NetworkBehaviour
 
         currentMode = Mode.Observing;
 
-        if(role == Role.Pilot)
-        {
-            rightAxis = 0;
-            leftAxis = 0;
-            rightSlider.value = 0;
-            leftSlider.value = 0;
-        }
+        canSwitchRoles = false;
+
+        //Reset control variables
+        rightAxis = 0;
+        leftAxis = 0;
+        rightSlider.value = 0;
+        leftSlider.value = 0;
+        fireCounter = 0;
+
+        //Remove tank references
+        tankRef = null;
+        possesedObject = null;
+
 
         HideHUD();
     }

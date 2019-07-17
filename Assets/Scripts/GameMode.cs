@@ -41,6 +41,7 @@ public class GameMode : NetworkBehaviour
     public TankOptionCollection tankColection;
     public MapCollection mapCollection;
     public Transform spectatorPosition;
+    public Transform hideTankPosition;
     public float spectatorDistance = 10;
     public Tank[] tanks;
     public List<Player> players;
@@ -361,9 +362,27 @@ public class GameMode : NetworkBehaviour
     public void ResetTank(int tankId){
         Tank tankToReset = tanks[tankId];
 
-        Transform positionToSpawn = GetSpawnPosition(tankToReset.team);
+        tankToReset.canBeControlled = false;
 
-        tankToReset.ResetTankPosition(positionToSpawn.position);
+        int assigmentId = -1;
+        foreach(var assigment in tankToReset.playerRoles)
+        {
+            assigmentId++;
+            Player player = assigment.playerRef;
+            if(player == null) continue;
+
+            player.playerInfo.role = assigment.role;
+            player.playerInfo.roleIndex = assigmentId;
+            player.RpcRemoveOwnership();
+            player.RpcObservePosition(tankToReset.transform.position, 20, 45, 5);
+            StartCoroutine(waitToAssignBack(matchSettings.timeToRespawn, player));
+        }
+
+        tankToReset.ClearPlayerAssigments();
+        tankToReset.GetComponent<Rigidbody>().isKinematic = true;
+        tankToReset.transform.position = hideTankPosition.position;
+        
+        StartCoroutine(WaitToRespawnTank(matchSettings.timeToRespawn-0.25f, tankToReset));
 
     }
 
@@ -376,10 +395,25 @@ public class GameMode : NetworkBehaviour
         return tanks[id];
     }
 
+    private IEnumerator WaitToRespawnTank(float time, Tank tank)
+    {
+        float counter = time;
+        while(counter > 0) {
+            counter -= Time.deltaTime;
+            yield return null;
+        }
+
+        Transform positionToSpawn = GetSpawnPosition(tank.team);
+
+        tank.GetComponent<Rigidbody>().isKinematic = false;
+        tank.ResetTankPosition(positionToSpawn.position);
+        tank.canBeControlled = true;
+    }
+
     private IEnumerator waitToAssignBack(float time, Player toAssing) {
-        currentCountdown = time;
-        while(currentCountdown > 0) {
-            currentCountdown -= Time.deltaTime;
+        float counter = time;
+        while(counter > 0) {
+            counter -= Time.deltaTime;
             yield return null;
         }
 

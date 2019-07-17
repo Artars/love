@@ -1040,17 +1040,17 @@ PrefabInstance:
     - target: {fileID: 18332451572104374, guid: bb8bff03f39ff904aa9174e33d4c73d2,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 443.70264
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 18332451572104374, guid: bb8bff03f39ff904aa9174e33d4c73d2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 258.68427
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 18332451572104374, guid: bb8bff03f39ff904aa9174e33d4c73d2,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.652993
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 18332451572104374, guid: bb8bff03f39ff904aa9174e33d4c73d2,
         type: 3}
@@ -1121,6 +1121,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SceneId
       value: 805926906
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 48.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -56.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -10.9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb8bff03f39ff904aa9174e33d4c73d2, type: 3}
@@ -1690,6 +1705,7 @@ MonoBehaviour:
     maxPoints: 0
     maxTime: 0
     timeToSetup: 0
+    timeToRespawn: 0
 --- !u!114 &945107387
 MonoBehaviour:
   m_ObjectHideFlags: 0
