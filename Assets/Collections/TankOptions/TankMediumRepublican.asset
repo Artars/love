@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f17143dfc64cf25478176db06effef7e, type: 3}
-  m_Name: Tank1
+  m_Name: TankMediumRepublican
   m_EditorClassIdentifier: 
-  tankName: Tank 1
-  tankSprite: {fileID: 0}
+  tankName: Republican Medium
+  tankSprite: {fileID: 21300000, guid: 77055851d3ebb5c40bf30a18a332e138, type: 3}
   tankRoles: 0100000002000000
-  prefabID: 0
-  tankPrefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
+  prefabID: 1
+  tankPrefab: {fileID: 5378618044361311542, guid: 0d0933c68f8aae746b39d8424e9f35af,
     type: 3}

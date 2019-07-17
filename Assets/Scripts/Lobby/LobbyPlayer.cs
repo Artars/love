@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Mirror;
 
 public class LobbyPlayer : NetworkBehaviour
@@ -39,6 +40,8 @@ public class LobbyPlayer : NetworkBehaviour
     public List<AssigmentInfoHolder> assigmentInfoHolder;
 
     [Header("Other References")]
+    public TankOptionCollection tankCollection;
+    public Image tankImage;
     public TMPro.TextMeshProUGUI assigmentTankText;
     public TMPro.TextMeshProUGUI textIP; 
     public UnityEngine.UI.Button buttonReady;
@@ -247,6 +250,7 @@ public class LobbyPlayer : NetworkBehaviour
 
         currentlySelectedTank = index;
         assigmentTankText.text = "Tank " + index;
+        tankImage.sprite = tankCollection.tankOptions[tanksInfo[index].prefabID].tankSprite;
         UpdateRoleSelectionButtons();
     }
 

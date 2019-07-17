@@ -89,7 +89,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7dbc031e634f4f44c9675bda6060118e, type: 3}
+  - {fileID: 2100000, guid: 28e47c2e4955af14daf4d8834ebe39a2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -166,7 +166,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7dbc031e634f4f44c9675bda6060118e, type: 3}
+  - {fileID: 2100000, guid: 28e47c2e4955af14daf4d8834ebe39a2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -243,7 +243,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7dbc031e634f4f44c9675bda6060118e, type: 3}
+  - {fileID: 2100000, guid: 28e47c2e4955af14daf4d8834ebe39a2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -613,8 +613,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
+  serverOnly: 0
+  localPlayerAuthority: 0
   m_AssetId: 8f247f44c8780e247bb5fd169f0fbd11
   m_SceneId: 0
 --- !u!114 &7224657846611481838
@@ -631,7 +631,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   compressRotation: 0
-  useLocalCoordinates: 0
 --- !u!114 &7966311994603384186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,7 +645,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   compressRotation: 1
-  useLocalCoordinates: 1
   target: {fileID: 1479867162974440514}
 --- !u!114 &4424370814397781558
 MonoBehaviour:
@@ -662,7 +660,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   compressRotation: 1
-  useLocalCoordinates: 1
   target: {fileID: 9024271889383960201}
 --- !u!1 &5378618044769985989
 GameObject:

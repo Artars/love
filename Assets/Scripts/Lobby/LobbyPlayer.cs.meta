@@ -3,7 +3,22 @@ guid: a88b83b0ca0619d468717d9b40be6efd
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - rootCanvas: {instanceID: 0}
+  - mainCanvas: {instanceID: 0}
+  - roleAssigmentCanvas: {instanceID: 0}
+  - playerInfoContainerPrefab: {instanceID: 0}
+  - tankInfoContainerPrefab: {instanceID: 0}
+  - assigmentContainerPrefab: {instanceID: 0}
+  - playerInfoParent: {instanceID: 0}
+  - tankInfoParentTeam1: {instanceID: 0}
+  - tankInfoParentTeam2: {instanceID: 0}
+  - assigmentInfoParent: {instanceID: 0}
+  - tankCollection: {fileID: 11400000, guid: 8ee9146f28a416b47955744ad9642fd9, type: 2}
+  - tankImage: {instanceID: 0}
+  - assigmentTankText: {instanceID: 0}
+  - textIP: {instanceID: 0}
+  - buttonReady: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
