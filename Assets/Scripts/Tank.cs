@@ -66,6 +66,7 @@ public class Tank : NetworkBehaviour
     [Header("Shooting")]
     public float shootCooldown = 1;
     public GameObject bulletPrefab;
+    public ParticleSystem shootParticles;
     public float bulletSpeed = 30;
     public float bulletDamage = 20;
     protected float cannonShootCounter;
@@ -367,7 +368,15 @@ public class Tank : NetworkBehaviour
 
         NetworkServer.Spawn(bullet);
 
+        RpcShootCannon();
+
         // RpcForceCannonRotationSync(cannonTransform.rotation, nivelTransform.rotation);
+    }
+
+    [ClientRpc]
+    public void RpcShootCannon()
+    {
+        shootParticles.Play();
     }
 
     public virtual void updateCannonRotation(float deltaTime) {
