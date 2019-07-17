@@ -163,8 +163,6 @@ public class Player : NetworkBehaviour
 
         currentMode = Mode.Observing;
 
-        canSwitchRoles = false;
-
         //Reset control variables
         rightAxis = 0;
         leftAxis = 0;

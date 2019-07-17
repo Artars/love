@@ -478,7 +478,7 @@ GameObject:
   - component: {fileID: 7966311994603384186}
   - component: {fileID: 4424370814397781558}
   m_Layer: 10
-  m_Name: LoveTank
+  m_Name: TankMediumNational
   m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -535,6 +535,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0
   tankOption: {fileID: 11400000, guid: 61e6b19171e191445a8fd10e68e1f155, type: 2}
+  mockPrefab: {fileID: 5378618044361311542, guid: 26b4cf6dc52e8084f9a8778af3d308e1,
+    type: 3}
   players: []
   tankId: -1
   team: -1
@@ -561,6 +563,7 @@ MonoBehaviour:
   rightThreadEnd: {fileID: 398595851171187539}
   leftThreadBegining: {fileID: 2805745751244474308}
   leftThreadEnd: {fileID: 5657618841033057013}
+  canBeControlled: 1
   forwardSpeed: 10
   backwardSpeed: 8
   turnSpeed: 75

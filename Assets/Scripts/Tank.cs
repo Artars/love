@@ -34,7 +34,9 @@ public class Tank : NetworkBehaviour
 
     #region Variables
 
+    [Header("Main references")]
     public TankOption tankOption;
+    public GameObject mockPrefab;
 
     [Header("Team")]
     public List<Player> players;
@@ -163,7 +165,6 @@ public class Tank : NetworkBehaviour
         foreach(var role in tankOption.tankRoles)
         {
             playerRoles.Add(new Assigment(role));
-            playerRoles.Add(new Assigment(role));
         }
         
     }
@@ -274,8 +275,11 @@ public class Tank : NetworkBehaviour
 
     public void ClearPlayerAssigments()
     {
+        players.Clear();
         foreach(var assigment in playerRoles)
         {
+            if(assigment.playerRef != null)
+                assigment.playerRef.canSwitchRoles = false;
             assigment.playerRef = null;
         }
     }
@@ -473,12 +477,27 @@ public class Tank : NetworkBehaviour
         currentHealth -= damage;
         if(currentHealth <= 0 && canBeControlled) {
             Debug.Log("Is ded. RIP team " + team);
+            CreateMock();
             killTank(otherTank);
         }
         else {
             RpcOnChangeHealth(currentHealth);
             NotifyDamageToPlayers(damage,angle);
         }
+    }
+
+    protected void CreateMock()
+    {
+        RpcCreateMock(transform.position, transform.rotation, rotationPivot.localRotation.eulerAngles.y, nivelTransform.eulerAngles.x);
+    }
+
+    [ClientRpc]
+    protected void RpcCreateMock(Vector3 position, Quaternion rotation, float turretRotation, float cannonRotation)
+    {
+        GameObject mock = GameObject.Instantiate(mockPrefab, position, rotation);
+        TankMock mockScript = mock.GetComponent<TankMock>();
+        mockScript.ApplyPosition(position, rotation, Quaternion.Euler(0,turretRotation,0), Quaternion.Euler(cannonRotation,0,0));
+        mockScript.Explode();
     }
 
     protected void NotifyDamageToPlayers(float damage, float angle)
