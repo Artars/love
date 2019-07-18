@@ -1,0 +1,222 @@
+fileFormatVersion: 2
+guid: b0b589cd8ce76fa4fafd0139d8b1ccd3
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Boulder
+    100002: Boulder.001
+    100004: Boulder.002
+    100006: Boulder.003
+    100008: Czech Hedghog
+    100010: Flag
+    100012: FlagPole
+    100014: Fountain
+    100016: Informatio Pole
+    100018: Information Plate, paint
+    100020: Information Plate, wooden
+    100022: Kubelwagen
+    100024: //RootNode
+    100026: Romanian Haystack
+    100028: Streetlight
+    100030: Sun
+    100032: Telephone Pole
+    100034: Tent
+    100036: Tree
+    100038: Tree.001
+    100040: TreePine
+    100042: TreePine.001
+    100044: TreePine.002
+    100046: Zis
+    100048: ZisBox
+    100050: ZisKatyusha
+    400000: Boulder
+    400002: Boulder.001
+    400004: Boulder.002
+    400006: Boulder.003
+    400008: Czech Hedghog
+    400010: Flag
+    400012: FlagPole
+    400014: Fountain
+    400016: Informatio Pole
+    400018: Information Plate, paint
+    400020: Information Plate, wooden
+    400022: Kubelwagen
+    400024: //RootNode
+    400026: Romanian Haystack
+    400028: Streetlight
+    400030: Sun
+    400032: Telephone Pole
+    400034: Tent
+    400036: Tree
+    400038: Tree.001
+    400040: TreePine
+    400042: TreePine.001
+    400044: TreePine.002
+    400046: Zis
+    400048: ZisBox
+    400050: ZisKatyusha
+    2100000: PropMaterial
+    2100002: Wood
+    2100004: MeanGreen
+    2100006: Stone
+    2100008: No Name
+    2100010: Steel
+    2300000: Boulder
+    2300002: Boulder.001
+    2300004: Boulder.002
+    2300006: Boulder.003
+    2300008: Czech Hedghog
+    2300010: Flag
+    2300012: FlagPole
+    2300014: Fountain
+    2300016: Informatio Pole
+    2300018: Information Plate, paint
+    2300020: Information Plate, wooden
+    2300022: Kubelwagen
+    2300024: Romanian Haystack
+    2300026: Streetlight
+    2300028: Telephone Pole
+    2300030: Tent
+    2300032: Tree
+    2300034: Tree.001
+    2300036: TreePine
+    2300038: TreePine.001
+    2300040: TreePine.002
+    2300042: Zis
+    2300044: ZisBox
+    2300046: ZisKatyusha
+    3300000: Boulder
+    3300002: Boulder.001
+    3300004: Boulder.002
+    3300006: Boulder.003
+    3300008: Czech Hedghog
+    3300010: Flag
+    3300012: FlagPole
+    3300014: Fountain
+    3300016: Informatio Pole
+    3300018: Information Plate, paint
+    3300020: Information Plate, wooden
+    3300022: Kubelwagen
+    3300024: Romanian Haystack
+    3300026: Streetlight
+    3300028: Telephone Pole
+    3300030: Tent
+    3300032: Tree
+    3300034: Tree.001
+    3300036: TreePine
+    3300038: TreePine.001
+    3300040: TreePine.002
+    3300042: Zis
+    3300044: ZisBox
+    3300046: ZisKatyusha
+    4300000: Information Plate, wooden
+    4300002: Tent
+    4300004: Tree.001
+    4300006: TreePine.002
+    4300008: TreePine.001
+    4300010: Boulder.003
+    4300012: Boulder
+    4300014: Boulder.001
+    4300016: Boulder.002
+    4300018: FlagPole
+    4300020: Flag
+    4300022: Romanian Haystack
+    4300024: Information Plate, paint
+    4300026: Informatio Pole
+    4300028: Tree
+    4300030: TreePine
+    4300032: ZisKatyusha
+    4300034: ZisBox
+    4300036: Zis
+    4300038: Kubelwagen
+    4300040: Fountain
+    4300042: Streetlight
+    4300044: Telephone Pole
+    4300046: Czech Hedghog
+    10800000: Sun
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
