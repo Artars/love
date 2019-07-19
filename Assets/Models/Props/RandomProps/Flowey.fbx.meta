@@ -1,52 +1,14 @@
 fileFormatVersion: 2
-guid: 255483c2bdbb2cd438aea7f65ff6f9ad
+guid: be9c14fa5ce6a9041bbc013605eb82d3
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Door,Fancy
-    100004: Door,Simple
-    100006: Flowerpot
-    100008: Lamp1
-    100010: Window,Circular
-    100012: Window,SimpleStone
-    100014: Window,SimpleWooden1
-    100016: Window,SimpleWooden2
     400000: //RootNode
-    400002: Door,Fancy
-    400004: Door,Simple
-    400006: Flowerpot
-    400008: Lamp1
-    400010: Window,Circular
-    400012: Window,SimpleStone
-    400014: Window,SimpleWooden1
-    400016: Window,SimpleWooden2
-    2100000: BuildingMaterial
-    2100002: Material
-    2300000: Door,Fancy
-    2300002: Door,Simple
-    2300004: Flowerpot
-    2300006: Lamp1
-    2300008: Window,Circular
-    2300010: Window,SimpleStone
-    2300012: Window,SimpleWooden1
-    2300014: Window,SimpleWooden2
-    3300000: Door,Fancy
-    3300002: Door,Simple
-    3300004: Flowerpot
-    3300006: Lamp1
-    3300008: Window,Circular
-    3300010: Window,SimpleStone
-    3300012: Window,SimpleWooden1
-    3300014: Window,SimpleWooden2
-    4300000: Flowerpot
-    4300002: Lamp1
-    4300004: Window,Circular
-    4300006: Door,Simple
-    4300008: Window,SimpleWooden2
-    4300010: Window,SimpleStone
-    4300012: Window,SimpleWooden1
-    4300014: Door,Fancy
+    2100000: PropMaterial
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: ExtraFlower.001
   externalObjects: {}
   materials:
     importMaterials: 1
