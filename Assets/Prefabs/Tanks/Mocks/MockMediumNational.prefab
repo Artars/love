@@ -850,6 +850,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5378618044361611542}
     m_Modifications:
+    - target: {fileID: 1171651539030024062, guid: 6ffd5cbd099e44a46a8657684df3995e,
+        type: 3}
+      propertyPath: m_Name
+      value: Smoke
+      objectReference: {fileID: 0}
     - target: {fileID: 874279804722334953, guid: 6ffd5cbd099e44a46a8657684df3995e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -905,11 +910,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1171651539030024062, guid: 6ffd5cbd099e44a46a8657684df3995e,
-        type: 3}
-      propertyPath: m_Name
-      value: Smoke
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ffd5cbd099e44a46a8657684df3995e, type: 3}
 --- !u!4 &4124943706588712374 stripped
@@ -925,6 +925,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5378618044361611542}
     m_Modifications:
+    - target: {fileID: 8104824366075016191, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
+        type: 3}
+      propertyPath: m_Name
+      value: Explosion
+      objectReference: {fileID: 0}
     - target: {fileID: 8470263261247972810, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
         type: 3}
       propertyPath: ClampVelocityModule.y.scalar
@@ -989,11 +994,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8104824366075016191, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
-        type: 3}
-      propertyPath: m_Name
-      value: Explosion
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4529c1a1e57fe64ea9cf19f190ffafe, type: 3}
