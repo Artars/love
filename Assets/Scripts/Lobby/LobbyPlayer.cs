@@ -187,7 +187,7 @@ public class LobbyPlayer : NetworkBehaviour
 
         while(tankInfoHolders.Count <= index){
             Transform parentContainer;
-            parentContainer = (tanksInfo[index].team == 1) ? tankInfoParentTeam1 : tankInfoParentTeam2;
+            parentContainer = (tanksInfo[index].team == 0) ? tankInfoParentTeam1 : tankInfoParentTeam2;
             GameObject infoHolder = GameObject.Instantiate(tankInfoContainerPrefab, parentContainer);
             infoHolder.SetActive(true);
 

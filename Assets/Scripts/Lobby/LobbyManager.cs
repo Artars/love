@@ -292,7 +292,6 @@ public class LobbyManager : NetworkBehaviour
         isGameStarting = true;
         MatchConfiguration.instance.infoTanks = infoTanks;
         MatchConfiguration.instance.playersInfo = playersInfo;
-        MatchConfiguration.instance.matchSetting = new MatchSetting(0,2,5);
         GameMode.instance.StartMatchSetup();
         HideLobbyForAllPlayers();
         // MatchSettings.instance.connectedPlayers = playersConnected.Count;
