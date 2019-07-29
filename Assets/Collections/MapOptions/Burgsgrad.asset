@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 374872602dd5b0d4a8e4a65eae976faf, type: 3}
-  m_Name: MapCollection
+  m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
+  m_Name: Burgsgrad
   m_EditorClassIdentifier: 
-  mapOptions:
-  - {fileID: 11400000, guid: 149cb03b3ecc4a845b3205218a53724c, type: 2}
-  - {fileID: 11400000, guid: 6bbcfeba90088b744b8822e88838e6ee, type: 2}
+  scene: Burgsgrad
+  mapName: Burgsgrad
+  mapThumbnail: {fileID: 21300000, guid: 452f9ad3eaaf4a845a2b309b6ea23f5b, type: 3}

@@ -7,7 +7,7 @@ using Mirror;
 public class NetworkHud : MonoBehaviour
 {
     public InputField adressField;
-    public MapCollection mapCollection;
+    public MapSelector mapSelector;
 
     public void Start(){
         if(PlayerPrefs.HasKey("LastAddress")){
@@ -27,7 +27,9 @@ public class NetworkHud : MonoBehaviour
     }
 
     public void OnClickStartHost(){
-        NetworkManager.singleton.onlineScene = mapCollection.mapOptions[0].scene;
+        MapOption map = mapSelector.GetSelectedMapOption();
+        MatchConfiguration.instance.mapOption = map;
+        NetworkManager.singleton.onlineScene = map.scene;
         NetworkManager.singleton.StartHost();
     }
 
