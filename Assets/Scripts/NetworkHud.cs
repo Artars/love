@@ -30,6 +30,7 @@ public class NetworkHud : MonoBehaviour
 
     public void OnClickStartHost(){
         MapOption map = mapSelector.GetSelectedMapOption();
+        settingsSelector.SaveSettings();
         MatchSetting matchSetting = settingsSelector.GetMatchSetting();
 
         MatchConfiguration.instance.matchSetting = matchSetting;

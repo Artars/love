@@ -8,12 +8,11 @@ public class SettingsSelector : MonoBehaviour
 {
     public class SettingsChangeEvent : UnityEvent<MatchSetting>
     {
-
     }
 
     public SettingsChangeEvent OnSettingsChanged;
 
-
+    public bool autoLoadSettings = false;
     public string fileName = "MatchConfig.json";
     public MatchSetting matchSetting;
     public float[] maxTimeOptions = new float[]{60, 90, 120, 150, 180, 210, 240, 300, 360, Mathf.Infinity};
@@ -35,18 +34,21 @@ public class SettingsSelector : MonoBehaviour
     public void Start()
     {
         string path = Application.persistentDataPath + fileName;
-        if(File.Exists(path))
+        if(!autoLoadSettings && File.Exists(path))
         {
             string jasonText = File.ReadAllText(path);
             matchSetting = JsonUtility.FromJson<MatchSetting>(jasonText);
             maxTimeIndex = FindNearestvalueIndex(maxTimeOptions, matchSetting.maxTime);
+
         }
         else
         {
             matchSetting = new MatchSetting(2);
+            
         }
 
         UpdateText();
+
 
     }
 
@@ -172,8 +174,13 @@ public class SettingsSelector : MonoBehaviour
 
     public MatchSetting GetMatchSetting()
     {
-        SaveSettings();
         return matchSetting;
 
+    }
+
+    public void SetMatchSetting(MatchSetting newSetting)
+    {
+        matchSetting = newSetting;
+        UpdateText();
     }
 }

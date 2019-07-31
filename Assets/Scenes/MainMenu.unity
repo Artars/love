@@ -3181,7 +3181,7 @@ PrefabInstance:
     - target: {fileID: 1417344795314380487, guid: 40af567081508b04eb417181f10dcd85,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000011111002
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3560380620316304323, guid: 40af567081508b04eb417181f10dcd85,
         type: 3}
@@ -4189,6 +4189,11 @@ PrefabInstance:
     - target: {fileID: 7631662630371022636, guid: 40af567081508b04eb417181f10dcd85,
         type: 3}
       propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5975837866537021990, guid: 40af567081508b04eb417181f10dcd85,
+        type: 3}
+      propertyPath: autoLoadSettings
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

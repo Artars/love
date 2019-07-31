@@ -89,6 +89,9 @@ public class LobbyManager : NetworkBehaviour
         //Update IP text
         player.RpcReceiveIP(ip);
 
+        //Send match settings
+        player.RpcReceiveSettings(MatchConfiguration.instance.matchSetting);
+
         //Do not update other fields if game already started, hide hud
         if(isGameStarting)
         {

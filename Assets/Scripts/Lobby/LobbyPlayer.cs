@@ -40,6 +40,7 @@ public class LobbyPlayer : NetworkBehaviour
     public List<AssigmentInfoHolder> assigmentInfoHolder;
 
     [Header("Other References")]
+    public SettingsSelector settingsSelector;
     public TankOptionCollection tankCollection;
     public Image tankImage;
     public TMPro.TextMeshProUGUI assigmentTankText;
@@ -149,6 +150,18 @@ public class LobbyPlayer : NetworkBehaviour
     [ClientRpc]
     public void RpcReceiveIP(string ip) {
         textIP.text = "Lobby: " + ip;
+    }
+
+    [ClientRpc]
+    public void RpcReceiveSettings(MatchSetting matchSetting)
+    {
+        if(!isLocalPlayer)
+            return;
+
+        if(settingsSelector != null)
+        {
+            settingsSelector.SetMatchSetting(matchSetting);
+        }
     }
 
     [Command]
