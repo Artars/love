@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
-  m_Name: TestMap
+  m_Name: Test
   m_EditorClassIdentifier: 
   scene: Burgsgrad
-  mapName: Burgsgrad
-  mapThumbnail: {fileID: 0}
+  mapName: Burgsgrad but with white image
+  mapThumbnail: {fileID: 21300000, guid: 84487d73ca4b791498332d8f6858417f, type: 3}

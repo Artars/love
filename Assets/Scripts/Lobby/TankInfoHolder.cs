@@ -23,7 +23,7 @@ public class TankInfoHolder : MonoBehaviour
     public void SetTankInfo( InfoTank info, int playerConnectionId){
         infoTank = info;
 
-        textTank.text = "Tank " + (info.team).ToString();
+        textTank.text = "Tank " + (info.id).ToString();
 
         for(int i = 0; i < rolesImages.Length; i++) {
             if(i < info.assigments.Length){

@@ -40,6 +40,7 @@ public class LobbyPlayer : NetworkBehaviour
     public List<AssigmentInfoHolder> assigmentInfoHolder;
 
     [Header("Other References")]
+    public SettingsSelector settingsSelector;
     public TankOptionCollection tankCollection;
     public Image tankImage;
     public TMPro.TextMeshProUGUI assigmentTankText;
@@ -151,6 +152,18 @@ public class LobbyPlayer : NetworkBehaviour
         textIP.text = "Lobby: " + ip;
     }
 
+    [ClientRpc]
+    public void RpcReceiveSettings(MatchSetting matchSetting)
+    {
+        if(!isLocalPlayer)
+            return;
+
+        if(settingsSelector != null)
+        {
+            settingsSelector.SetMatchSetting(matchSetting);
+        }
+    }
+
     [Command]
     public void CmdSelectRole(int tankId, int roleIndex) {
         LobbyManager.instance.SelectTankRole(tankId,this,roleIndex);
@@ -187,7 +200,7 @@ public class LobbyPlayer : NetworkBehaviour
 
         while(tankInfoHolders.Count <= index){
             Transform parentContainer;
-            parentContainer = (tanksInfo[index].team == 1) ? tankInfoParentTeam1 : tankInfoParentTeam2;
+            parentContainer = (tanksInfo[index].team == 0) ? tankInfoParentTeam1 : tankInfoParentTeam2;
             GameObject infoHolder = GameObject.Instantiate(tankInfoContainerPrefab, parentContainer);
             infoHolder.SetActive(true);
 

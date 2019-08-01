@@ -6,8 +6,10 @@ using Mirror;
 
 public class NetworkHud : MonoBehaviour
 {
+    public TankOptionCollection tankOptionCollection;
     public InputField adressField;
-    public MapCollection mapCollection;
+    public MapSelector mapSelector;
+    public SettingsSelector settingsSelector;
 
     public void Start(){
         if(PlayerPrefs.HasKey("LastAddress")){
@@ -27,7 +29,30 @@ public class NetworkHud : MonoBehaviour
     }
 
     public void OnClickStartHost(){
-        NetworkManager.singleton.onlineScene = mapCollection.mapOptions[0].scene;
+        MapOption map = mapSelector.GetSelectedMapOption();
+        settingsSelector.SaveSettings();
+        MatchSetting matchSetting = settingsSelector.GetMatchSetting();
+
+        MatchConfiguration.instance.matchSetting = matchSetting;
+        MatchConfiguration.instance.mapOption = map;
+        NetworkManager.singleton.onlineScene = map.scene;
+
+        //Make tank settings
+        List<InfoTank> tankInfo = new List<InfoTank>();
+        int index = 0;
+        for (int i = 0; i < matchSetting.teamConfiguration.Length; i++)
+        {
+            for (int j = 0; j < matchSetting.teamConfiguration[i]; j++)
+            {
+                InfoTank tank = new InfoTank(index,i, tankOptionCollection.tankOptions[i % tankOptionCollection.tankOptions.Length]);
+                tankInfo.Add(tank);
+
+                index++;
+            }
+        }
+
+        MatchConfiguration.instance.infoTanks = tankInfo;
+
         NetworkManager.singleton.StartHost();
     }
 

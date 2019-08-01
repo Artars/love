@@ -199,21 +199,25 @@ public struct PlayerInfo {
 [Serializable]
 public struct MatchSetting 
 {
-    public int mapIndex;
+    public int[] teamConfiguration;
     public int numTeams;
     public int maxPoints;
     public float maxTime;
     public float timeToSetup;
     public float timeToRespawn;
 
-    public MatchSetting(int mapIndex = 0, 
+    public MatchSetting( 
     int numTeams = 2, 
     int maxPoints = 5, 
     float maxTime = Mathf.Infinity,
     float timeToRespawn = 4f, 
     float timeToSetup = 4f)
     {
-        this.mapIndex = 0;
+        this.teamConfiguration = new int[numTeams];
+        for (int i = 0; i < numTeams; i++)
+        {
+            teamConfiguration[i] = 1;
+        }
         this.numTeams = numTeams;
         this.maxPoints = maxPoints;
         this.maxTime = maxTime;

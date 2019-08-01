@@ -521,7 +521,7 @@ public class GameMode : NetworkBehaviour
     public void shutdownGame(){
 
         if(returnToLobby)
-            NetworkManager.singleton.ServerChangeScene(mapCollection.mapOptions[matchSettings.mapIndex].scene);
+            NetworkManager.singleton.ServerChangeScene(MatchConfiguration.instance.mapOption.scene);
         else
             NetworkManager.singleton.StopHost();
     }

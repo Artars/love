@@ -89,6 +89,9 @@ public class LobbyManager : NetworkBehaviour
         //Update IP text
         player.RpcReceiveIP(ip);
 
+        //Send match settings
+        player.RpcReceiveSettings(MatchConfiguration.instance.matchSetting);
+
         //Do not update other fields if game already started, hide hud
         if(isGameStarting)
         {
@@ -292,7 +295,6 @@ public class LobbyManager : NetworkBehaviour
         isGameStarting = true;
         MatchConfiguration.instance.infoTanks = infoTanks;
         MatchConfiguration.instance.playersInfo = playersInfo;
-        MatchConfiguration.instance.matchSetting = new MatchSetting(0,2,5);
         GameMode.instance.StartMatchSetup();
         HideLobbyForAllPlayers();
         // MatchSettings.instance.connectedPlayers = playersConnected.Count;
