@@ -1164,6 +1164,11 @@ PrefabInstance:
       propertyPath: teamColors.Array.data[1].b
       value: 0.3803922
       objectReference: {fileID: 0}
+    - target: {fileID: 18332451572104375, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: spectatorDistance
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 1094133066987509114, guid: bb8bff03f39ff904aa9174e33d4c73d2,
         type: 3}
       propertyPath: m_SceneId
@@ -1172,17 +1177,42 @@ PrefabInstance:
     - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 48.9
+      value: 40.7
       objectReference: {fileID: 0}
     - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -56.5
+      value: -49.6
       objectReference: {fileID: 0}
     - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.9
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269615099947831946, guid: bb8bff03f39ff904aa9174e33d4c73d2,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb8bff03f39ff904aa9174e33d4c73d2, type: 3}
@@ -1768,7 +1798,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0
   MatchSetting:
-    mapIndex: 0
+    teamConfiguration: 
     numTeams: 0
     maxPoints: 0
     maxTime: 0

@@ -277,7 +277,9 @@ public class GameMode : NetworkBehaviour
             if(!spectators.Contains(player))
                 spectators.Add(player);
             player.RpcObservePosition(spectatorPosition.position, 0, 90f, spectatorDistance);
+            player.RpcAssignSpectator();
             player.currentMode = Player.Mode.Spectator;
+            player.RpcDisplayMessage("You joined as spectator!", 2, 0.25f, 1f);
         }
     }
 

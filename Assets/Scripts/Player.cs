@@ -33,10 +33,14 @@ public class Player : NetworkBehaviour
 
 
     [Header("Camera")]
+    public Transform firstPersonCamera;
+
+    [Header("Observe references")]
+    public Transform observerTransform;
     public Transform observerPivot;
+    public Transform observerCameraTransform;
     protected Vector3 pointToObserve;
     protected float rotateSpeed;
-    public Transform firstPersonCamera;
 
     [Header("HUD")]
     public GameObject canvasPilot;
@@ -89,16 +93,15 @@ public class Player : NetworkBehaviour
 
     protected void Start() {
         //Update referece
-        if(GameMode.instance != null) {
+        if(isLocalPlayer){
+            observerTransform.gameObject.SetActive(true);
+            informationCanvas.SetActive(true);
+        }
 
-            if(!isLocalPlayer){
-                firstPersonCamera.gameObject.SetActive(false);
-                observerPivot.gameObject.SetActive(false);
-                informationCanvas.SetActive(false);
-            }
-            if(isLocalPlayer){
-                observerPivot.gameObject.SetActive(true);
-                informationCanvas.SetActive(true);
+        if(GameMode.instance != null) {
+            if(isServer)
+            {
+                GameMode.instance.TryToJoinAsSpectator(this);
             }
         }
 
@@ -116,10 +119,21 @@ public class Player : NetworkBehaviour
             currentMode = Mode.Observing;
             HideHUD();
             firstPersonCamera.gameObject.SetActive(false);
-            observerPivot.gameObject.SetActive(true);
+            observerTransform.gameObject.SetActive(true);
+
             pointToObserve = position;
             rotateSpeed = speed;
+
+            observerTransform.position = pointToObserve;
+            observerPivot.rotation = Quaternion.Euler(0,0,angle);
+            observerCameraTransform.localPosition = new Vector3(distance,0,0);
         }
+    }
+
+    [ClientRpc]
+    public void RpcAssignSpectator()
+    {
+        TryToAssignCallback();
     }
 
     [ClientRpc]
@@ -130,7 +144,7 @@ public class Player : NetworkBehaviour
 
         TryToAssignCallback();
 
-        observerPivot.gameObject.SetActive(false);
+        observerTransform.gameObject.SetActive(false);
         firstPersonCamera.gameObject.SetActive(true);
 
         this.team = team;
@@ -258,8 +272,8 @@ public class Player : NetworkBehaviour
         
         if(currentMode == Mode.Observing) {
             if(pointToObserve != null) {
-                observerPivot.position = pointToObserve;
-                observerPivot.RotateAround(pointToObserve, observerPivot.up, rotateSpeed * Time.deltaTime);
+                observerTransform.position = pointToObserve;
+                observerTransform.RotateAround(pointToObserve, observerTransform.up, rotateSpeed * Time.deltaTime);
             }
         }
         else if(currentMode == Mode.Playing) {
@@ -452,14 +466,15 @@ public class Player : NetworkBehaviour
 
     public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
         Debug.Log("Callbacked");
-        if(scoreText != null && team != -1){
+        int useTeam = (team != -1) ? team : 0;
+        if(scoreText != null && useTeam != -1){
             SyncListInt syncList = GameStatus.instance.score;
 
             if(syncList == null || syncList.Count < 1) return;
 
-            string newText = syncList[team].ToString();
+            string newText = syncList[useTeam].ToString();
             for(int i = 0; i < syncList.Count; i++) {
-                if(i != team){
+                if(i != useTeam){
                     newText += " x " + syncList[i]; 
                 }
             }
