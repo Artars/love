@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 374872602dd5b0d4a8e4a65eae976faf, type: 3}
-  m_Name: MapCollection
+  m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
+  m_Name: DuelAtTheChurch
   m_EditorClassIdentifier: 
-  mapOptions:
-  - {fileID: 11400000, guid: 149cb03b3ecc4a845b3205218a53724c, type: 2}
-  - {fileID: 11400000, guid: 589f6c0ba6609fe4692de7601b4ac28d, type: 2}
+  scene: DuelAtTheChurch
+  mapName: Duel at the church
+  mapThumbnail: {fileID: 0}
