@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Burgsgrad.unity
     guid: 59ac7b19f85cf9f46baf4ccced4895e7
   - enabled: 1
-    path: Assets/Scenes/LobbyScene.unity
-    guid: 9ee336ec1ddb41e47ac548cb3cb282a6
-  - enabled: 1
-    path: Assets/Scenes/LobbyTest.unity
-    guid: 2e8596f3599eb8742aaa75cb9e135115
+    path: Assets/Scenes/GameMaps/DuelAtTheChurch.unity
+    guid: 351e2f6883d6b4a46ae17bea4f60b1b6
   m_configObjects: {}
