@@ -2018,7 +2018,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1749516220049046940}
   m_HandleRect: {fileID: 3758728607371701218}
   m_Direction: 2
-  m_Value: 0.99999756
+  m_Value: 0.99999726
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2168,7 +2168,7 @@ MonoBehaviour:
     lineCount: 0
     pageCount: 0
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
@@ -2245,7 +2245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2328,7 +2328,7 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
@@ -2621,7 +2621,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2704,7 +2704,7 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
@@ -4514,7 +4514,7 @@ PrefabInstance:
     - target: {fileID: 7803677551726798179, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000075040945
+      value: 0.000016483511
       objectReference: {fileID: 0}
     - target: {fileID: 7735760150557661153, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
@@ -4644,7 +4644,7 @@ PrefabInstance:
     - target: {fileID: 6400199293123500513, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000075040945
+      value: 0.000016483511
       objectReference: {fileID: 0}
     - target: {fileID: 3904702895949608992, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
@@ -6312,12 +6312,12 @@ PrefabInstance:
     - target: {fileID: 1975342280565878457, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.0000068316162
+      value: -0.000034365854
       objectReference: {fileID: 0}
     - target: {fileID: 1975342280565878457, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000030517578
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1720094938561161330, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
@@ -6687,7 +6687,7 @@ PrefabInstance:
     - target: {fileID: 5761111520375037694, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
       propertyPath: m_Size
-      value: 0.9999999
+      value: 0.99999994
       objectReference: {fileID: 0}
     - target: {fileID: 5761111520375037694, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
