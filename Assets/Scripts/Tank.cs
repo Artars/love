@@ -428,6 +428,9 @@ public class Tank : NetworkBehaviour
     //Move the tank based on the axis inputs. Should be called from the fixed updates
     protected void moveTank(float deltaTime) {
         if(!canBeControlled) return;
+
+        Vector3 nonControllableSpeed = Vector3.Dot(rgbd.velocity, transform.up) * transform.up;
+
         float realRightAxis = rightThreadOnGround ? rightAxis : 0;
         float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
 
@@ -440,11 +443,11 @@ public class Tank : NetworkBehaviour
             float speed = (realRightAxis > 0 ) ? forwardSpeed : -backwardSpeed; //The left axis would also work
             speed *= axisMin;
 
-            rgbd.velocity = myTransform.forward.normalized * speed;
+            rgbd.velocity = myTransform.forward.normalized * speed + nonControllableSpeed;
         } 
         //Break the tank
         else if(rightThreadOnGround && leftThreadOnGround){
-            rgbd.velocity = Vector3.zero;
+            rgbd.velocity = Vector3.zero + nonControllableSpeed;
         }
 
         //Rotation

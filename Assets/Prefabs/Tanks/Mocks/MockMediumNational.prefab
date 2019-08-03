@@ -534,7 +534,7 @@ MonoBehaviour:
   cannonTransform: {fileID: 9024271889383960201}
   explosionParticles: {fileID: 2138412780151094518}
   turretExplosionChance: 0.1
-  turretExplosionVelocity: 2
+  turretExplosionVelocity: 20
   lifetime: 20
 --- !u!1 &5378618044769985989
 GameObject:

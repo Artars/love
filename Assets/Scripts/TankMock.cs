@@ -39,10 +39,19 @@ public class TankMock : MonoBehaviour
         if(Random.Range(0f,1f) < turretExplosionChance)
         {
             Debug.Log("Exploded");
-            StartCoroutine(TurretFlyingAnimation());
+            // StartCoroutine(TurretFlyingAnimation());
+            MakeTurretFly();
         }
     }
-    
+
+    protected void MakeTurretFly()
+    {
+        Destroy(turretTransform.gameObject, lifetime/2);
+        turretTransform.SetParent(null);
+        Rigidbody rigidbody = turretTransform.gameObject.AddComponent<Rigidbody>();
+        rigidbody.AddForce(Vector3.up * turretExplosionVelocity, ForceMode.Impulse);
+    }
+
     public IEnumerator TurretFlyingAnimation()
     {
         float counter = 0;

@@ -304,7 +304,7 @@ MonoBehaviour:
   cannonTransform: {fileID: 9024271889383960201}
   explosionParticles: {fileID: 66422735744744670}
   turretExplosionChance: 0.1
-  turretExplosionVelocity: 2
+  turretExplosionVelocity: 20
   lifetime: 20
 --- !u!1 &5378618044769985989
 GameObject:
@@ -881,6 +881,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5378618044361611542}
     m_Modifications:
+    - target: {fileID: 1171651539030024062, guid: 6ffd5cbd099e44a46a8657684df3995e,
+        type: 3}
+      propertyPath: m_Name
+      value: Smoke
+      objectReference: {fileID: 0}
     - target: {fileID: 874279804722334953, guid: 6ffd5cbd099e44a46a8657684df3995e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -936,11 +941,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1171651539030024062, guid: 6ffd5cbd099e44a46a8657684df3995e,
-        type: 3}
-      propertyPath: m_Name
-      value: Smoke
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ffd5cbd099e44a46a8657684df3995e, type: 3}
 --- !u!4 &382433101258973519 stripped
@@ -956,6 +956,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5378618044361611542}
     m_Modifications:
+    - target: {fileID: 8104824366075016191, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
+        type: 3}
+      propertyPath: m_Name
+      value: Explosion
+      objectReference: {fileID: 0}
     - target: {fileID: 7817728438866836332, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1010,11 +1015,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8104824366075016191, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
-        type: 3}
-      propertyPath: m_Name
-      value: Explosion
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4529c1a1e57fe64ea9cf19f190ffafe, type: 3}

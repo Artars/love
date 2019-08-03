@@ -11,6 +11,8 @@ public class Player : NetworkBehaviour
         Selecting, Observing, Playing, Spectator
     }
 
+    public static Player localPlayer = null;
+
     [SyncVar]
     public PlayerInfo playerInfo;
     [SyncVar]
@@ -96,6 +98,7 @@ public class Player : NetworkBehaviour
         if(isLocalPlayer){
             observerTransform.gameObject.SetActive(true);
             informationCanvas.SetActive(true);
+            localPlayer = this;
         }
 
         if(GameMode.instance != null) {
