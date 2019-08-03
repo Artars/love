@@ -332,11 +332,19 @@ public class Tank : NetworkBehaviour
     #region Update
 
     void Update() {
-        if (!isServer) return;
-
-        cannonShootCounter -= Time.deltaTime;
-
+        //Both
         UpdateThreadsVisual();
+        //Only server
+        if(isServer)
+        {
+            cannonShootCounter -= Time.deltaTime;
+        }
+        //Only client
+        else
+        {
+            
+        }
+
     }
 
     protected void UpdateThreadsVisual()
