@@ -101,6 +101,16 @@ public class Tank : NetworkBehaviour
     public float currentHealth;
     public UnityEngine.UI.Slider healthSlider;
 
+    [Header("Threads")]
+    public float threadSpeed = 0.2f;
+    public MeshRenderer leftThreadMesh;
+    public int leftThreadIndex = -1;
+    protected Material leftThreadMaterial;
+    public MeshRenderer rightThreadMesh;
+    public int rightThreadIndex = -1;
+    protected Material rightThreadMaterial;
+
+
 
     //Movement variables
     // protected float leftAxis;
@@ -167,6 +177,16 @@ public class Tank : NetworkBehaviour
         {
             playerRoles.Add(new Assigment(role));
         }
+
+        //Threads
+        if(leftThreadIndex != -1)
+            leftThreadMaterial = leftThreadMesh.materials[leftThreadIndex];
+        else
+            leftThreadMaterial = null;
+        if(rightThreadIndex != -1)
+            rightThreadMaterial = rightThreadMesh.materials[rightThreadIndex];
+        else
+            rightThreadMaterial = null;
         
     }
 
@@ -315,6 +335,20 @@ public class Tank : NetworkBehaviour
         if (!isServer) return;
 
         cannonShootCounter -= Time.deltaTime;
+
+        UpdateThreadsVisual();
+    }
+
+    protected void UpdateThreadsVisual()
+    {
+        if(rightThreadMaterial != null)
+        {
+            rightThreadMaterial.mainTextureOffset += new Vector2(threadSpeed * rightAxis * Time.deltaTime,0);
+        }
+        if(leftThreadMaterial != null)
+        {
+            leftThreadMaterial.mainTextureOffset += new Vector2(threadSpeed * leftAxis * Time.deltaTime,0);
+        }
     }
 
 

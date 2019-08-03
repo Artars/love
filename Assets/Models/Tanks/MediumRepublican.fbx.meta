@@ -12,6 +12,9 @@ ModelImporter:
     400004: //RootNode
     400006: Turret
     2100000: Material
+    2100002: Material.001
+    2100004: RightThread
+    2100006: LeftThread
     2300000: Cannon
     2300002: Hull
     2300004: Turret

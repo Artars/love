@@ -7,20 +7,34 @@ ModelImporter:
     100002: Hull
     100004: //RootNode
     100006: Turret
+    100008: Camera
+    100010: Cube
+    100012: Lamp
     400000: Cannon
     400002: Hull
     400004: //RootNode
     400006: Turret
+    400008: Camera
+    400010: Cube
+    400012: Lamp
+    2000000: Camera
     2100000: ToonShader
+    2100002: RightThread
+    2100004: LeftThread
+    2100006: Material
     2300000: Cannon
     2300002: Hull
     2300004: Turret
+    2300006: Cube
     3300000: Cannon
     3300002: Hull
     3300004: Turret
+    3300006: Cube
     4300000: Hull
     4300002: Turret
     4300004: Cannon
+    4300006: Cube
+    10800000: Lamp
   externalObjects: {}
   materials:
     importMaterials: 1

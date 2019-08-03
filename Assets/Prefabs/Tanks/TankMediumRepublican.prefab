@@ -342,6 +342,11 @@ MonoBehaviour:
   maxHeath: 100
   currentHealth: 0
   healthSlider: {fileID: 0}
+  threadSpeed: 0.2
+  leftThreadMesh: {fileID: 6396842653028894079}
+  leftThreadIndex: 2
+  rightThreadMesh: {fileID: 6396842653028894079}
+  rightThreadIndex: 1
   leftAxis: 0
   rightAxis: 0
   rightThreadOnGround: 1
@@ -845,6 +850,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: f5b2ff7b4ca688e42b87303e90b34dd1, type: 2}
+  - {fileID: 2100000, guid: f5b2ff7b4ca688e42b87303e90b34dd1, type: 2}
   - {fileID: 2100000, guid: f5b2ff7b4ca688e42b87303e90b34dd1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
