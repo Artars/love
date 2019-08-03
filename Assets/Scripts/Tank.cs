@@ -101,6 +101,13 @@ public class Tank : NetworkBehaviour
     public float currentHealth;
     public UnityEngine.UI.Slider healthSlider;
 
+    [Header("Sound")]
+    public AudioSource motorSoundSource;
+    public AudioSource firingSoundSource;
+    public float pitchStopped = 0.8f;
+    public float pitchForward = 1.4f;
+    public float pitchRotating = 1.0f;
+
     [Header("Threads")]
     public float threadSpeed = 0.2f;
     public MeshRenderer leftThreadMesh;
@@ -187,6 +194,11 @@ public class Tank : NetworkBehaviour
             rightThreadMaterial = rightThreadMesh.materials[rightThreadIndex];
         else
             rightThreadMaterial = null;
+
+        //Sound
+        motorSoundSource.loop = true;
+        motorSoundSource.pitch = pitchStopped;
+        motorSoundSource.Play();
         
     }
 
@@ -334,6 +346,7 @@ public class Tank : NetworkBehaviour
     void Update() {
         //Both
         UpdateThreadsVisual();
+        UpdateMotorPitch();
         //Only server
         if(isServer)
         {
@@ -357,6 +370,31 @@ public class Tank : NetworkBehaviour
         {
             leftThreadMaterial.mainTextureOffset += new Vector2(threadSpeed * leftAxis * Time.deltaTime,0);
         }
+    }
+
+    protected void UpdateMotorPitch()
+    {
+        bool isGoingForward = (rightAxis > 0 && leftAxis > 0);
+        bool isRotatingInPlace = (rightAxis > 0 ^ leftAxis > 0);
+
+        float pitch = pitchStopped;
+        if(!isRotatingInPlace)
+        {
+            if(isGoingForward)
+            {
+                pitch += (pitchForward - pitchStopped) * Mathf.Min(rightAxis,leftAxis);
+            }
+            else
+            {
+                pitch += (pitchForward - pitchStopped) * -Mathf.Max(rightAxis,leftAxis);
+            }
+        }
+        else
+        {
+            pitch += (pitchRotating - pitchStopped) * Mathf.Abs(rightAxis-leftAxis) * 0.5f;
+        }
+
+        motorSoundSource.pitch = pitch;
     }
 
 
@@ -419,6 +457,7 @@ public class Tank : NetworkBehaviour
     public void RpcShootCannon()
     {
         shootParticles.Play();
+        firingSoundSource.Play();
     }
 
     public virtual void updateCannonRotation(float deltaTime) {
