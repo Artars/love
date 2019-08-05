@@ -498,15 +498,25 @@ public class Tank : NetworkBehaviour
 
         bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, distanceCheckGround);
         bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, distanceCheckGround);
-        leftThreadOnGround = begin && end;
+        leftThreadOnGround = begin || end;
 
         begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, distanceCheckGround);
         end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, distanceCheckGround);
-        rightThreadOnGround = begin && end;
+        rightThreadOnGround = begin || end;
     }
 
 
     //Move the tank based on the axis inputs. Should be called from the fixed updates
+    // protected void moveTank(float deltaTime) {
+    //     if(!canBeControlled) return;
+
+    //     forwardSpeed = 10;
+    //     turnSpeed = 40 / Mathf.PI;
+
+    //     rgbd.AddForce(myTransform.forward * forwardSpeed * (rightAxis + leftAxis), ForceMode.Acceleration);
+    //     rgbd.AddRelativeTorque(myTransform.up * turnSpeed * -(rightAxis-leftAxis), ForceMode.Acceleration);
+
+    // }
     protected void moveTank(float deltaTime) {
         if(!canBeControlled) return;
 
@@ -524,11 +534,12 @@ public class Tank : NetworkBehaviour
             float speed = (realRightAxis > 0 ) ? forwardSpeed : -backwardSpeed; //The left axis would also work
             speed *= axisMin;
 
-            rgbd.velocity = myTransform.forward.normalized * speed + nonControllableSpeed;
+            // rgbd.velocity = myTransform.forward.normalized * speed + nonControllableSpeed;
+            rgbd.MovePosition(myTransform.position + myTransform.forward * speed * deltaTime);
         } 
         //Break the tank
         else if(rightThreadOnGround && leftThreadOnGround){
-            rgbd.velocity = Vector3.zero + nonControllableSpeed;
+            // rgbd.velocity = Vector3.zero + nonControllableSpeed;
         }
 
         //Rotation
