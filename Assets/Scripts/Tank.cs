@@ -654,7 +654,9 @@ public class Tank : NetworkBehaviour
         }
     }
 
-    protected void KillTank(int otherTank, bool explodeTank = true){
+    public void KillTank(int otherTank, bool explodeTank = true){
+        if(!isServer) return;
+        
         if(explodeTank)
             CreateMock();
 
