@@ -325,7 +325,7 @@ public class Player : NetworkBehaviour
         if(fireCounter <= 0 && isPressing){
             Debug.Log("Tried to shoot from " + tankRef.bulletSpawnPosition.position);
             CmdShootCannon();
-            fireCounter = tankRef.shootCooldown;
+            fireCounter = tankRef.ShootCooldown;
         }
 
         float horizontalAxis = Input.GetAxis("Horizontal");

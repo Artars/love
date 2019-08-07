@@ -51,10 +51,10 @@ public class Tank : NetworkBehaviour
     public TankParameters tankParameters;
 
     [Header("Cannon")]
-    public float turnCannonSpeed = 20;
-    public float nivelCannonSpeed = 20;
-    public float minCannonNivel = -30;
-    public float maxCannonNivel = 30;
+    protected float turnCannonSpeed = 20;
+    protected float nivelCannonSpeed = 20;
+    protected float minCannonNivel = -30;
+    protected float maxCannonNivel = 30;
     [SyncVar]
     protected float rotationAxis;
     [SyncVar]
@@ -64,11 +64,14 @@ public class Tank : NetworkBehaviour
 
 
     [Header("Shooting")]
-    public float shootCooldown = 1;
     public GameObject bulletPrefab;
     public ParticleSystem shootParticles;
-    public float bulletSpeed = 30;
-    public float bulletDamage = 20;
+    protected float shootCooldown = 1;
+    public float ShootCooldown {
+        get{return shootCooldown;}
+    }
+    protected float bulletSpeed = 30;
+    protected float bulletDamage = 20;
     protected float cannonShootCounter;
 
     [Header("Transform references")]
@@ -86,11 +89,12 @@ public class Tank : NetworkBehaviour
 
 
     [Header("Movement")]
+    [HideInInspector]
     [SyncVar]
     public bool canBeControlled = true;
-    public float forwardSpeed = 10;
-    public float backwardSpeed = 5;
-    public float turnSpeed = 10;
+    protected float forwardSpeed = 10;
+    protected float backwardSpeed = 5;
+    protected float turnSpeed = 10;
     public float distanceCheckGround = 0.01f;
 
 
@@ -116,6 +120,12 @@ public class Tank : NetworkBehaviour
     public MeshRenderer rightThreadMesh;
     public int rightThreadIndex = -1;
     protected Material rightThreadMaterial;
+
+    [Header("Killing")]
+    public float timeToKillFlipped = 5f;
+    public float angleLimitToKill;
+    protected bool isFlippedCountdownOn = false;
+    protected float flippedCountdown = 0;
 
 
 
@@ -259,6 +269,10 @@ public class Tank : NetworkBehaviour
         // RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
 
+    #endregion
+
+    #region Players
+
     public void AssignPlayer(Player player, Role role)
     {
         players.Add(player);
@@ -339,6 +353,28 @@ public class Tank : NetworkBehaviour
 
     #endregion
 
+    #region Input
+
+    public void setAxis(float left, float right) {
+        float newLeft = Mathf.Clamp(left, -1, 1);
+        float newRight = Mathf.Clamp(right, -1, 1);
+        if (leftAxis != newLeft) leftAxis = newLeft;
+        if (rightAxis != newRight) rightAxis = newRight;
+    }
+
+    public void setCannonAxis(float rotation, float nivel) {
+        if (rotationAxis != rotation) rotationAxis = rotation;
+        if (inclinationAxis != nivel) inclinationAxis = nivel;
+    }
+
+    public void cannonShoot() {
+        if (cannonShootCounter < 0 && canBeControlled) {
+            ShootCannon(team);
+            cannonShootCounter = shootCooldown;
+        }
+    }
+
+    #endregion
 
 
     #region Update
@@ -400,31 +436,13 @@ public class Tank : NetworkBehaviour
 
     void FixedUpdate() {
         if (isServer) {
-            checkGround();
+            CheckGround(Time.fixedDeltaTime);
+            CheckTankRotation(Time.fixedDeltaTime);
             moveTank(Time.fixedDeltaTime);
             updateCannonRotation(Time.fixedDeltaTime);
         }
     }
 
-
-    public void setAxis(float left, float right) {
-        float newLeft = Mathf.Clamp(left, -1, 1);
-        float newRight = Mathf.Clamp(right, -1, 1);
-        if (leftAxis != newLeft) leftAxis = newLeft;
-        if (rightAxis != newRight) rightAxis = newRight;
-    }
-
-    public void setCannonAxis(float rotation, float nivel) {
-        if (rotationAxis != rotation) rotationAxis = rotation;
-        if (inclinationAxis != nivel) inclinationAxis = nivel;
-    }
-
-    public void cannonShoot() {
-        if (cannonShootCounter < 0 && canBeControlled) {
-            ShootCannon(team);
-            cannonShootCounter = shootCooldown;
-        }
-    }
 
 
     public void ShootCannon(int team) {
@@ -494,7 +512,7 @@ public class Tank : NetworkBehaviour
 
 
 
-    protected void checkGround() {
+    protected void CheckGround(float deltaTime) {
 
         bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, distanceCheckGround);
         bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, distanceCheckGround);
@@ -503,6 +521,38 @@ public class Tank : NetworkBehaviour
         begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, distanceCheckGround);
         end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, distanceCheckGround);
         rightThreadOnGround = begin || end;
+
+        //Verify if it's currently flipped
+        bool isFlipped = !(leftThreadOnGround || rightThreadOnGround);
+        
+        //Check if there's a diference between the check and the current state
+        if(isFlippedCountdownOn ^ isFlipped)
+        {
+            //Will stop counter
+            if(isFlippedCountdownOn)
+            {
+                isFlippedCountdownOn = false;
+                flippedCountdown = 0;
+            }
+            //Will start counter
+            else
+            {
+                isFlippedCountdownOn = true;
+                //Make it start in 0
+                flippedCountdown = -deltaTime;
+            }
+        }
+
+        //Make the countdown
+        if(isFlippedCountdownOn)
+        {
+            flippedCountdown += deltaTime;
+            if(flippedCountdown >= timeToKillFlipped)
+            {
+                isFlippedCountdownOn = false;
+                KillTank(tankId);
+            }
+        }
     }
 
 
@@ -556,21 +606,14 @@ public class Tank : NetworkBehaviour
     #region Damage
 
 
-    protected void OnTriggerEnter(Collider col) {
+    public void DealWithCollision(Collider otherCollider, Collider selfCollider) {
         if(isServer){
-            Debug.Log("Enter trigger with " + col.gameObject);
-            DealWithCollision(col);
-        }
-    }
-
-    public void DealWithCollision(Collider col) {
-        if(isServer){
-            Bullet bullet = col.GetComponent<Bullet>();
+            Bullet bullet = otherCollider.GetComponent<Bullet>();
             if(bullet != null) {
                 Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
                     DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
-                    NetworkServer.Destroy(col.gameObject);
+                    NetworkServer.Destroy(otherCollider.gameObject);
                 }
             }
         }
@@ -581,8 +624,7 @@ public class Tank : NetworkBehaviour
         currentHealth -= damage;
         if(currentHealth <= 0 && canBeControlled) {
             Debug.Log("Is ded. RIP team " + team);
-            CreateMock();
-            killTank(otherTank);
+            KillTank(otherTank);
         }
         else {
             RpcOnChangeHealth(currentHealth);
@@ -612,7 +654,10 @@ public class Tank : NetworkBehaviour
         }
     }
 
-    protected void killTank(int otherTank){
+    protected void KillTank(int otherTank, bool explodeTank = true){
+        if(explodeTank)
+            CreateMock();
+
         GameMode.instance.TankKilled(tankId,otherTank);
     }
 
@@ -623,6 +668,48 @@ public class Tank : NetworkBehaviour
         healthSlider.value = currentHealth;
     }
 
+    public void CheckTankRotation(float deltaTime)
+    {
+        //Avoid killing and uncontrollable tank
+        if(!canBeControlled)
+            return;
+
+        //Verify if it's currently flipped
+        bool isFlipped = false;
+        if(Mathf.Abs(myTransform.rotation.eulerAngles.x) > angleLimitToKill)
+            isFlipped = true;
+        if(Mathf.Abs(myTransform.rotation.eulerAngles.z) > angleLimitToKill)
+            isFlipped = true;
+        
+        //Check if there's a diference between the check and the current state
+        if(isFlippedCountdownOn ^ isFlipped)
+        {
+            //Will stop counter
+            if(isFlippedCountdownOn)
+            {
+                isFlippedCountdownOn = false;
+                flippedCountdown = 0;
+            }
+            //Will start counter
+            else
+            {
+                isFlippedCountdownOn = true;
+                //Make it start in 0
+                flippedCountdown = -deltaTime;
+            }
+        }
+
+        //Make the countdown
+        if(isFlippedCountdownOn)
+        {
+            flippedCountdown += deltaTime;
+            if(flippedCountdown >= timeToKillFlipped)
+            {
+                isFlippedCountdownOn = false;
+                KillTank(tankId);
+            }
+        }
+    }
 
     #endregion
 

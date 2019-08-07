@@ -899,7 +899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0
   tankOption: {fileID: 11400000, guid: 61e6b19171e191445a8fd10e68e1f155, type: 2}
-  mockPrefab: {fileID: 5378618044361311542, guid: 26b4cf6dc52e8084f9a8778af3d308e1,
+  mockPrefab: {fileID: 4143482589768500550, guid: 239b5e9d5b975cb46b4a26a1488b88d6,
     type: 3}
   players: []
   tankId: -1
@@ -907,16 +907,9 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 1, a: 0}
   playerRoles: []
   tankParameters: {fileID: 11400000, guid: 6161ec92fd19a8242b3ba9ed4740280c, type: 2}
-  turnCannonSpeed: 50
-  nivelCannonSpeed: 40
-  minCannonNivel: -30
-  maxCannonNivel: 30
-  shootCooldown: 2
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
   shootParticles: {fileID: 4318217866929469304}
-  bulletSpeed: 50
-  bulletDamage: 40
   rotationPivot: {fileID: 5378618044769985994}
   cannonTransform: {fileID: 1479867162974440514}
   tankTransform: {fileID: 5378618044168448177}
@@ -929,9 +922,6 @@ MonoBehaviour:
   leftThreadBegining: {fileID: 2805745751244474308}
   leftThreadEnd: {fileID: 5657618841033057013}
   canBeControlled: 1
-  forwardSpeed: 10
-  backwardSpeed: 8
-  turnSpeed: 75
   distanceCheckGround: 0.75
   maxHeath: 100
   currentHealth: 0
@@ -946,6 +936,8 @@ MonoBehaviour:
   leftThreadIndex: 1
   rightThreadMesh: {fileID: 462328839253375926}
   rightThreadIndex: 0
+  timeToKillFlipped: 5
+  angleLimitToKill: 75
   leftAxis: 0
   rightAxis: 0
   rightThreadOnGround: 1
@@ -1559,7 +1551,7 @@ GameObject:
   - component: {fileID: 7755197802657628272}
   m_Layer: 10
   m_Name: Cannon
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

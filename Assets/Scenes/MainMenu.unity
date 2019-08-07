@@ -1484,7 +1484,7 @@ MonoBehaviour:
   serverTickRate: 30
   showDebugMessages: 0
   offlineScene: MainMenu
-  onlineScene: LobbyScene
+  onlineScene: 
   transport: {fileID: 1309190070}
   networkAddress: localhost
   maxConnections: 4

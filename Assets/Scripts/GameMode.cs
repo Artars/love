@@ -329,15 +329,29 @@ public class GameMode : NetworkBehaviour
     #region Match
     
     public void TankKilled(int ownerId, int enemyId) {
-        kills[enemyId]++;
-        GameStatus.instance.kills[enemyId]++;
+        bool hasSuicided = ownerId == enemyId;
+
+        if(!hasSuicided)
+        {
+            kills[enemyId]++;
+            GameStatus.instance.kills[enemyId]++;
+        }
+        else
+        {
+            kills[enemyId]--;
+            GameStatus.instance.kills[enemyId]--;
+        }
+
         deaths[ownerId]++;
         GameStatus.instance.deaths[ownerId]++;
         KillPair newKill = new KillPair(enemyId,ownerId,matchTime);
         killHistory.Add(newKill);
         // GameStatus.instance.killHistory.Add(newKill);
 
-        BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f);
+        if(!hasSuicided)
+            BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f);
+        else
+            BroadcastMessageToAllConnected("Tank " + ownerId + " killed itself!", 2f);
 
         ResetTank(ownerId);
         
