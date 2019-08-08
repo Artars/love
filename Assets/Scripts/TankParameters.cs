@@ -96,4 +96,21 @@ public class GearSystem
 
         return gear;
     }
+
+    public void FixValueArray()
+    {
+        values = new float[Mathf.Abs(lowestGear) + Mathf.Abs(highestGear) + 1];
+
+        int negativeCount = Mathf.Abs(lowestGear);
+
+        for (int i = 0; i < negativeCount; i++)
+        {
+            values[i] = -1.0f + (1.0f/negativeCount) * i;
+        }
+        for(int i = 0; i < highestGear + 1; i++)
+        {
+            values[negativeCount + i] = (1.0f/highestGear)*i;
+        }
+
+    }
 }
