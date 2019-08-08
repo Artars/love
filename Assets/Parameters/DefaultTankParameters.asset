@@ -15,6 +15,16 @@ MonoBehaviour:
   forwardSpeed: 8
   backwardSpeed: 4
   turnSpeed: 50
+  gearSystem:
+    lowestGear: -2
+    highestGear: 3
+    values:
+    - -1
+    - -0.5
+    - 0
+    - 0.33
+    - 0.66
+    - 1
   turnCannonSpeed: 40
   nivelCannonSpeed: 20
   minCannonNivel: -10

@@ -402,7 +402,7 @@ MonoBehaviour:
   m_Direction: 2
   m_MinValue: -1
   m_MaxValue: 1
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -849,7 +849,7 @@ MonoBehaviour:
   m_Direction: 2
   m_MinValue: -1
   m_MaxValue: 1
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2018,7 +2018,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1749516220049046940}
   m_HandleRect: {fileID: 3758728607371701218}
   m_Direction: 2
-  m_Value: 0.99999684
+  m_Value: 0.99999887
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2381,7 +2381,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00001277687, y: 0.000055418077}
+  m_AnchoredPosition: {x: 0.00001277687, y: 0.0001382397}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &716725081902733961
@@ -6312,12 +6312,12 @@ PrefabInstance:
     - target: {fileID: 1975342280565878457, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.00004962887
+      value: 0.000011231465
       objectReference: {fileID: 0}
     - target: {fileID: 1975342280565878457, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000000002443854
+      value: 0.000030508223
       objectReference: {fileID: 0}
     - target: {fileID: 1720094938561161330, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
@@ -6562,12 +6562,12 @@ PrefabInstance:
     - target: {fileID: 1286227824078278427, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
       propertyPath: m_Size
-      value: 0.99999994
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1286227824078278427, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
       propertyPath: m_Value
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1276305049341291161, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
@@ -6687,7 +6687,7 @@ PrefabInstance:
     - target: {fileID: 5761111520375037694, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}
       propertyPath: m_Size
-      value: 0.99999994
+      value: 0.9999999
       objectReference: {fileID: 0}
     - target: {fileID: 5761111520375037694, guid: 70bb4bb5467b3cb48b693144c3fc4e44,
         type: 3}

@@ -95,8 +95,12 @@ public class Tank : NetworkBehaviour
     protected float forwardSpeed = 10;
     protected float backwardSpeed = 5;
     protected float turnSpeed = 10;
+    protected GearSystem m_gearSystem;
     public float distanceCheckGround = 0.01f;
 
+    public GearSystem gearSystem {
+        get {return m_gearSystem;}
+    }
 
 
     [Header("Health")]
@@ -138,6 +142,11 @@ public class Tank : NetworkBehaviour
     [Range(-1, 1)]
     [SyncVar]
     public float rightAxis;
+
+    [SyncVar]
+    public int leftGear;
+    [SyncVar]
+    public int rightGear;
     [SerializeField]
     [SyncVar]
     protected bool rightThreadOnGround = true;
@@ -217,6 +226,7 @@ public class Tank : NetworkBehaviour
         if (tankParameters == null) return;
         this.forwardSpeed = tankParameters.forwardSpeed;
         this.backwardSpeed = tankParameters.backwardSpeed;
+        this.m_gearSystem = tankParameters.gearSystem;
         this.turnSpeed = tankParameters.turnSpeed;
         this.turnCannonSpeed = tankParameters.turnCannonSpeed;
         this.nivelCannonSpeed = tankParameters.nivelCannonSpeed;
@@ -248,6 +258,9 @@ public class Tank : NetworkBehaviour
     public void ResetTank() {
         currentHealth = maxHeath;
         RpcOnChangeHealth(currentHealth);
+
+        leftGear = rightGear = 0;
+        rightAxis = leftAxis = 0;
     }
 
     /// <summary>
@@ -355,11 +368,19 @@ public class Tank : NetworkBehaviour
 
     #region Input
 
-    public void setAxis(float left, float right) {
-        float newLeft = Mathf.Clamp(left, -1, 1);
-        float newRight = Mathf.Clamp(right, -1, 1);
-        if (leftAxis != newLeft) leftAxis = newLeft;
-        if (rightAxis != newRight) rightAxis = newRight;
+    // public void setAxis(float left, float right) {
+    //     float newLeft = Mathf.Clamp(left, -1, 1);
+    //     float newRight = Mathf.Clamp(right, -1, 1);
+    //     if (leftAxis != newLeft) leftAxis = newLeft;
+    //     if (rightAxis != newRight) rightAxis = newRight;
+    // }
+    public void SetGear(int left, int right)
+    {
+        leftGear = m_gearSystem.ClampGear(left);
+        rightGear = m_gearSystem.ClampGear(right);
+
+        leftAxis = m_gearSystem.GetGearValue(leftGear);
+        rightAxis = m_gearSystem.GetGearValue(rightGear);
     }
 
     public void setCannonAxis(float rotation, float nivel) {
