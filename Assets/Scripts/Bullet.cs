@@ -13,6 +13,9 @@ public class Bullet : NetworkBehaviour
     public float damage;
     [SyncVar]
     public Vector3 velocityFired;
+    [SyncVar]
+    public bool canColide = false;
+
     public float angleFired;
 
     public float lifeTime = 10;
@@ -54,10 +57,14 @@ public class Bullet : NetworkBehaviour
         rgbd.velocity = velocity;
         velocityFired = velocity;
         angleFired = Mathf.Atan2(velocity.z,velocity.x) * Mathf.Rad2Deg;
+
+        canColide =true;
     }
 
     public void OnTriggerEnter(Collider col) {
         Debug.Log("Hit obj: " + col.gameObject);
+
+        if(!canColide) return;
 
         if(isServer) {
             if(col.gameObject.tag == "Tank"){
