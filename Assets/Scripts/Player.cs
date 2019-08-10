@@ -11,6 +11,8 @@ public class Player : NetworkBehaviour
         Selecting, Observing, Playing, Spectator
     }
 
+    public static Player localPlayer = null;
+
     [SyncVar]
     public PlayerInfo playerInfo;
     [SyncVar]
@@ -33,10 +35,14 @@ public class Player : NetworkBehaviour
 
 
     [Header("Camera")]
+    public Transform firstPersonCamera;
+
+    [Header("Observe references")]
+    public Transform observerTransform;
     public Transform observerPivot;
+    public Transform observerCameraTransform;
     protected Vector3 pointToObserve;
     protected float rotateSpeed;
-    public Transform firstPersonCamera;
 
     [Header("HUD")]
     public GameObject canvasPilot;
@@ -60,11 +66,14 @@ public class Player : NetworkBehaviour
     public GameObject compassCannon;
 
     [Header("Pilot")]
-    public float axisSpeed = 2;
-    protected float rightAxis;
-    protected float leftAxis;
-    protected float old_rightAxis = -2; //Force first sync
-    protected float old_leftAxis = -2;
+    public GearSystem gearSystem;
+    protected int rightGear;
+    protected int leftGear;
+    protected int old_rightGear = -2; //Force first sync
+    protected int old_leftGear = -2;
+
+    protected AxisToButton leftGearInput;
+    protected AxisToButton rightGearInput;
 
     
     //Gunner propeties
@@ -89,16 +98,20 @@ public class Player : NetworkBehaviour
 
     protected void Start() {
         //Update referece
-        if(GameMode.instance != null) {
+        if(isLocalPlayer){
+            observerTransform.gameObject.SetActive(true);
+            informationCanvas.SetActive(true);
+            localPlayer = this;
 
-            if(!isLocalPlayer){
-                firstPersonCamera.gameObject.SetActive(false);
-                observerPivot.gameObject.SetActive(false);
-                informationCanvas.SetActive(false);
-            }
-            if(isLocalPlayer){
-                observerPivot.gameObject.SetActive(true);
-                informationCanvas.SetActive(true);
+            //Create inputs
+            rightGearInput = new AxisToButton("Vertical");
+            leftGearInput = new AxisToButton("Vertical2");
+        }
+
+        if(GameMode.instance != null) {
+            if(isServer)
+            {
+                GameMode.instance.TryToJoinAsSpectator(this);
             }
         }
 
@@ -116,10 +129,21 @@ public class Player : NetworkBehaviour
             currentMode = Mode.Observing;
             HideHUD();
             firstPersonCamera.gameObject.SetActive(false);
-            observerPivot.gameObject.SetActive(true);
+            observerTransform.gameObject.SetActive(true);
+
             pointToObserve = position;
             rotateSpeed = speed;
+
+            observerTransform.position = pointToObserve;
+            observerPivot.rotation = Quaternion.Euler(0,0,angle);
+            observerCameraTransform.localPosition = new Vector3(distance,0,0);
         }
+    }
+
+    [ClientRpc]
+    public void RpcAssignSpectator()
+    {
+        TryToAssignCallback();
     }
 
     [ClientRpc]
@@ -130,7 +154,7 @@ public class Player : NetworkBehaviour
 
         TryToAssignCallback();
 
-        observerPivot.gameObject.SetActive(false);
+        observerTransform.gameObject.SetActive(false);
         firstPersonCamera.gameObject.SetActive(true);
 
         this.team = team;
@@ -143,6 +167,17 @@ public class Player : NetworkBehaviour
             firstPersonCamera.position = tankRef.cameraPositionDriver.position;
             firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
             firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
+
+            //Update axis
+            rightGear = tankRef.rightGear;
+            leftGear = tankRef.leftGear;
+
+            //Update gears
+            gearSystem = tankRef.gearSystem;
+            leftSlider.minValue = gearSystem.lowestGear;
+            leftSlider.maxValue = gearSystem.highestGear;
+            rightSlider.minValue = gearSystem.lowestGear;
+            rightSlider.maxValue = gearSystem.highestGear;
 
         }
         else if(role == Role.Gunner){
@@ -164,8 +199,8 @@ public class Player : NetworkBehaviour
         currentMode = Mode.Observing;
 
         //Reset control variables
-        rightAxis = 0;
-        leftAxis = 0;
+        rightGear = 0;
+        leftGear = 0;
         rightSlider.value = 0;
         leftSlider.value = 0;
         fireCounter = 0;
@@ -227,10 +262,10 @@ public class Player : NetworkBehaviour
 
     //Input update on server
     [Command]
-    public void CmdUpdateAxisPilot(float leftAxis, float rightAxis){
+    public void CmdUpdateGearPilot(int left, int right){
         if(role == Role.Pilot){
             if(tankRef != null) {
-                tankRef.setAxis(leftAxis, rightAxis);
+                tankRef.SetGear(left, right);
             }
         }
     }
@@ -258,8 +293,8 @@ public class Player : NetworkBehaviour
         
         if(currentMode == Mode.Observing) {
             if(pointToObserve != null) {
-                observerPivot.position = pointToObserve;
-                observerPivot.RotateAround(pointToObserve, observerPivot.up, rotateSpeed * Time.deltaTime);
+                observerTransform.position = pointToObserve;
+                observerTransform.RotateAround(pointToObserve, observerTransform.up, rotateSpeed * Time.deltaTime);
             }
         }
         else if(currentMode == Mode.Playing) {
@@ -279,36 +314,42 @@ public class Player : NetworkBehaviour
     }
 
     protected void pilotUpdate(float deltaTime){
-        if(!Input.GetButton("Jump")){
-            rightAxis += deltaTime * axisSpeed * Input.GetAxisRaw("Vertical");
-            leftAxis += deltaTime * axisSpeed * Input.GetAxisRaw("Vertical2");
+        if(!Input.GetButton("Stop")){
+            if(leftGearInput.GetButtonDown())
+            {
+                leftGear += leftGearInput.currentValue;
+            }
+            if(rightGearInput.GetButtonDown())
+            {
+                rightGear += rightGearInput.currentValue;
+            }
         }
         else {
-            rightAxis = 0;
-            leftAxis = 0;
+            rightGear = 0;
+            leftGear = 0;
         }
-        rightAxis = Mathf.Clamp(rightAxis,-1,1);
-        leftAxis = Mathf.Clamp(leftAxis,-1,1);
+        rightGear = gearSystem.ClampGear(rightGear);
+        leftGear = gearSystem.ClampGear(leftGear);
 
-        if(rightSlider != null) rightSlider.value = rightAxis;
-        if(leftSlider != null) leftSlider.value = leftAxis;
+        if(rightSlider != null) rightSlider.value = rightGear;
+        if(leftSlider != null) leftSlider.value = leftGear;
 
-        if(old_leftAxis != leftAxis || old_rightAxis != rightAxis) {
-            old_leftAxis = leftAxis;
-            old_rightAxis = rightAxis;
-            CmdUpdateAxisPilot(leftAxis, rightAxis);
+        if(old_leftGear != leftGear || old_rightGear != rightGear) {
+            old_leftGear = leftGear;
+            old_rightGear = rightGear;
+            CmdUpdateGearPilot(leftGear, rightGear);
         }
     }
 
     protected void gunnerUpdate(float deltaTime) {
         fireCounter -= deltaTime;
 
-        bool isPressing = Input.GetButton("Jump") || buttonState;
+        bool isPressing = Input.GetButton("Fire") || buttonState;
 
         if(fireCounter <= 0 && isPressing){
             Debug.Log("Tried to shoot from " + tankRef.bulletSpawnPosition.position);
             CmdShootCannon();
-            fireCounter = tankRef.shootCooldown;
+            fireCounter = tankRef.ShootCooldown;
         }
 
         float horizontalAxis = Input.GetAxis("Horizontal");
@@ -361,10 +402,10 @@ public class Player : NetworkBehaviour
 
             rightSlider.gameObject.SetActive(true);
             rightSlider.onValueChanged.AddListener(onUpdateRightSlider);
-            rightSlider.value = rightAxis;
+            rightSlider.value = rightGear;
             leftSlider.gameObject.SetActive(true);
             leftSlider.onValueChanged.AddListener(onUpdateLeftSlider);
-            leftSlider.value = leftAxis;
+            leftSlider.value = leftGear;
 
         }
         else if(role == Role.Gunner){
@@ -412,16 +453,12 @@ public class Player : NetworkBehaviour
 
     protected void onUpdateRightSlider(float value) {
         if(currentMode == Mode.Playing){
-            rightAxis = Mathf.Clamp(-1,value,1);
-            if(tankRef != null)
-                tankRef.setAxis(leftAxis, rightAxis);
+            rightGear = gearSystem.ClampGear(Mathf.FloorToInt(value));
         }
     }
     protected void onUpdateLeftSlider(float value) {
         if(currentMode == Mode.Playing){
-            leftAxis = Mathf.Clamp(-1,value,1);
-            if(tankRef != null)
-                tankRef.setAxis(leftAxis, rightAxis);
+            leftGear = gearSystem.ClampGear(Mathf.FloorToInt(value));
         }
     }
 
@@ -452,14 +489,15 @@ public class Player : NetworkBehaviour
 
     public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
         Debug.Log("Callbacked");
-        if(scoreText != null && team != -1){
+        int useTeam = (team != -1) ? team : 0;
+        if(scoreText != null && useTeam != -1){
             SyncListInt syncList = GameStatus.instance.score;
 
             if(syncList == null || syncList.Count < 1) return;
 
-            string newText = syncList[team].ToString();
+            string newText = syncList[useTeam].ToString();
             for(int i = 0; i < syncList.Count; i++) {
-                if(i != team){
+                if(i != useTeam){
                     newText += " x " + syncList[i]; 
                 }
             }
@@ -530,5 +568,70 @@ public class Player : NetworkBehaviour
     }
 
 
+
+}
+
+
+public class AxisToButton
+{
+    public string input;
+    public float threshold = 0.1f;
+    public int currentValue = 0;
+
+    public AxisToButton(string inputString, float threshold = 0.2f)
+    {
+        input = inputString;
+        this.threshold = threshold;
+    }
+
+    public bool GetButtonDown()
+    {
+        int state = GetNewState();
+
+        if(state != currentValue)
+        {
+            currentValue = state;
+            if(state != 0)
+                return true;
+        }
+        return false;
+    }
+
+    public bool GetButtonUp()
+    {
+        int state = GetNewState();
+        
+
+        if(state != currentValue)
+        {
+            currentValue = state;
+            if(state == 0)
+                return true;
+        }
+        return false;
+    }
+
+    public bool GetState()
+    {
+        int state = GetNewState();
+
+        if(state != currentValue)
+        {
+            currentValue = state;
+        }
+        if(state != 0)
+            return true;
+        else
+            return false;
+    }
+
+    protected int GetNewState()
+    {
+        float currentInputValue = Input.GetAxisRaw(input);
+        int state = currentInputValue > threshold ? 1 : 0;
+        state = currentInputValue < -threshold ? -1 : state;
+        
+        return state;
+    }
 
 }

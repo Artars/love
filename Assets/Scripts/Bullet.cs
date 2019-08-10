@@ -50,32 +50,28 @@ public class Bullet : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    public void RpcFireWithVelocityRpc(Vector3 position, Quaternion rotation, Vector3 velocity){
-        myTransform.position = position;
-        myTransform.rotation = rotation;
-
-        rgbd.velocity = velocity;
-        velocityFired = velocity;
-        angleFired = Mathf.Atan2(velocity.z,velocity.x) * Mathf.Rad2Deg;
-    }
-
     public void fireWithVelocity(Vector3 velocity){
         rgbd.velocity = velocity;
         velocityFired = velocity;
         angleFired = Mathf.Atan2(velocity.z,velocity.x) * Mathf.Rad2Deg;
     }
 
-    protected void OnCollisionEnter(Collision col) {
+    public void OnTriggerEnter(Collider col) {
+        Debug.Log("Hit obj: " + col.gameObject);
+
         if(isServer) {
-            if(col.gameObject.tag != "Tank"){
+            if(col.gameObject.tag == "Tank"){
+                Tank tankScript = col.gameObject.GetComponentInParent<Tank>();
+                if(tankScript != null)
+                {
+                    tankScript.DealWithCollision(this.GetComponent<Collider>(), col);
+                }
+            }
+            else
+            {
                 NetworkServer.Destroy(gameObject);
             }
         }
-
-        if(col.gameObject.tag == "Tank")
-            Physics.IgnoreCollision(GetComponent<Collider>(), col.collider);
-
     }
 
     protected IEnumerator waitDestroyTime(float time) {

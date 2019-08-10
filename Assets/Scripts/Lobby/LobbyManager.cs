@@ -307,6 +307,7 @@ public class LobbyManager : NetworkBehaviour
     /// <returns>Is everybody ready</returns>
     public bool isGameReady() {
         bool everyoneIsReady = true;
+        int count = 0;
 
         foreach (var tank in infoTanks)
         {
@@ -319,11 +320,15 @@ public class LobbyManager : NetworkBehaviour
                         everyoneIsReady = false;
                         break;
                     }
+                    else
+                    {
+                        count++;
+                    }
                 }
             }
         }
 
-        return everyoneIsReady;
+        return everyoneIsReady && count > 0;
     }
 
     public void HideLobbyForAllPlayers()
