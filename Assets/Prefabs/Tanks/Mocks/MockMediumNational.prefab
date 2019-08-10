@@ -18,7 +18,7 @@ MonoBehaviour:
   explosionParticles: {fileID: 6815213591764897410}
   turretExplosionChance: 0.1
   turretExplosionVelocity: 2
-  lifetime: 2
+  lifetime: 10
 --- !u!1001 &2983063059747312955
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -173,7 +173,7 @@ PrefabInstance:
     - target: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
         type: 3}
       propertyPath: m_Name
-      value: MockMediumNational Variant
+      value: MockMediumNational
       objectReference: {fileID: 0}
     - target: {fileID: 5378618044361611542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
         type: 3}
