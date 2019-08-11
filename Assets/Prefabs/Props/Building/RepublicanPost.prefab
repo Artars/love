@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1836085186031252619}
   - component: {fileID: 1836085186027828395}
   - component: {fileID: 1836085186028828267}
+  - component: {fileID: 5090840978565044992}
   m_Layer: 0
   m_Name: RepublicanPost
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &5090840978565044992
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1836085186030758059}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.015, y: 0.015000006, z: 0.024000006}
+  m_Center: {x: 2.3305995e-16, y: 0.0000000011641534, z: 0.012000003}
