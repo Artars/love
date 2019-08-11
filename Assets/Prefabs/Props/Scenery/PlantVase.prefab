@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5654908025935760042}
   - component: {fileID: 5654908025934989962}
   - component: {fileID: 5654908025933989962}
+  - component: {fileID: 3471769464949183259}
   m_Layer: 0
   m_Name: PlantVase
   m_TagString: Untagged
@@ -77,3 +78,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &3471769464949183259
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5654908025936254602}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.006, y: 0.0060000014, z: 0.0030000007}
+  m_Center: {x: 2.6011156e-17, y: 0, z: 0.0013392862}

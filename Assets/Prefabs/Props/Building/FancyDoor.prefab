@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 4473042935623371067}
   - component: {fileID: 4473042935622043931}
   - component: {fileID: 4473042935621077979}
+  - component: {fileID: 3568387798990526297}
+  - component: {fileID: 5978270740838086912}
+  - component: {fileID: 6395905579771287622}
   m_Layer: 0
   m_Name: FancyDoor
   m_TagString: Untagged
@@ -77,3 +80,42 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &3568387798990526297
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4473042935623013659}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0047922963, y: 0.014616425, z: 0.025633343}
+  m_Center: {x: 0.000003850311, y: 0.000034886896, z: 0.012716672}
+--- !u!65 &5978270740838086912
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4473042935623013659}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0067913043, y: 0.02096626, z: 0.0036538942}
+  m_Center: {x: -0.0009956541, y: -3.570743e-18, z: 0.0017269632}
+--- !u!65 &6395905579771287622
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4473042935623013659}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.009816297, y: 0.0072984206, z: 0.0023272554}
+  m_Center: {x: -0.0025081486, y: 0.000058617294, z: 0.0010636315}

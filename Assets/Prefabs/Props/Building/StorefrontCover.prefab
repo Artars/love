@@ -11,6 +11,11 @@ GameObject:
   - component: {fileID: 5927309154117526189}
   - component: {fileID: 5927309154118853261}
   - component: {fileID: 5927309154119950413}
+  - component: {fileID: 2397942220365574263}
+  - component: {fileID: 1402894215593973282}
+  - component: {fileID: 1381534485064855809}
+  - component: {fileID: 3192451928226693810}
+  - component: {fileID: 7136503805381201749}
   m_Layer: 0
   m_Name: StorefrontCover
   m_TagString: Untagged
@@ -77,3 +82,77 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &2397942220365574263
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927309154117959309}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.00030942916, y: 0.000706496, z: 0.019596012}
+  m_Center: {x: -0.004945283, y: 0.009846764, z: 0.009798007}
+--- !u!65 &1402894215593973282
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927309154117959309}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0003819835, y: 0.0006394354, z: 0.01959601}
+  m_Center: {x: -0.004909002, y: -0.0098802885, z: 0.009798011}
+--- !u!65 &1381534485064855809
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927309154117959309}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.010100847, y: 0.020400004, z: 0.0014339848}
+  m_Center: {x: -0.000049575567, y: -5.560107e-17, z: 0.020184536}
+--- !u!114 &3192451928226693810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927309154117959309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 2810d35612da0b74c944902012a6e023
+  m_SceneId: 0
+--- !u!114 &7136503805381201749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927309154117959309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a6ab92e0f4fe149a347e1d0e2a55cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  wayToDestroy: 1
+  timeToDestroy: 1
+  particlesToInstantiate: {fileID: 0}
+  positionToSpawnParticles: {fileID: 5927309154117526189}
+  pivotPoint: {fileID: 0}
+  timeToFall: 1

@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 6026318655400173659}
   - component: {fileID: 6026318655398846587}
   - component: {fileID: 6026318655397749435}
+  - component: {fileID: 8514152714977998924}
+  - component: {fileID: 3619861369067697208}
+  - component: {fileID: 8025983462793373239}
   m_Layer: 0
   m_Name: Bush2
   m_TagString: Untagged
@@ -77,3 +80,51 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!135 &8514152714977998924
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6026318655399689339}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.0082343435
+  m_Center: {x: -0.0009497525, y: -0.0014552536, z: 0.00014012426}
+--- !u!114 &3619861369067697208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6026318655399689339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 8a92f7b7817f8604da0ce2b757f77c63
+  m_SceneId: 0
+--- !u!114 &8025983462793373239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6026318655399689339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a6ab92e0f4fe149a347e1d0e2a55cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  wayToDestroy: 1
+  timeToDestroy: 5
+  particlesToInstantiate: {fileID: 0}
+  positionToSpawnParticles: {fileID: 6026318655400173659}
+  pivotPoint: {fileID: 0}
+  timeToFall: 1

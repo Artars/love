@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 2027635366078852538}
   - component: {fileID: 2027635366077558170}
   - component: {fileID: 2027635366076559194}
+  - component: {fileID: 5613551218628005848}
+  - component: {fileID: 7643371893522042070}
+  - component: {fileID: 4168685773127314665}
   m_Layer: 0
   m_Name: WallMountedLight
   m_TagString: Untagged
@@ -77,3 +80,51 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &5613551218628005848
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027635366078558618}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0060425806, y: 0.0033829415, z: 0.005527069}
+  m_Center: {x: -0.0020212901, y: -2.872426e-17, z: 0.002263534}
+--- !u!114 &7643371893522042070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027635366078558618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 592b8bf7c672c7c4f9004f5ad905b06f
+  m_SceneId: 0
+--- !u!114 &4168685773127314665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027635366078558618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a6ab92e0f4fe149a347e1d0e2a55cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  wayToDestroy: 1
+  timeToDestroy: 1
+  particlesToInstantiate: {fileID: 0}
+  positionToSpawnParticles: {fileID: 2027635366078852538}
+  pivotPoint: {fileID: 0}
+  timeToFall: 1
