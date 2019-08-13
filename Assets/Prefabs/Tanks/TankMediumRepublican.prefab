@@ -953,6 +953,8 @@ MonoBehaviour:
   angleLimitToKill: 75
   leftAxis: 0
   rightAxis: 0
+  leftGear: 0
+  rightGear: 0
   rightThreadOnGround: 1
   leftThreadOnGround: 1
 --- !u!54 &5378618044361311541
@@ -1043,7 +1045,7 @@ GameObject:
   - component: {fileID: 6379130438709558988}
   m_Layer: 10
   m_Name: RotationPivot
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1703,7 +1705,7 @@ GameObject:
   - component: {fileID: 7755197802657628272}
   m_Layer: 10
   m_Name: Cannon
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
