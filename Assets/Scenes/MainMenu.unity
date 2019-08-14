@@ -1380,124 +1380,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &1309190069
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1309190071}
-  - component: {fileID: 1309190072}
-  - component: {fileID: 1309190070}
-  m_Layer: 0
-  m_Name: NetworkingManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1309190070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1309190069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnClientConnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnClientDataReceived:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventArraySegment, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnClientError:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventException, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnClientDisconnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnServerConnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnServerDataReceived:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventIntArraySegment, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnServerError:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventIntException, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnServerDisconnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  port: 7777
-  NoDelay: 1
-  serverMaxMessageSize: 16384
-  clientMaxMessageSize: 16384
---- !u!4 &1309190071
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1309190069}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.525776, y: 2.0491889, z: 11.907053}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1309190072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1309190069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
-  runInBackground: 1
-  startOnHeadless: 1
-  serverTickRate: 30
-  showDebugMessages: 0
-  offlineScene: MainMenu
-  onlineScene: 
-  transport: {fileID: 1309190070}
-  networkAddress: localhost
-  maxConnections: 4
-  playerPrefab: {fileID: 945030072491325362, guid: c29bbf87b1265a84893bc71b470548d2,
-    type: 3}
-  autoCreatePlayer: 1
-  playerSpawnMethod: 0
-  spawnPrefabs:
-  - {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11, type: 3}
-  - {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b, type: 3}
-  - {fileID: 18332451572104369, guid: bb8bff03f39ff904aa9174e33d4c73d2, type: 3}
-  - {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11, type: 3}
-  - {fileID: 5378618044361311542, guid: 0d0933c68f8aae746b39d8424e9f35af, type: 3}
 --- !u!1 &1382991679
 GameObject:
   m_ObjectHideFlags: 0
@@ -2891,9 +2773,12 @@ MonoBehaviour:
   tankOptionCollection: {fileID: 11400000, guid: 8ee9146f28a416b47955744ad9642fd9,
     type: 2}
   adressField: {fileID: 1585429385}
+  portField: {fileID: 0}
   mapSelector: {fileID: 606198967}
   settingsSelector: {fileID: 5975837866537021990}
+  animator: {fileID: 0}
   address: localhost
+  port: 7777
   sceneToChange: 
 --- !u!4 &1843832585
 Transform:
@@ -3423,11 +3308,6 @@ PrefabInstance:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5437871581657863365, guid: 40af567081508b04eb417181f10dcd85,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1843832584}
     - target: {fileID: 536269462, guid: 40af567081508b04eb417181f10dcd85, type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
@@ -4366,6 +4246,11 @@ PrefabInstance:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5437871581657863365, guid: 40af567081508b04eb417181f10dcd85,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1843832584}
     - target: {fileID: 5975837866537021990, guid: 40af567081508b04eb417181f10dcd85,
         type: 3}
       propertyPath: autoLoadSettings
@@ -4373,6 +4258,75 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40af567081508b04eb417181f10dcd85, type: 3}
+--- !u!1001 &3380199502113467613
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3380199501274041192, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_Name
+      value: NetworkingManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.525776
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.0491889
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.907053
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b3703622212e9a4499168340844ad9a7, type: 3}
 --- !u!1 &4076234802618662068 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4076234802618662068, guid: 40af567081508b04eb417181f10dcd85,

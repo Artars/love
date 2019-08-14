@@ -8,8 +8,17 @@ public class NetworkHud : MonoBehaviour
 {
     public TankOptionCollection tankOptionCollection;
     public InputField adressField;
+    public InputField portField;
     public MapSelector mapSelector;
     public SettingsSelector settingsSelector;
+    public Animator animator;
+
+    protected int currentMenu = 0;
+
+    public string address = "localhost";
+    public string port = "7777";
+    public string sceneToChange;
+
 
     public void Start(){
         if(PlayerPrefs.HasKey("LastAddress")){
@@ -20,11 +29,13 @@ public class NetworkHud : MonoBehaviour
         }
     }
 
-    public string address = "localhost";
-    public string sceneToChange;
 
     
     public void updateAdressField(InputField  input) {
+        this.address = input.text;
+    }
+
+    public void updatePortField(InputField  input) {
         this.address = input.text;
     }
 
@@ -64,7 +75,35 @@ public class NetworkHud : MonoBehaviour
     public void OnClickStartClient(){
         PlayerPrefs.SetString("LastAddress", address);
         NetworkManager.singleton.networkAddress = address;
+        NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>().port = ushort.Parse(port);
         NetworkManager.singleton.StartClient();
+    }
+
+    public void ChangeMenu(int newMenu)
+    {
+        if(animator != null)
+        {
+            currentMenu = newMenu;
+            animator.SetInteger("CurrentMenu", currentMenu);
+        }
+    }
+
+    public void CloseGame(float timeToClose)
+    {
+        StartCoroutine(WaitToClose(timeToClose));
+    }
+
+    protected IEnumerator WaitToClose(float time)
+    {
+        float counter = 0;
+
+        while(counter < time)
+        {
+            counter += Time.deltaTime;
+            yield return null;
+        }
+
+        Application.Quit();
     }
 
 }
