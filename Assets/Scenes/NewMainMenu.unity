@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.2945969, g: 0.6341339, b: 0.9921766, a: 1}
+  m_IndirectSpecularColor: {r: 0.29732597, g: 0.63431764, b: 0.9956333, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2784,10 +2784,10 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 620777302}
   m_TextComponent: {fileID: 1635826360}
   m_Placeholder: {fileID: 1670447316}
-  m_ContentType: 9
+  m_ContentType: 0
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 2
+  m_KeyboardType: 0
   m_LineType: 0
   m_HideMobileInput: 0
   m_CharacterValidation: 0
@@ -6910,7 +6910,7 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 14
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 40
     m_Alignment: 0
@@ -6987,7 +6987,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
