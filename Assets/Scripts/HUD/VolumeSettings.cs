@@ -25,6 +25,21 @@ public class VolumeSettings : MonoBehaviour
         UpdateMusicVolume(music);
     }
 
+    public void UpdateMainVolume(Slider slider)
+    {
+        UpdateMainVolume(slider.value);
+    }
+
+    public void UpdateFxVolume(Slider slider)
+    {
+        UpdateFxVolume(slider.value);
+    }
+
+    public void UpdateMusicVolume(Slider slider)
+    {
+        UpdateMusicVolume(slider.value);
+    }
+
     public void UpdateMainVolume(float newValue)
     {
         audioMixer.SetFloat("VolumeMaster", Mathf.Log10(newValue) * 20);

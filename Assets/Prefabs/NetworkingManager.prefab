@@ -49,7 +49,7 @@ MonoBehaviour:
   startOnHeadless: 1
   serverTickRate: 30
   showDebugMessages: 0
-  offlineScene: MainMenu
+  offlineScene: NewMainMenu
   onlineScene: 
   transport: {fileID: 3380199501274041195}
   networkAddress: localhost

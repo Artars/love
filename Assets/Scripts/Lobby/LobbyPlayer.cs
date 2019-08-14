@@ -72,8 +72,7 @@ public class LobbyPlayer : NetworkBehaviour
             roleAssigmentCanvas.SetActive(false);
             
 
-            if(PlayerPrefs.HasKey("Name"))
-                playerName = PlayerPrefs.GetString("Name");
+            playerName = PlayerPrefs.GetString("Name", "Deuce");
             CmdJoinLobby(playerName);
         }
         else{
