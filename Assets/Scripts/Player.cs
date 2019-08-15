@@ -54,7 +54,6 @@ public class Player : NetworkBehaviour
     public bool buttonState = false;
     public GameObject[] mobileHUD;
 
-    public GameObject canvasShared;
     public Slider healthSlider;
     public TMPro.TextMeshProUGUI scoreText;
 
@@ -239,7 +238,7 @@ public class Player : NetworkBehaviour
         {
             Debug.Log("Received " + damage + " damage from direction " + angle);
             GameObject pointer = Instantiate(hitPointer, Vector3.zero, Quaternion.identity);
-            pointer.transform.parent = canvasShared.transform;
+            pointer.transform.parent = informationCanvas.transform;
             pointer.GetComponent<HitPointer>().hitAngle = angle;
             pointer.GetComponent<HitPointer>().cameraTransform = firstPersonCamera;
         }
@@ -389,7 +388,6 @@ public class Player : NetworkBehaviour
     }
 
     protected void assignHUD() {
-        canvasShared.SetActive(true);
         healthSlider.gameObject.SetActive(true);
         tankRef.SetHealthSlider(healthSlider);
         TryToAssignCallback();
