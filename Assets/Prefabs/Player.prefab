@@ -645,7 +645,9 @@ MonoBehaviour:
   - {fileID: 4226612651353688294}
   - {fileID: 100827383465574966}
   healthSlider: {fileID: 8726250258631462083}
+  loadingSlider: {fileID: 3775315357151066026}
   scoreText: {fileID: 3456875208715600953}
+  timeText: {fileID: 970987037910531934}
   informationCanvas: {fileID: 1403205298042423822}
   ipText: {fileID: 3727905104054411548}
   messageText: {fileID: 2191776448481244159}
@@ -949,7 +951,7 @@ GameObject:
   - component: {fileID: 3195868577025373971}
   - component: {fileID: 3775315357151066026}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: LoadingSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1846,7 +1848,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 0x0
+  m_text: 00x00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 71f18b7285d93ca4a84cc15966b23c00, type: 2}
@@ -2006,7 +2008,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 0x0
+  m_text: 00:00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 71f18b7285d93ca4a84cc15966b23c00, type: 2}
@@ -3453,7 +3455,7 @@ PrefabInstance:
     - target: {fileID: 7803677551726798179, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000014570253
+      value: -0.0000075868393
       objectReference: {fileID: 0}
     - target: {fileID: 7735760150557661153, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
@@ -3558,7 +3560,7 @@ PrefabInstance:
     - target: {fileID: 6400199293123500513, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000014570253
+      value: -0.0000075868393
       objectReference: {fileID: 0}
     - target: {fileID: 4210144800760519078, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
@@ -4458,7 +4460,7 @@ PrefabInstance:
     - target: {fileID: 287378819081046367, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0000305388
+      value: -0.000024199557
       objectReference: {fileID: 0}
     - target: {fileID: 602023073281310572, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
@@ -4583,7 +4585,7 @@ PrefabInstance:
     - target: {fileID: 670108021117200637, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
       propertyPath: m_Size
-      value: 0.9999999
+      value: 0.99999994
       objectReference: {fileID: 0}
     - target: {fileID: 658495846735285631, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}

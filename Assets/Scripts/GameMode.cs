@@ -25,6 +25,9 @@ public class GameMode : NetworkBehaviour
             matchTime = time;
         }
     }
+
+    [Header("Game Info")]
+    public string[] teamAliases = new string[]{"Nationals", "Republicans"};
        
     [Header("Game settings")]
     [SyncVar]
@@ -151,6 +154,7 @@ public class GameMode : NetworkBehaviour
 
         matchTime = 0;
         gameStage = GameStage.Match;
+        GameStatus.instance.RpcStartCounter(matchSettings.maxTime);
         
         BroadcastMessageToAllConnected("Match has started!", 2f);
     }
@@ -265,7 +269,7 @@ public class GameMode : NetworkBehaviour
                     teamPlayers[playerInfo.team].Add(playerRef);
 
                 playerRef.RpcObservePosition(tanks[playerInfo.tankID].transform.position,10,45,10);
-                playerRef.RpcDisplayMessage("You are on Team " + (playerInfo.team+1) + " with role " + playerInfo.role.ToString(),timeToStartGame/2, 0.5f, 1f);
+                playerRef.RpcDisplayMessage("You are on Team " + teamAliases[playerInfo.team] + " with role " + playerInfo.role.ToString(),timeToStartGame/2, 0.5f, 1f);
             }
         }
     }
@@ -465,6 +469,7 @@ public class GameMode : NetworkBehaviour
                 winningTeams.Clear();
                 winningTeams.Add(i);
                 hasDraw = false;
+                highestScore = score[i];
             }
             else if(score[i] == highestScore)
             {
@@ -479,11 +484,13 @@ public class GameMode : NetworkBehaviour
 
     public virtual void EndGame(List<int> winningTeams, bool hasDraw = false){
         gameStage = GameStage.End;
+        float finalTime = (matchSettings.maxTime == Mathf.Infinity) ? Mathf.Infinity : matchSettings.maxTime - matchTime;
+        GameStatus.instance.RpcStopCounter(finalTime);
         
-        string winningString = winningTeams[0].ToString();
+        string winningString = teamAliases[winningTeams[0]];
         for (int i = 1; i < winningTeams.Count; i++)
         {
-            winningString += " & " + winningTeams[i];
+            winningString += " & " + teamAliases[winningTeams[i]];
         }
 
         for(int i = 0; i < teamPlayers.Length; i ++){
@@ -505,7 +512,7 @@ public class GameMode : NetworkBehaviour
                 {
                     foreach(Player p in teamPlayers[i])
                     {
-                            p.RpcDisplayMessage("I can't believe it, a Draw! Nice work teams " + winningString + "!", 10, 0.1f, 1);
+                        p.RpcDisplayMessage("I can't believe it, a Draw! Nice work teams " + winningString + "!", 10, 0.1f, 1);
                     }
                 }
             }

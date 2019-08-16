@@ -12,6 +12,10 @@ public class GameStatus : NetworkBehaviour
     public SyncListInt kills;
     // public SyncList<GameMode.KillPair> killHistory;
 
+    protected TMPro.TMP_Text timeText;
+    protected bool timeRunning = false;
+    protected float timeCounter = 0;
+
 
     [Header("Game settings")]
     [SyncVar]
@@ -51,6 +55,72 @@ public class GameStatus : NetworkBehaviour
             deaths.Add(0);
             kills.Add(0);
         }
+    }
+
+    public void Update()
+    {
+        if(timeRunning && timeCounter != Mathf.Infinity)
+        {
+            timeCounter -= Time.deltaTime;
+            if(timeText != null)
+            {
+                timeText.text = TimeToString(timeCounter);
+            }
+        }
+    }
+
+    [ClientRpc]
+    public void RpcStartCounter(float maxTime)
+    {
+        timeRunning = true;
+        timeCounter = maxTime;
+
+        if(timeText != null)
+            timeText.text = TimeToString(timeCounter);
+    }
+
+    [ClientRpc]
+    public void RpcStopCounter(float finalTime)
+    {
+        timeRunning = false;
+        timeCounter = finalTime;
+
+        if(timeText != null)
+            timeText.text = TimeToString(timeCounter);
+    }
+
+
+    public void SetTimeText(TMPro.TMP_Text textRef)
+    {
+        timeText = textRef;
+        if(timeRunning)
+            timeText.text = TimeToString(timeCounter);
+
+    }
+
+    protected string TimeToString(float time)
+    {
+        if(time == Mathf.Infinity)
+            return "--:--";
+        
+        if(time < 0)
+            time = 0;
+
+        int min = Mathf.FloorToInt(time / 60);
+        int sec = Mathf.FloorToInt(time-min*60);
+
+        return min.ToString("D2") + ":" + sec.ToString("D2");
+    }
+
+    public string GetCurrentScore(int team = 0)
+    {
+        string newText = (MatchSetting.maxPoints - score[team]).ToString("D2");
+        for(int i = 0; i < score.Count; i++) {
+            if(i != team){
+                newText += "x" + (MatchSetting.maxPoints - score[i]).ToString("D2"); 
+            }
+        }
+        return newText;
     }
     
 

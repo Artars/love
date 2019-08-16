@@ -55,7 +55,9 @@ public class Player : NetworkBehaviour
     public GameObject[] mobileHUD;
 
     public Slider healthSlider;
+    public Slider loadingSlider;
     public TMPro.TextMeshProUGUI scoreText;
+    public TMPro.TextMeshProUGUI timeText;
 
     public GameObject informationCanvas;
     public TMPro.TextMeshProUGUI ipText;
@@ -105,6 +107,9 @@ public class Player : NetworkBehaviour
             //Create inputs
             rightGearInput = new AxisToButton("Vertical");
             leftGearInput = new AxisToButton("Vertical2");
+
+            //Set time reference
+            GameStatus.instance.SetTimeText(timeText);
         }
 
         if(GameMode.instance != null) {
@@ -167,16 +172,7 @@ public class Player : NetworkBehaviour
             firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
             firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
 
-            //Update axis
-            rightGear = tankRef.rightGear;
-            leftGear = tankRef.leftGear;
-
-            //Update gears
-            gearSystem = tankRef.gearSystem;
-            leftSlider.minValue = gearSystem.lowestGear;
-            leftSlider.maxValue = gearSystem.highestGear;
-            rightSlider.minValue = gearSystem.lowestGear;
-            rightSlider.maxValue = gearSystem.highestGear;
+            
 
         }
         else if(role == Role.Gunner){
@@ -185,7 +181,25 @@ public class Player : NetworkBehaviour
             firstPersonCamera.SetParent(tankRef.cameraPositionGunner);
 
 
+
         }
+
+        //Update control values
+        //Update axis
+        rightGear = tankRef.rightGear;
+        leftGear = tankRef.leftGear;
+
+        //Update gears
+        gearSystem = tankRef.gearSystem;
+        leftSlider.minValue = gearSystem.lowestGear;
+        leftSlider.maxValue = gearSystem.highestGear;
+        rightSlider.minValue = gearSystem.lowestGear;
+        rightSlider.maxValue = gearSystem.highestGear;
+
+        //Update gunner
+        loadingSlider.minValue = 0;
+        loadingSlider.maxValue = tankRef.ShootCooldown;
+
 
         assignHUD();
 
@@ -341,7 +355,7 @@ public class Player : NetworkBehaviour
     }
 
     protected void gunnerUpdate(float deltaTime) {
-        fireCounter -= deltaTime;
+        UpdateGunnerCooldown(deltaTime);
 
         bool isPressing = Input.GetButton("Fire") || buttonState;
 
@@ -469,6 +483,12 @@ public class Player : NetworkBehaviour
         }
     }
 
+    void UpdateGunnerCooldown(float deltaTime)
+    {
+        fireCounter -= deltaTime;
+        loadingSlider.value = loadingSlider.maxValue - fireCounter;
+    }
+
     public void TryToAssignCallback()
     {
         if(!assignedCallback)
@@ -489,18 +509,20 @@ public class Player : NetworkBehaviour
         Debug.Log("Callbacked");
         int useTeam = (team != -1) ? team : 0;
         if(scoreText != null && useTeam != -1){
-            SyncListInt syncList = GameStatus.instance.score;
+            scoreText.text = GameStatus.instance.GetCurrentScore(useTeam);
 
-            if(syncList == null || syncList.Count < 1) return;
+            // SyncListInt syncList = GameStatus.instance.score;
 
-            string newText = syncList[useTeam].ToString();
-            for(int i = 0; i < syncList.Count; i++) {
-                if(i != useTeam){
-                    newText += " x " + syncList[i]; 
-                }
-            }
+            // if(syncList == null || syncList.Count < 1) return;
 
-            scoreText.text = newText;
+            // string newText = syncList[useTeam].ToString();
+            // for(int i = 0; i < syncList.Count; i++) {
+            //     if(i != useTeam){
+            //         newText += " x " + syncList[i]; 
+            //     }
+            // }
+
+            // scoreText.text = newText;
         }
     }
 

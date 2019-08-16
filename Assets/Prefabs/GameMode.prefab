@@ -48,8 +48,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  teamAliases:
+  - Nationals
+  - Republicans
   matchSettings:
-    mapIndex: 0
+    teamConfiguration: 
     numTeams: 0
     maxPoints: 0
     maxTime: 0
