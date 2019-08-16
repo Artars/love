@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
-  m_Name: DuelAtTheChurch
+  m_Name: IronHarvest
   m_EditorClassIdentifier: 
-  scene: DuelAtTheChurch
-  mapName: Duel at the church
-  mapThumbnail: {fileID: 21300000, guid: de2b6afb0a85b3f42b6edd1e42ee55eb, type: 3}
+  scene: IronHarvest
+  mapName: Iron Harvest
+  mapThumbnail: {fileID: 0}

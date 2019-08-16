@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameMaps/DuelAtTheChurch.unity
     guid: 351e2f6883d6b4a46ae17bea4f60b1b6
+  - enabled: 1
+    path: Assets/Scenes/GameMaps/IronHarvest.unity
+    guid: bc917e4357962f84f9f5e03cc78447a9
   m_configObjects: {}
