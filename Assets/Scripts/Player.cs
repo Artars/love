@@ -587,6 +587,14 @@ public class Player : NetworkBehaviour
         buttonState = false;
     }
 
+    public void OnClickExit()
+    {
+        if(isServer)
+            NetworkManager.singleton.StopHost();
+        else
+            NetworkManager.singleton.StopClient();
+    }
+
 
 
 }
