@@ -86,6 +86,8 @@ public class Tank : NetworkBehaviour
     public Transform rightThreadEnd;
     public Transform leftThreadBegining;
     public Transform leftThreadEnd;
+    public Transform frontCollisionCheck;
+    public Transform backCollisionCheck;
 
 
     [Header("Movement")]
@@ -97,6 +99,7 @@ public class Tank : NetworkBehaviour
     protected float turnSpeed = 10;
     protected GearSystem m_gearSystem;
     public float distanceCheckGround = 0.01f;
+    public float distanceCollisionCheck = 0.5f;
 
     public GearSystem gearSystem {
         get {return m_gearSystem;}
@@ -112,6 +115,9 @@ public class Tank : NetworkBehaviour
     [Header("Sound")]
     public AudioSource motorSoundSource;
     public AudioSource firingSoundSource;
+    public AudioSource frontCollisionSoundSource;
+    public AudioSource backCollisionSoundSource;
+    public AudioSource hitSoundSource;
     public float pitchStopped = 0.8f;
     public float pitchForward = 1.4f;
     public float pitchRotating = 1.0f;
@@ -172,9 +178,14 @@ public class Tank : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcOnChangeHealth(float health) {
+    public void RpcOnChangeHealth(float health, bool receivedDamage) {
         if (healthSlider != null) {
             healthSlider.value = health;
+        }
+
+        if(receivedDamage)
+        {
+            hitSoundSource.Play();
         }
     }
 
@@ -257,7 +268,7 @@ public class Tank : NetworkBehaviour
     /// </summary>
     public void ResetTank() {
         currentHealth = maxHeath;
-        RpcOnChangeHealth(currentHealth);
+        RpcOnChangeHealth(currentHealth, false);
 
         leftGear = rightGear = 0;
         rightAxis = leftAxis = 0;
@@ -458,6 +469,7 @@ public class Tank : NetworkBehaviour
     void FixedUpdate() {
         if (isServer) {
             CheckGround(Time.fixedDeltaTime);
+            CheckCollision(Time.fixedDeltaTime);
             CheckTankRotation(Time.fixedDeltaTime);
             moveTank(Time.fixedDeltaTime);
             updateCannonRotation(Time.fixedDeltaTime);
@@ -534,14 +546,30 @@ public class Tank : NetworkBehaviour
 
 
     protected void CheckGround(float deltaTime) {
+        // Raycast check
+        // bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, distanceCheckGround);
+        // bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, distanceCheckGround);
+        // leftThreadOnGround = begin || end;
 
-        bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, distanceCheckGround);
-        bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, distanceCheckGround);
-        leftThreadOnGround = begin || end;
+        // begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, distanceCheckGround);
+        // end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, distanceCheckGround);
+        // rightThreadOnGround = begin || end;
 
-        begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, distanceCheckGround);
-        end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, distanceCheckGround);
-        rightThreadOnGround = begin || end;
+        // Box check
+        Collider[] result = new Collider[10];
+
+        Vector3 leftDif = leftThreadEnd.position - leftThreadBegining.position;
+        Vector3 leftPos = leftThreadBegining.position + leftDif*0.5f;
+        leftDif.y = distanceCheckGround;
+        leftPos.y -= distanceCheckGround*0.5f;
+        leftThreadOnGround = Physics.OverlapBoxNonAlloc(leftDif, leftDif * 0.5f, result, leftThreadBegining.rotation, LayerMask.GetMask("Default")) > 0; 
+
+        Vector3 rightDif = rightThreadEnd.position - rightThreadBegining.position;
+        Vector3 rightPos = rightThreadBegining.position + rightDif*0.5f;
+        rightDif.y = distanceCheckGround;
+        rightPos.y -= distanceCheckGround*0.5f;
+        rightThreadOnGround = Physics.OverlapBoxNonAlloc(rightDif, rightDif * 0.5f, result, rightThreadBegining.rotation, LayerMask.GetMask("Default")) > 0; 
+        
 
         //Verify if it's currently flipped
         bool isFlipped = !(leftThreadOnGround || rightThreadOnGround);
@@ -574,6 +602,65 @@ public class Tank : NetworkBehaviour
                 KillTank(tankId);
             }
         }
+    }
+
+    public void CheckCollision(float timeDelta)
+    {
+        //Make check only if moving
+        if(rightGear == 0 && leftGear == 0) return;
+
+        LayerMask layer = LayerMask.GetMask("Default");
+
+        //Forward check
+        Ray forwardRay = new Ray(frontCollisionCheck.position, frontCollisionCheck.forward);
+        RaycastHit forwardResult;
+        Physics.Raycast(forwardRay, out forwardResult,distanceCollisionCheck, layer);
+        if(forwardResult.collider != null && rightGear > 0 && leftGear > 0)
+        {
+            CauseCollision(true);
+            return;
+        }
+
+        //Back check
+        Ray backRay = new Ray(frontCollisionCheck.position, frontCollisionCheck.forward);
+        RaycastHit backResult;
+        Physics.Raycast(forwardRay, out backResult,distanceCollisionCheck, layer);
+        if(backResult.collider != null && rightGear < 0 && leftGear < 0)
+        {
+            CauseCollision(false);
+            return;
+        }
+
+    }
+
+    protected void CauseCollision(bool inFront)
+    {
+        // Call collision for everyone
+        RpcHadCollision(inFront);
+
+        // Stop tank
+        leftGear = rightGear = 0;
+        leftAxis = rightAxis = 0;
+        // Make pilot stop
+        foreach(var player in playerRoles)
+        {
+            if(player.role == Role.Pilot && player.playerRef != null)
+            {
+                player.playerRef.RpcForcePilotStop();
+                break;
+            }
+        }
+
+    }
+
+    [ClientRpc]
+    protected void RpcHadCollision(bool inFront)
+    {
+        if(inFront)
+            frontCollisionSoundSource.Play();
+        else
+            backCollisionSoundSource.Play();
+
     }
 
 
@@ -622,75 +709,6 @@ public class Tank : NetworkBehaviour
         }
     }
 
-    #endregion
-
-    #region Damage
-
-
-    public void DealWithCollision(Collider otherCollider, Collider selfCollider) {
-        if(isServer){
-            Bullet bullet = otherCollider.GetComponent<Bullet>();
-            if(bullet != null) {
-                Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
-                if(bullet.team != team) {
-                    DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
-                    NetworkServer.Destroy(otherCollider.gameObject);
-                }
-            }
-        }
-    }
-
-    public void DealDamage(float damage, int otherTank, float angle) {
-        Debug.Log("Tank from team " + team + " received " + damage + " damage!");
-        currentHealth -= damage;
-        if(currentHealth <= 0 && canBeControlled) {
-            Debug.Log("Is ded. RIP team " + team);
-            KillTank(otherTank);
-        }
-        else {
-            RpcOnChangeHealth(currentHealth);
-            NotifyDamageToPlayers(damage,angle);
-        }
-    }
-
-    protected void CreateMock()
-    {
-        RpcCreateMock(transform.position, transform.rotation, rotationPivot.localRotation.eulerAngles.y, nivelTransform.eulerAngles.x);
-    }
-
-    [ClientRpc]
-    protected void RpcCreateMock(Vector3 position, Quaternion rotation, float turretRotation, float cannonRotation)
-    {
-        GameObject mock = GameObject.Instantiate(mockPrefab, position, rotation);
-        TankMock mockScript = mock.GetComponent<TankMock>();
-        mockScript.ApplyPosition(position, rotation, Quaternion.Euler(0,turretRotation,0), Quaternion.Euler(cannonRotation,0,0));
-        mockScript.Explode();
-    }
-
-    protected void NotifyDamageToPlayers(float damage, float angle)
-    {
-        foreach(Player player in players)
-        {
-            player.RpcReceiveDamageFromDirection(damage, angle);
-        }
-    }
-
-    public void KillTank(int otherTank, bool explodeTank = true){
-        if(!isServer) return;
-        
-        if(explodeTank)
-            CreateMock();
-
-        GameMode.instance.TankKilled(tankId,otherTank);
-    }
-
-    public void SetHealthSlider(UnityEngine.UI.Slider slider) {
-        healthSlider = slider;
-        healthSlider.maxValue = maxHeath;
-        healthSlider.minValue = 0;
-        healthSlider.value = currentHealth;
-    }
-
     public void CheckTankRotation(float deltaTime)
     {
         //Avoid killing and uncontrollable tank
@@ -736,16 +754,100 @@ public class Tank : NetworkBehaviour
 
     #endregion
 
+    #region Damage
+
+
+    public void DealWithCollision(Collider otherCollider, Collider selfCollider) {
+        if(isServer){
+            Bullet bullet = otherCollider.GetComponent<Bullet>();
+            if(bullet != null) {
+                Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
+                if(bullet.team != team) {
+                    DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+                    NetworkServer.Destroy(otherCollider.gameObject);
+                }
+            }
+        }
+    }
+
+    public void DealDamage(float damage, int otherTank, float angle) {
+        Debug.Log("Tank from team " + team + " received " + damage + " damage!");
+        currentHealth -= damage;
+        if(currentHealth <= 0 && canBeControlled) {
+            Debug.Log("Is ded. RIP team " + team);
+            KillTank(otherTank);
+        }
+        else {
+            RpcOnChangeHealth(currentHealth, true);
+            NotifyDamageToPlayers(damage,angle);
+        }
+    }
+
+    protected void CreateMock()
+    {
+        RpcCreateMock(transform.position, transform.rotation, rotationPivot.localRotation.eulerAngles.y, nivelTransform.eulerAngles.x);
+    }
+
+    [ClientRpc]
+    protected void RpcCreateMock(Vector3 position, Quaternion rotation, float turretRotation, float cannonRotation)
+    {
+        GameObject mock = GameObject.Instantiate(mockPrefab, position, rotation);
+        TankMock mockScript = mock.GetComponent<TankMock>();
+        mockScript.ApplyPosition(position, rotation, Quaternion.Euler(0,turretRotation,0), Quaternion.Euler(cannonRotation,0,0));
+        mockScript.Explode();
+    }
+
+    protected void NotifyDamageToPlayers(float damage, float angle)
+    {
+        foreach(Player player in players)
+        {
+            player.RpcReceiveDamageFromDirection(damage, angle);
+        }
+    }
+
+    public void KillTank(int otherTank, bool explodeTank = true){
+        if(!isServer) return;
+        
+        if(explodeTank)
+            CreateMock();
+
+        GameMode.instance.TankKilled(tankId,otherTank);
+    }
+
+    public void SetHealthSlider(UnityEngine.UI.Slider slider) {
+        healthSlider = slider;
+        healthSlider.maxValue = maxHeath;
+        healthSlider.minValue = 0;
+        healthSlider.value = currentHealth;
+    }
+
+
+    #endregion
+
     
     protected void OnDrawGizmos() {
         Gizmos.color = Color.red;
         if(leftThreadBegining != null && leftThreadEnd != null) {
-            Gizmos.DrawRay(leftThreadBegining.position,-leftThreadBegining.up * distanceCheckGround);
-            Gizmos.DrawRay(leftThreadEnd.position,-leftThreadEnd.up * distanceCheckGround);
+            Vector3 leftDif = leftThreadEnd.position - leftThreadBegining.position;
+            Vector3 leftPos = leftThreadBegining.position + leftDif*0.5f;
+            leftDif.y = distanceCheckGround;
+            leftPos.y -= distanceCheckGround*0.5f;
+            Gizmos.DrawWireCube(leftPos,leftDif);
         }
         if(rightThreadBegining != null && rightThreadEnd != null) {
-            Gizmos.DrawRay(rightThreadBegining.position,-rightThreadBegining.up * distanceCheckGround);
-            Gizmos.DrawRay(rightThreadEnd.position,-rightThreadEnd.up * distanceCheckGround);
+            Vector3 rightDif = rightThreadEnd.position - rightThreadBegining.position;
+            Vector3 rightPos = rightThreadBegining.position + rightDif*0.5f;
+            rightDif.y = distanceCheckGround;
+            rightPos.y -= distanceCheckGround*0.5f;
+            Gizmos.DrawWireCube(rightPos,rightDif);
+        }
+        if(frontCollisionCheck != null)
+        {
+            Gizmos.DrawRay(frontCollisionCheck.position, frontCollisionCheck.forward * distanceCollisionCheck);
+        }
+        if(backCollisionCheck != null)
+        {
+            Gizmos.DrawRay(backCollisionCheck.position, backCollisionCheck.forward * distanceCollisionCheck);
         }
     }
 }

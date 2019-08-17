@@ -258,6 +258,19 @@ public class Player : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void RpcForcePilotStop()
+    {
+        if(isLocalPlayer)
+        {
+            leftGear = old_leftGear = 0;
+            rightGear = old_rightGear = 0;
+
+            leftSlider.value = leftGear;
+            rightSlider.value = rightGear;
+        }
+    }
+
     public void SetTankReference(Tank tank, int team, Role role){
         tankRef = tank;
         this.team = team;
