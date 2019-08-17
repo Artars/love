@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2193222063578492919}
   - component: {fileID: 9150144053770309718}
   - component: {fileID: 1650805887937908186}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bush1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  wayToDestroy: 0
+  wayToDestroy: 1
   timeToDestroy: 1
   particlesToInstantiate: {fileID: 7726184353700153352, guid: bacccc3ee9b7f634c8a5dc272aac5419,
     type: 3}

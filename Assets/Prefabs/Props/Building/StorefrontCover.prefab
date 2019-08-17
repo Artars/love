@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1381534485064855809}
   - component: {fileID: 3192451928226693810}
   - component: {fileID: 7136503805381201749}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: StorefrontCover
   m_TagString: Untagged
   m_Icon: {fileID: 0}

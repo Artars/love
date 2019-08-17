@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8331690130978628888}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 166338834049447430}
   - component: {fileID: 2797752535066607350}
   - component: {fileID: 7509213195422236288}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TelephonePole
   m_TagString: Untagged
   m_Icon: {fileID: 0}

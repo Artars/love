@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8514152714977998924}
   - component: {fileID: 3619861369067697208}
   - component: {fileID: 8025983462793373239}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bush2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   wayToDestroy: 1
-  timeToDestroy: 5
+  timeToDestroy: 1
   particlesToInstantiate: {fileID: 7726184353700153352, guid: bacccc3ee9b7f634c8a5dc272aac5419,
     type: 3}
   positionToSpawnParticles: {fileID: 6026318655400173659}

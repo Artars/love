@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1184520934216691279}
   - component: {fileID: 509342086983058635}
   - component: {fileID: 3573933056606280101}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: PineTree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5100942550575111620}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}

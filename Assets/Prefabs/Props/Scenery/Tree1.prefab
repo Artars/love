@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1779043811704371443}
   - component: {fileID: 8624788676236047885}
   - component: {fileID: 7331515948280802644}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Tree1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,12 +139,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   wayToDestroy: 3
-  timeToDestroy: 5
+  timeToDestroy: 1
   particlesToInstantiate: {fileID: 7726184353700153352, guid: bacccc3ee9b7f634c8a5dc272aac5419,
     type: 3}
   positionToSpawnParticles: {fileID: 5276093586211809655}
   pivotPoint: {fileID: 2400009757694795500}
-  timeToFall: 2
+  timeToFall: 1
 --- !u!1 &6693980463961883748
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +154,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2400009757694795500}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}

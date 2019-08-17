@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7467136110164219548}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 4354976066026153897}
   - component: {fileID: 8266624567988479130}
   - component: {fileID: 255672222517015108}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Pole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
