@@ -28,6 +28,9 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public bool canSwitchRoles = false;
 
+    [Header("Sound")]
+    public AudioSource musicAudioSource;
+
 
     [Header("Control")]
     public float doubleClickTimeDelay = 0.2f;
@@ -242,6 +245,16 @@ public class Player : NetworkBehaviour
             ipText.gameObject.SetActive(true);
             ipText.text = ip;
 
+        }
+    }
+
+    [ClientRpc]
+    public void RpcPlayVictoryMusic()
+    {
+        if(isLocalPlayer)
+        {
+            musicAudioSource.gameObject.SetActive(true);
+            musicAudioSource.Play();
         }
     }
 

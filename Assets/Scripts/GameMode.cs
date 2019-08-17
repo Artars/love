@@ -496,9 +496,12 @@ public class GameMode : NetworkBehaviour
         for(int i = 0; i < teamPlayers.Length; i ++){
             if(teamPlayers[i] != null){
 
-                if(!hasDraw)
+                foreach(Player p in teamPlayers[i])
                 {
-                    foreach(Player p in teamPlayers[i])
+                    // Play end music
+                    p.RpcPlayVictoryMusic();
+
+                    if(!hasDraw)
                     {
                         if(winningTeams.Contains(i)){
                             p.RpcDisplayMessage("Outstanding performance, comrades! We have won this battle!", 10, 0.1f, 1);
@@ -507,10 +510,7 @@ public class GameMode : NetworkBehaviour
                             p.RpcDisplayMessage("A shameful display! " + winningString + " has beaten us this time!"
                             , 10, 0.1f, 1);
                     }
-                }
-                else
-                {
-                    foreach(Player p in teamPlayers[i])
+                    else
                     {
                         p.RpcDisplayMessage("I can't believe it, a Draw! Nice work teams " + winningString + "!", 10, 0.1f, 1);
                     }
@@ -524,6 +524,7 @@ public class GameMode : NetworkBehaviour
             if(spectators[i] != null)
             {
                 spectators[i].RpcDisplayMessage("Nice work teams " + winningString + "!", 10, 0.1f, 1);
+                spectators[i].RpcPlayVictoryMusic();
             }
         }
 
