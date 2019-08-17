@@ -547,28 +547,28 @@ public class Tank : NetworkBehaviour
 
     protected void CheckGround(float deltaTime) {
         // Raycast check
-        // bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, distanceCheckGround);
-        // bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, distanceCheckGround);
-        // leftThreadOnGround = begin || end;
+        bool begin = Physics.Raycast(leftThreadBegining.position, -leftThreadBegining.up, distanceCheckGround);
+        bool end = Physics.Raycast(leftThreadEnd.position, -leftThreadBegining.up, distanceCheckGround);
+        leftThreadOnGround = begin || end;
 
-        // begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, distanceCheckGround);
-        // end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, distanceCheckGround);
-        // rightThreadOnGround = begin || end;
+        begin = Physics.Raycast(rightThreadBegining.position, -rightThreadBegining.up, distanceCheckGround);
+        end = Physics.Raycast(rightThreadEnd.position, -rightThreadBegining.up, distanceCheckGround);
+        rightThreadOnGround = begin || end;
 
         // Box check
-        Collider[] result = new Collider[10];
+        // Collider[] result = new Collider[10];
 
-        Vector3 leftDif = leftThreadEnd.position - leftThreadBegining.position;
-        Vector3 leftPos = leftThreadBegining.position + leftDif*0.5f;
-        leftDif.y = distanceCheckGround;
-        leftPos.y -= distanceCheckGround*0.5f;
-        leftThreadOnGround = Physics.OverlapBoxNonAlloc(leftDif, leftDif * 0.5f, result, leftThreadBegining.rotation, LayerMask.GetMask("Default")) > 0; 
+        // Vector3 leftDif = leftThreadEnd.position - leftThreadBegining.position;
+        // Vector3 leftPos = leftThreadBegining.position + leftDif*0.5f;
+        // leftDif.y = distanceCheckGround;
+        // leftPos.y -= distanceCheckGround*0.5f;
+        // leftThreadOnGround = Physics.OverlapBoxNonAlloc(leftDif, leftDif * 0.5f, result, leftThreadBegining.rotation, LayerMask.GetMask("Default")) > 0; 
 
-        Vector3 rightDif = rightThreadEnd.position - rightThreadBegining.position;
-        Vector3 rightPos = rightThreadBegining.position + rightDif*0.5f;
-        rightDif.y = distanceCheckGround;
-        rightPos.y -= distanceCheckGround*0.5f;
-        rightThreadOnGround = Physics.OverlapBoxNonAlloc(rightDif, rightDif * 0.5f, result, rightThreadBegining.rotation, LayerMask.GetMask("Default")) > 0; 
+        // Vector3 rightDif = rightThreadEnd.position - rightThreadBegining.position;
+        // Vector3 rightPos = rightThreadBegining.position + rightDif*0.5f;
+        // rightDif.y = distanceCheckGround;
+        // rightPos.y -= distanceCheckGround*0.5f;
+        // rightThreadOnGround = Physics.OverlapBoxNonAlloc(rightDif, rightDif * 0.5f, result, rightThreadBegining.rotation, LayerMask.GetMask("Default")) > 0; 
         
 
         //Verify if it's currently flipped
@@ -622,9 +622,9 @@ public class Tank : NetworkBehaviour
         }
 
         //Back check
-        Ray backRay = new Ray(frontCollisionCheck.position, frontCollisionCheck.forward);
+        Ray backRay = new Ray(backCollisionCheck.position, backCollisionCheck.forward);
         RaycastHit backResult;
-        Physics.Raycast(forwardRay, out backResult,distanceCollisionCheck, layer);
+        Physics.Raycast(backRay, out backResult,distanceCollisionCheck, layer);
         if(backResult.collider != null && rightGear < 0 && leftGear < 0)
         {
             CauseCollision(false);
@@ -828,18 +828,12 @@ public class Tank : NetworkBehaviour
     protected void OnDrawGizmos() {
         Gizmos.color = Color.red;
         if(leftThreadBegining != null && leftThreadEnd != null) {
-            Vector3 leftDif = leftThreadEnd.position - leftThreadBegining.position;
-            Vector3 leftPos = leftThreadBegining.position + leftDif*0.5f;
-            leftDif.y = distanceCheckGround;
-            leftPos.y -= distanceCheckGround*0.5f;
-            Gizmos.DrawWireCube(leftPos,leftDif);
+            Gizmos.DrawRay(leftThreadBegining.position, -leftThreadBegining.up * distanceCheckGround);
+            Gizmos.DrawRay(leftThreadEnd.position, -leftThreadBegining.up * distanceCheckGround);
         }
         if(rightThreadBegining != null && rightThreadEnd != null) {
-            Vector3 rightDif = rightThreadEnd.position - rightThreadBegining.position;
-            Vector3 rightPos = rightThreadBegining.position + rightDif*0.5f;
-            rightDif.y = distanceCheckGround;
-            rightPos.y -= distanceCheckGround*0.5f;
-            Gizmos.DrawWireCube(rightPos,rightDif);
+            Gizmos.DrawRay(rightThreadBegining.position, -rightThreadBegining.up * distanceCheckGround);
+            Gizmos.DrawRay(rightThreadEnd.position, -rightThreadBegining.up * distanceCheckGround);
         }
         if(frontCollisionCheck != null)
         {
