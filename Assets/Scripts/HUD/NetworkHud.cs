@@ -23,9 +23,11 @@ public class NetworkHud : MonoBehaviour
     public void Start(){
         if(PlayerPrefs.HasKey("LastAddress")){
             address = PlayerPrefs.GetString("LastAddress");
+            port = PlayerPrefs.GetString("LastPort", "7777");
             if(adressField != null){
                 adressField.text = address;
             }
+            portField.text = port;
         }
     }
 
@@ -74,6 +76,7 @@ public class NetworkHud : MonoBehaviour
 
     public void OnClickStartClient(){
         PlayerPrefs.SetString("LastAddress", address);
+        PlayerPrefs.SetString("LastPort", port);
         NetworkManager.singleton.networkAddress = address;
         NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>().port = ushort.Parse(port);
         NetworkManager.singleton.StartClient();

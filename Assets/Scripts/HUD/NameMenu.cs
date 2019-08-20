@@ -17,14 +17,32 @@ public class NameMenu : MonoBehaviour
     protected bool hasKey = true;
 
     public void Start() {
-        if(!PlayerPrefs.HasKey("Name")){
-            panel.SetActive(true);
-            hasKey = false;
-            cancelButton.interactable = false;
-            confirmButton.interactable = false;
-        }
-        else {
+        //Setup buttons
+        cancelButton.onClick.AddListener(OnCancelButtonClick);
+        confirmButton.onClick.AddListener(OnConfirmButtonClick);
+
+        ActivateHUD(true);
+        
+        if(hasKey)
+        {
             panel.SetActive(false);
+        }
+    }
+
+    public void ActivateHUD(bool isActive)
+    {
+        panel.SetActive(isActive);
+
+        if(isActive)
+        {
+            string playerName = PlayerPrefs.GetString("Name", "");
+            inputField.text = playerName;
+            if(playerName == "")
+            {
+                hasKey = false;
+                cancelButton.interactable = false;
+                confirmButton.interactable = false;
+            }
         }
 
         inputField.characterLimit = maximumNameSize;
@@ -54,8 +72,7 @@ public class NameMenu : MonoBehaviour
         PlayerPrefs.SetString("Name", inputField.text);
         cancelButton.interactable = true;
         
-        inputField.text = "";
-        panel.SetActive(false);
+        ActivateHUD(false);
 
     }
 }
