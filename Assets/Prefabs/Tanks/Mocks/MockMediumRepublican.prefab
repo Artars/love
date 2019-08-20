@@ -17,7 +17,7 @@ MonoBehaviour:
   cannonTransform: {fileID: 3412573158716712044}
   explosionParticles: {fileID: 5736755449533215895}
   turretExplosionChance: 0.1
-  turretExplosionVelocity: 2
+  turretExplosionVelocity: 20
   lifetime: 10
 --- !u!1001 &4184238919229673821
 PrefabInstance:

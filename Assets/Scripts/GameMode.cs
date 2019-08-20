@@ -33,7 +33,7 @@ public class GameMode : NetworkBehaviour
     [SyncVar]
     public MatchSetting matchSettings;
     public float timeToStartGame = 5;
-    public float timeToEndGame = 5;
+    public float timeToEndGame = 10;
     public bool returnToLobby = true;
 
     public List<InfoTank> infoTanks;
@@ -426,7 +426,7 @@ public class GameMode : NetworkBehaviour
         Transform positionToSpawn = GetSpawnPosition(tank.team);
 
         tank.GetComponent<Rigidbody>().isKinematic = false;
-        tank.ResetTankPosition(positionToSpawn.position);
+        tank.ResetTankPosition(positionToSpawn);
         tank.canBeControlled = true;
     }
 

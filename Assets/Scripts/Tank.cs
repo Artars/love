@@ -278,10 +278,10 @@ public class Tank : NetworkBehaviour
     /// Reset tank position to be the one given. Will also reset rotation of guns
     /// </summary>
     /// <param name="position">Position to be placed</param>
-    public void ResetTankPosition(Vector3 position) {
+    public void ResetTankPosition(Transform toSpawn) {
         ResetTank();
-        transform.position = position;
-        transform.rotation = Quaternion.identity;
+        transform.position = toSpawn.position;
+        transform.rotation = toSpawn.rotation;
         rgbd.velocity = Vector3.zero;
         currentRotationAngle = 0;
         rotationPivot.localRotation = Quaternion.identity;
