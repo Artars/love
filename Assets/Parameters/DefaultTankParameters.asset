@@ -25,7 +25,7 @@ MonoBehaviour:
     - 0.33333334
     - 0.6666667
     - 1
-  turnCannonSpeed: 40
+  turnCannonSpeed: 80
   nivelCannonSpeed: 20
   minCannonNivel: -10
   maxCannonNivel: 40

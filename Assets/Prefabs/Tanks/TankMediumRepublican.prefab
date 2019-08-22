@@ -1277,7 +1277,6 @@ MonoBehaviour:
     type: 3}
   shootParticles: {fileID: 2979413376386359534}
   rotationPivot: {fileID: 5378618044769985994}
-  cannonTransform: {fileID: 1479867162974440514}
   tankTransform: {fileID: 5378618044168448177}
   nivelTransform: {fileID: 9024271889383960201}
   bulletSpawnPosition: {fileID: 507560451021067165}
@@ -1376,7 +1375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   compressRotation: 1
-  target: {fileID: 1479867162974440514}
+  target: {fileID: 5378618044769985994}
 --- !u!114 &4424370814397781558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2304,6 +2303,16 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 2376525488028269151, guid: f8814ec6b3b3878418e8789b65092c69,
+        type: 3}
+      propertyPath: m_Name
+      value: Shooting
+      objectReference: {fileID: 0}
+    - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
+        type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
         type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
@@ -2363,16 +2372,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
-        type: 3}
-      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 2376525488028269151, guid: f8814ec6b3b3878418e8789b65092c69,
-        type: 3}
-      propertyPath: m_Name
-      value: Shooting
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8814ec6b3b3878418e8789b65092c69, type: 3}

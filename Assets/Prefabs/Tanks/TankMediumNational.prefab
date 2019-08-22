@@ -1103,7 +1103,6 @@ MonoBehaviour:
     type: 3}
   shootParticles: {fileID: 4318217866929469304}
   rotationPivot: {fileID: 5378618044769985994}
-  cannonTransform: {fileID: 1479867162974440514}
   tankTransform: {fileID: 5378618044168448177}
   nivelTransform: {fileID: 9024271889383960201}
   bulletSpawnPosition: {fileID: 507560451021067165}
@@ -1202,7 +1201,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.05
   compressRotation: 0
-  target: {fileID: 1479867162974440514}
+  target: {fileID: 5378618044769985994}
 --- !u!114 &4424370814397781558
 MonoBehaviour:
   m_ObjectHideFlags: 0

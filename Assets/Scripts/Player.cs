@@ -410,6 +410,11 @@ public class Player : NetworkBehaviour
             horizontalAxis = joyStick.Horizontal;
             verticalAxis = joyStick.Vertical;
         }
+        else if(!Input.GetButton("SprintCannon"))
+        {
+            horizontalAxis *= 0.5f;
+            verticalAxis *= 0.5f;
+        }
 
         if(old_horizontal != horizontalAxis || old_vertical != verticalAxis){
             old_horizontal = horizontalAxis;
