@@ -505,7 +505,7 @@ public class Player : NetworkBehaviour
         if(tankRef != null)
         {
             compassTank.transform.eulerAngles = new Vector3(0, 0, -tankRef.tankTransform.eulerAngles.y - 180);
-            compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.cannonTransform.eulerAngles.y);
+            compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.rotationPivot.eulerAngles.y);
         }
     }
 

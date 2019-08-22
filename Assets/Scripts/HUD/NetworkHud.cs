@@ -38,7 +38,7 @@ public class NetworkHud : MonoBehaviour
     }
 
     public void updatePortField(InputField  input) {
-        this.address = input.text;
+        this.port = input.text;
     }
 
     public void OnClickStartHost(){
@@ -62,6 +62,13 @@ public class NetworkHud : MonoBehaviour
 
                 index++;
             }
+        }
+
+        //Change port of the server
+        TelepathyTransport transport = NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>();
+        if(transport != null)
+        {
+            transport.port = matchSetting.serverPort;
         }
 
         MatchConfiguration.instance.infoTanks = tankInfo;

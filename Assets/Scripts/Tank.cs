@@ -76,7 +76,6 @@ public class Tank : NetworkBehaviour
 
     [Header("Transform references")]
     public Transform rotationPivot;
-    public Transform cannonTransform;
     public Transform tankTransform;
     public Transform nivelTransform;
     public Transform bulletSpawnPosition;
@@ -192,7 +191,7 @@ public class Tank : NetworkBehaviour
     [ClientRpc]
     public void RpcForceCannonRotationSync(Quaternion cannon, Quaternion nivel) {
         if (isServer) return;
-        cannonTransform.rotation = cannon;
+        rotationPivot.rotation = cannon;
         nivelTransform.rotation = nivel;
     }
 
@@ -286,7 +285,7 @@ public class Tank : NetworkBehaviour
         currentRotationAngle = 0;
         rotationPivot.localRotation = Quaternion.identity;
 
-        cannonTransform.localRotation = Quaternion.identity;
+        rotationPivot.localRotation = Quaternion.identity;
         currentInclinationAngle = 0;
         nivelTransform.localRotation = Quaternion.Euler(0, currentInclinationAngle, 0);
 
@@ -521,14 +520,14 @@ public class Tank : NetworkBehaviour
             float dif = realLeftAxis - realRightAxis;
             dif *= turnSpeed * deltaTime * 0.5f;
             currentRotationAngle -= dif;
-            cannonTransform.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+            rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
             // cannonTransform.RotateAround(transform.position,transform.up.normalized, -dif);
         }
 
         //Should rotate
         if (rotationAxis != 0) {
             currentRotationAngle += rotationAxis * turnCannonSpeed * deltaTime;
-            cannonTransform.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+            rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
             // cannonTransform.RotateAround(transform.position, transform.up, rotationAxis * turnCannonSpeed * deltaTime);
         }
