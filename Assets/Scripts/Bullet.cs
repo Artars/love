@@ -17,6 +17,7 @@ public class Bullet : NetworkBehaviour
     public bool canColide = false;
 
     public float angleFired;
+    public Tank tankWhoShot;
 
     public float lifeTime = 10;
 
@@ -58,7 +59,7 @@ public class Bullet : NetworkBehaviour
         velocityFired = velocity;
         angleFired = Mathf.Atan2(velocity.z,velocity.x) * Mathf.Rad2Deg;
 
-        canColide =true;
+        canColide = true;
     }
 
     public void OnTriggerEnter(Collider col) {

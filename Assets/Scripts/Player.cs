@@ -40,6 +40,9 @@ public class Player : NetworkBehaviour
     [Header("Camera")]
     public Transform firstPersonCamera;
 
+    [Header("Hitmark")]
+    public GameObject hitmarkPrefab;
+
     [Header("Observe references")]
     public Transform observerTransform;
     public Transform observerPivot;
@@ -281,6 +284,15 @@ public class Player : NetworkBehaviour
 
             leftSlider.value = leftGear;
             rightSlider.value = rightGear;
+        }
+    }
+
+    [ClientRpc]
+    public void RpcShowHitmark(Vector3 position)
+    {
+        if(isLocalPlayer)
+        {
+            GameObject.Instantiate(hitmarkPrefab, position, Quaternion.identity);
         }
     }
 

@@ -374,6 +374,18 @@ public class Tank : NetworkBehaviour
         }
     }
 
+    public Player GetPlayerOfRole(Role searchRole)
+    {
+        for (int i = 0; i < playerRoles.Count; i++) {
+            if(playerRoles[i].role == searchRole && playerRoles[i].playerRef != null)
+            {
+                return playerRoles[i].playerRef;
+            }
+        }
+
+        return null;
+    }
+
     #endregion
 
     #region Input
@@ -493,6 +505,7 @@ public class Tank : NetworkBehaviour
         bulletScript.tankId = tankId;
         bulletScript.damage = bulletDamage;
         bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
+        bulletScript.tankWhoShot = this;
 
         Debug.Log("Firing from: " + positionToUse);
 
@@ -763,6 +776,8 @@ public class Tank : NetworkBehaviour
                 Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
                     DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+                    if(bullet.tankWhoShot != null)
+                        bullet.tankWhoShot.NotifyHitToGunner(otherCollider.transform.position);
                     NetworkServer.Destroy(otherCollider.gameObject);
                 }
             }
@@ -802,6 +817,13 @@ public class Tank : NetworkBehaviour
         {
             player.RpcReceiveDamageFromDirection(damage, angle);
         }
+    }
+
+    protected void NotifyHitToGunner(Vector3 position)
+    {
+        Player gunner = GetPlayerOfRole(Role.Gunner);
+        if(gunner != null)
+            gunner.RpcShowHitmark(position);
     }
 
     public void KillTank(int otherTank, bool explodeTank = true){
