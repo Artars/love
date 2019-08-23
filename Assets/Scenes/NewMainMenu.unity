@@ -7968,18 +7968,13 @@ PrefabInstance:
     - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
         type: 3}
       propertyPath: spawnPrefabs.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
         type: 3}
-      propertyPath: offlineScene
-      value: NewMainMenu
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[5]
+      propertyPath: spawnPrefabs.Array.data[6]
       value: 
-      objectReference: {fileID: 945030072491325362, guid: c29bbf87b1265a84893bc71b470548d2,
+      objectReference: {fileID: 7184059857796045811, guid: 364caccd376c45f439b5faf59a56c6c9,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3703622212e9a4499168340844ad9a7, type: 3}

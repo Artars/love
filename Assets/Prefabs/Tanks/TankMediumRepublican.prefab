@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1479867162974440514
 Transform:
   m_ObjectHideFlags: 0
@@ -1267,6 +1267,10 @@ MonoBehaviour:
   tankOption: {fileID: 11400000, guid: 19aca3fec20c05e4cbee5a4b9b703cc5, type: 2}
   mockPrefab: {fileID: 1784536855500820435, guid: 55ee4f6b6036c08498dc3498b4ef6fef,
     type: 3}
+  cannonPrefab: {fileID: 460630904971607289, guid: aa736e3a10cafc24c9be327c0d01cf16,
+    type: 3}
+  cannonIdentity: {fileID: 0}
+  cannonReference: {fileID: 0}
   players: []
   tankId: -1
   team: -1
@@ -1276,6 +1280,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
   shootParticles: {fileID: 2979413376386359534}
+  cannonAttachmentPoint: {fileID: 5378618044769985994}
   rotationPivot: {fileID: 5378618044769985994}
   tankTransform: {fileID: 5378618044168448177}
   nivelTransform: {fileID: 9024271889383960201}
@@ -1415,7 +1420,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5378618044769985989}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.372}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1431,7 +1436,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5378618044769985989}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1.3825006, y: 0.562623, z: 1.6170627}

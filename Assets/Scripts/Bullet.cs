@@ -70,6 +70,15 @@ public class Bullet : NetworkBehaviour
         if(isServer) {
             if(col.gameObject.tag == "Tank"){
                 Tank tankScript = col.gameObject.GetComponentInParent<Tank>();
+
+                // If cannon would have damage
+                // if(tankScript == null)
+                // {
+                //     Cannon cannonScript = GetComponentInParent<Cannon>();
+                //     if(cannonScript != null)
+                //         tankScript = cannonScript.tankReference;
+                // }
+
                 if(tankScript != null)
                 {
                     tankScript.DealWithCollision(this.GetComponent<Collider>(), col);

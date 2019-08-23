@@ -564,6 +564,12 @@ public class GameMode : NetworkBehaviour
         instance.TankKilled(0,1);
     }
 
+    [MenuItem("Debug/Kill tank 1")]
+    public static void KillTank1()
+    {
+        instance.TankKilled(1,0);
+    }
+
     #endif
 
     #endregion

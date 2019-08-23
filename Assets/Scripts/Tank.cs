@@ -37,6 +37,10 @@ public class Tank : NetworkBehaviour
     [Header("Main references")]
     public TankOption tankOption;
     public GameObject mockPrefab;
+    public GameObject cannonPrefab;
+    [SyncVar]
+    public NetworkIdentity cannonIdentity;
+    public Cannon cannonReference;
 
     [Header("Team")]
     public List<Player> players;
@@ -75,6 +79,7 @@ public class Tank : NetworkBehaviour
     protected float cannonShootCounter;
 
     [Header("Transform references")]
+    public Transform cannonAttachmentPoint;
     public Transform rotationPivot;
     public Transform tankTransform;
     public Transform nivelTransform;
@@ -249,9 +254,22 @@ public class Tank : NetworkBehaviour
     }
 
     void Start() {
-        // ApplyColor();
         if (!isServer) {
             GetComponent<Rigidbody>().isKinematic = true;
+        }
+        else if (cannonPrefab != null)
+        {
+            //Spawn turret
+            GameObject cannonInstance = GameObject.Instantiate(cannonPrefab);
+            cannonIdentity = cannonInstance.GetComponent<NetworkIdentity>();
+            cannonReference = cannonInstance.GetComponent<Cannon>();
+            cannonReference.tankIdentity = GetComponent<NetworkIdentity>();
+            cannonReference.SetTankReference(cannonReference.tankIdentity);
+
+            rotationPivot.rotation = cannonAttachmentPoint.rotation;
+
+            NetworkServer.Spawn(cannonInstance);
+
         }
     }
 
@@ -283,11 +301,10 @@ public class Tank : NetworkBehaviour
         transform.rotation = toSpawn.rotation;
         rgbd.velocity = Vector3.zero;
         currentRotationAngle = 0;
-        rotationPivot.localRotation = Quaternion.identity;
+        rotationPivot.rotation = cannonAttachmentPoint.rotation;
 
-        rotationPivot.localRotation = Quaternion.identity;
         currentInclinationAngle = 0;
-        nivelTransform.localRotation = Quaternion.Euler(0, currentInclinationAngle, 0);
+        nivelTransform.localRotation = Quaternion.Euler(currentInclinationAngle, 0, 0);
 
         // RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
@@ -528,19 +545,20 @@ public class Tank : NetworkBehaviour
         float realRightAxis = rightThreadOnGround ? rightAxis : 0;
         float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
 
-        //Rotation
-        if (Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon) {
-            float dif = realLeftAxis - realRightAxis;
-            dif *= turnSpeed * deltaTime * 0.5f;
-            currentRotationAngle -= dif;
-            rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
-            // cannonTransform.RotateAround(transform.position,transform.up.normalized, -dif);
-        }
+        //Rotation compensation
+        // if (Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon) {
+        //     float dif = realLeftAxis - realRightAxis;
+        //     dif *= turnSpeed * deltaTime * 0.5f;
+        //     currentRotationAngle -= dif;
+        //     rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+        //     // cannonTransform.RotateAround(transform.position,transform.up.normalized, -dif);
+        // }
 
         //Should rotate
         if (rotationAxis != 0) {
-            currentRotationAngle += rotationAxis * turnCannonSpeed * deltaTime;
-            rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+            rotationPivot.Rotate(rotationPivot.up * rotationAxis * turnCannonSpeed * deltaTime);
+            // currentRotationAngle += rotationAxis * turnCannonSpeed * deltaTime;
+            // rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
             // cannonTransform.RotateAround(transform.position, transform.up, rotationAxis * turnCannonSpeed * deltaTime);
         }
