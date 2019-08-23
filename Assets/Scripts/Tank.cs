@@ -817,15 +817,15 @@ public class Tank : NetworkBehaviour
 
     protected void CreateMock()
     {
-        RpcCreateMock(transform.position, transform.rotation, rotationPivot.localRotation.eulerAngles.y, nivelTransform.eulerAngles.x);
+        RpcCreateMock(transform.position, transform.rotation, rotationPivot.rotation, nivelTransform.eulerAngles.x);
     }
 
     [ClientRpc]
-    protected void RpcCreateMock(Vector3 position, Quaternion rotation, float turretRotation, float cannonRotation)
+    protected void RpcCreateMock(Vector3 position, Quaternion rotation, Quaternion turretRotation, float cannonRotation)
     {
         GameObject mock = GameObject.Instantiate(mockPrefab, position, rotation);
         TankMock mockScript = mock.GetComponent<TankMock>();
-        mockScript.ApplyPosition(position, rotation, Quaternion.Euler(0,turretRotation,0), Quaternion.Euler(cannonRotation,0,0));
+        mockScript.ApplyPosition(position, rotation, turretRotation, Quaternion.Euler(cannonRotation,0,0));
         mockScript.Explode();
     }
 

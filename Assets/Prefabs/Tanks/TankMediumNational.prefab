@@ -1089,7 +1089,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0
   tankOption: {fileID: 11400000, guid: 61e6b19171e191445a8fd10e68e1f155, type: 2}
-  mockPrefab: {fileID: 8296804703526928826, guid: 239b5e9d5b975cb46b4a26a1488b88d6,
+  mockPrefab: {fileID: 4143482589768500550, guid: 239b5e9d5b975cb46b4a26a1488b88d6,
     type: 3}
   cannonPrefab: {fileID: 7184059857796045811, guid: 364caccd376c45f439b5faf59a56c6c9,
     type: 3}

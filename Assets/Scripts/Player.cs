@@ -99,6 +99,7 @@ public class Player : NetworkBehaviour
             if(tankRef != null)
             {
                 tankRef.RemovePlayer(this, role);
+                GameMode.instance.NotifyPlayerLeft(this,playerInfo);
             }
         }
     }

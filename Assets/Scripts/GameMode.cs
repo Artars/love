@@ -331,6 +331,14 @@ public class GameMode : NetworkBehaviour
 
 
     #region Match
+
+    public void NotifyPlayerLeft(Player player,PlayerInfo playerInfo)
+    {
+        BroadcastMessageToAllConnected("Player " + playerInfo.name + " has left!", 2);
+
+        players.Remove(player);
+        teamPlayers[playerInfo.team].Remove(player);
+    }
     
     public void TankKilled(int ownerId, int enemyId) {
         bool hasSuicided = ownerId == enemyId;
