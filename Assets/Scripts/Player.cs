@@ -40,6 +40,9 @@ public class Player : NetworkBehaviour
     [Header("Camera")]
     public Transform firstPersonCamera;
 
+    [Header("Hitmark")]
+    public GameObject hitmarkPrefab;
+
     [Header("Observe references")]
     public Transform observerTransform;
     public Transform observerPivot;
@@ -96,6 +99,7 @@ public class Player : NetworkBehaviour
             if(tankRef != null)
             {
                 tankRef.RemovePlayer(this, role);
+                GameMode.instance.NotifyPlayerLeft(this,playerInfo);
             }
         }
     }
@@ -284,6 +288,15 @@ public class Player : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void RpcShowHitmark(Vector3 position)
+    {
+        if(isLocalPlayer)
+        {
+            GameObject.Instantiate(hitmarkPrefab, position, Quaternion.identity);
+        }
+    }
+
     public void SetTankReference(Tank tank, int team, Role role){
         tankRef = tank;
         this.team = team;
@@ -398,6 +411,11 @@ public class Player : NetworkBehaviour
             horizontalAxis = joyStick.Horizontal;
             verticalAxis = joyStick.Vertical;
         }
+        else if(!Input.GetButton("SprintCannon"))
+        {
+            horizontalAxis *= 0.5f;
+            verticalAxis *= 0.5f;
+        }
 
         if(old_horizontal != horizontalAxis || old_vertical != verticalAxis){
             old_horizontal = horizontalAxis;
@@ -505,7 +523,7 @@ public class Player : NetworkBehaviour
         if(tankRef != null)
         {
             compassTank.transform.eulerAngles = new Vector3(0, 0, -tankRef.tankTransform.eulerAngles.y - 180);
-            compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.cannonTransform.eulerAngles.y);
+            compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.rotationPivot.eulerAngles.y);
         }
     }
 
@@ -615,10 +633,8 @@ public class Player : NetworkBehaviour
 
     public void OnClickExit()
     {
-        if(isServer)
-            NetworkManager.singleton.StopHost();
-        else
-            NetworkManager.singleton.StopClient();
+        NetworkDiscovery.instance.StopDiscovery();
+        NetworkManager.Shutdown();
     }
 
 

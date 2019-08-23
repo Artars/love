@@ -23,9 +23,11 @@ public class NetworkHud : MonoBehaviour
     public void Start(){
         if(PlayerPrefs.HasKey("LastAddress")){
             address = PlayerPrefs.GetString("LastAddress");
+            port = PlayerPrefs.GetString("LastPort", "7777");
             if(adressField != null){
                 adressField.text = address;
             }
+            portField.text = port;
         }
     }
 
@@ -36,7 +38,7 @@ public class NetworkHud : MonoBehaviour
     }
 
     public void updatePortField(InputField  input) {
-        this.address = input.text;
+        this.port = input.text;
     }
 
     public void OnClickStartHost(){
@@ -62,9 +64,34 @@ public class NetworkHud : MonoBehaviour
             }
         }
 
+        //Change port of the server
+        TelepathyTransport transport = NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>();
+        if(transport != null)
+        {
+            transport.port = matchSetting.serverPort;
+        }
+
         MatchConfiguration.instance.infoTanks = tankInfo;
 
+        NetworkDiscovery.instance.ServerPassiveBroadcastGame(CreateServerInformation());
+
         NetworkManager.singleton.StartHost();
+    }
+
+    protected byte[] CreateServerInformation()
+    {
+        // Wire in broadcaster pipeline here
+        Assets.Scripts.NetworkMessages.GameBroadcastPacket gameBroadcastPacket = new Assets.Scripts.NetworkMessages.GameBroadcastPacket();
+
+        gameBroadcastPacket.serverAddress = NetworkManager.singleton.networkAddress;
+        gameBroadcastPacket.port = ((TelepathyTransport)Transport.activeTransport).port;
+        gameBroadcastPacket.hostName = PlayerPrefs.GetString("Name", "Dummy");
+        gameBroadcastPacket.serverGUID = NetworkDiscovery.instance.serverId;
+
+        byte[] broadcastData = Assets.Scripts.Utility.Serialisation.ByteStreamer.StreamToBytes(gameBroadcastPacket);
+        // NetworkDiscovery.instance.ServerPassiveBroadcastGame(broadcastData);
+
+        return broadcastData;
     }
 
     public void OnServerStart(){
@@ -74,6 +101,7 @@ public class NetworkHud : MonoBehaviour
 
     public void OnClickStartClient(){
         PlayerPrefs.SetString("LastAddress", address);
+        PlayerPrefs.SetString("LastPort", port);
         NetworkManager.singleton.networkAddress = address;
         NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>().port = ushort.Parse(port);
         NetworkManager.singleton.StartClient();

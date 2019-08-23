@@ -37,6 +37,10 @@ public class Tank : NetworkBehaviour
     [Header("Main references")]
     public TankOption tankOption;
     public GameObject mockPrefab;
+    public GameObject cannonPrefab;
+    [SyncVar]
+    public NetworkIdentity cannonIdentity;
+    public Cannon cannonReference;
 
     [Header("Team")]
     public List<Player> players;
@@ -75,8 +79,8 @@ public class Tank : NetworkBehaviour
     protected float cannonShootCounter;
 
     [Header("Transform references")]
+    public Transform cannonAttachmentPoint;
     public Transform rotationPivot;
-    public Transform cannonTransform;
     public Transform tankTransform;
     public Transform nivelTransform;
     public Transform bulletSpawnPosition;
@@ -192,7 +196,7 @@ public class Tank : NetworkBehaviour
     [ClientRpc]
     public void RpcForceCannonRotationSync(Quaternion cannon, Quaternion nivel) {
         if (isServer) return;
-        cannonTransform.rotation = cannon;
+        rotationPivot.rotation = cannon;
         nivelTransform.rotation = nivel;
     }
 
@@ -250,9 +254,22 @@ public class Tank : NetworkBehaviour
     }
 
     void Start() {
-        // ApplyColor();
         if (!isServer) {
             GetComponent<Rigidbody>().isKinematic = true;
+        }
+        else if (cannonPrefab != null)
+        {
+            //Spawn turret
+            GameObject cannonInstance = GameObject.Instantiate(cannonPrefab);
+            cannonIdentity = cannonInstance.GetComponent<NetworkIdentity>();
+            cannonReference = cannonInstance.GetComponent<Cannon>();
+            cannonReference.tankIdentity = GetComponent<NetworkIdentity>();
+            cannonReference.SetTankReference(cannonReference.tankIdentity);
+
+            rotationPivot.rotation = cannonAttachmentPoint.rotation;
+
+            NetworkServer.Spawn(cannonInstance);
+
         }
     }
 
@@ -278,17 +295,16 @@ public class Tank : NetworkBehaviour
     /// Reset tank position to be the one given. Will also reset rotation of guns
     /// </summary>
     /// <param name="position">Position to be placed</param>
-    public void ResetTankPosition(Vector3 position) {
+    public void ResetTankPosition(Transform toSpawn) {
         ResetTank();
-        transform.position = position;
-        transform.rotation = Quaternion.identity;
+        transform.position = toSpawn.position;
+        transform.rotation = toSpawn.rotation;
         rgbd.velocity = Vector3.zero;
         currentRotationAngle = 0;
-        rotationPivot.localRotation = Quaternion.identity;
+        rotationPivot.rotation = cannonAttachmentPoint.rotation;
 
-        cannonTransform.localRotation = Quaternion.identity;
         currentInclinationAngle = 0;
-        nivelTransform.localRotation = Quaternion.Euler(0, currentInclinationAngle, 0);
+        nivelTransform.localRotation = Quaternion.Euler(currentInclinationAngle, 0, 0);
 
         // RpcForceCannonRotationSync(cannonTransform.rotation,nivelTransform.rotation);
     }
@@ -373,6 +389,18 @@ public class Tank : NetworkBehaviour
                 player.RpcAssignPlayer(team, roleToSwitch, GetComponent<NetworkIdentity>());
             }
         }
+    }
+
+    public Player GetPlayerOfRole(Role searchRole)
+    {
+        for (int i = 0; i < playerRoles.Count; i++) {
+            if(playerRoles[i].role == searchRole && playerRoles[i].playerRef != null)
+            {
+                return playerRoles[i].playerRef;
+            }
+        }
+
+        return null;
     }
 
     #endregion
@@ -494,6 +522,7 @@ public class Tank : NetworkBehaviour
         bulletScript.tankId = tankId;
         bulletScript.damage = bulletDamage;
         bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
+        bulletScript.tankWhoShot = this;
 
         Debug.Log("Firing from: " + positionToUse);
 
@@ -516,19 +545,20 @@ public class Tank : NetworkBehaviour
         float realRightAxis = rightThreadOnGround ? rightAxis : 0;
         float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
 
-        //Rotation
-        if (Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon) {
-            float dif = realLeftAxis - realRightAxis;
-            dif *= turnSpeed * deltaTime * 0.5f;
-            currentRotationAngle -= dif;
-            cannonTransform.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
-            // cannonTransform.RotateAround(transform.position,transform.up.normalized, -dif);
-        }
+        //Rotation compensation
+        // if (Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon) {
+        //     float dif = realLeftAxis - realRightAxis;
+        //     dif *= turnSpeed * deltaTime * 0.5f;
+        //     currentRotationAngle -= dif;
+        //     rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+        //     // cannonTransform.RotateAround(transform.position,transform.up.normalized, -dif);
+        // }
 
         //Should rotate
         if (rotationAxis != 0) {
-            currentRotationAngle += rotationAxis * turnCannonSpeed * deltaTime;
-            cannonTransform.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+            rotationPivot.Rotate(rotationPivot.up * rotationAxis * turnCannonSpeed * deltaTime);
+            // currentRotationAngle += rotationAxis * turnCannonSpeed * deltaTime;
+            // rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
             // cannonTransform.RotateAround(transform.position, transform.up, rotationAxis * turnCannonSpeed * deltaTime);
         }
@@ -764,6 +794,8 @@ public class Tank : NetworkBehaviour
                 Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
                     DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+                    if(bullet.tankWhoShot != null)
+                        bullet.tankWhoShot.NotifyHitToGunner(otherCollider.transform.position);
                     NetworkServer.Destroy(otherCollider.gameObject);
                 }
             }
@@ -785,15 +817,15 @@ public class Tank : NetworkBehaviour
 
     protected void CreateMock()
     {
-        RpcCreateMock(transform.position, transform.rotation, rotationPivot.localRotation.eulerAngles.y, nivelTransform.eulerAngles.x);
+        RpcCreateMock(transform.position, transform.rotation, rotationPivot.rotation, nivelTransform.eulerAngles.x);
     }
 
     [ClientRpc]
-    protected void RpcCreateMock(Vector3 position, Quaternion rotation, float turretRotation, float cannonRotation)
+    protected void RpcCreateMock(Vector3 position, Quaternion rotation, Quaternion turretRotation, float cannonRotation)
     {
         GameObject mock = GameObject.Instantiate(mockPrefab, position, rotation);
         TankMock mockScript = mock.GetComponent<TankMock>();
-        mockScript.ApplyPosition(position, rotation, Quaternion.Euler(0,turretRotation,0), Quaternion.Euler(cannonRotation,0,0));
+        mockScript.ApplyPosition(position, rotation, turretRotation, Quaternion.Euler(cannonRotation,0,0));
         mockScript.Explode();
     }
 
@@ -803,6 +835,13 @@ public class Tank : NetworkBehaviour
         {
             player.RpcReceiveDamageFromDirection(damage, angle);
         }
+    }
+
+    protected void NotifyHitToGunner(Vector3 position)
+    {
+        Player gunner = GetPlayerOfRole(Role.Gunner);
+        if(gunner != null)
+            gunner.RpcShowHitmark(position);
     }
 
     public void KillTank(int otherTank, bool explodeTank = true){

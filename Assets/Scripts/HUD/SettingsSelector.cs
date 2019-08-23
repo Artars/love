@@ -23,6 +23,8 @@ public class SettingsSelector : MonoBehaviour
     public TMPro.TMP_Text maxPointsValue;
     public TMPro.TMP_Text maxTimeValue;
     public TMPro.TMP_Text respawnTimeValue;
+    public TMPro.TMP_InputField portInputField;
+    public TMPro.TMP_Text portValue;
 
     protected int maxTimeIndex = 0;
     
@@ -147,6 +149,12 @@ public class SettingsSelector : MonoBehaviour
         }
     }
 
+    public void ModifyPort(string inputField)
+    {
+        matchSetting.serverPort = ushort.Parse(inputField);
+        UpdateText();
+    }
+
     public void UpdateText()
     {
         OnSettingsChanged.Invoke(matchSetting);
@@ -156,6 +164,10 @@ public class SettingsSelector : MonoBehaviour
         maxPointsValue.text = matchSetting.maxPoints.ToString();
         maxTimeValue.text = TimeToString(matchSetting.maxTime);
         respawnTimeValue.text = matchSetting.timeToRespawn.ToString("F0");
+        if(portInputField != null)
+            portInputField.text = matchSetting.serverPort.ToString();
+        else
+            portValue.text = matchSetting.serverPort.ToString();
     }
 
     protected string TimeToString(float time)

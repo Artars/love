@@ -33,8 +33,9 @@ public class GameMode : NetworkBehaviour
     [SyncVar]
     public MatchSetting matchSettings;
     public float timeToStartGame = 5;
-    public float timeToEndGame = 5;
+    public float timeToEndGame = 10;
     public bool returnToLobby = true;
+    public float volumeInMatch = 0.25f;
 
     public List<InfoTank> infoTanks;
     public DictionaryIntPlayerInfo playersInfo;
@@ -145,6 +146,9 @@ public class GameMode : NetworkBehaviour
         SpawnTanks();
         SetupPlayers();
         StartCoroutine(WaitMatchPresentation());
+
+        if(MusicSelector.instance != null)
+            MusicSelector.instance.RpcReduceVolume(volumeInMatch, matchSettings.timeToSetup * 0.5f);
 
     }
 
@@ -331,6 +335,14 @@ public class GameMode : NetworkBehaviour
 
 
     #region Match
+
+    public void NotifyPlayerLeft(Player player,PlayerInfo playerInfo)
+    {
+        BroadcastMessageToAllConnected("Player " + playerInfo.name + " has left!", 2);
+
+        players.Remove(player);
+        teamPlayers[playerInfo.team].Remove(player);
+    }
     
     public void TankKilled(int ownerId, int enemyId) {
         bool hasSuicided = ownerId == enemyId;
@@ -426,7 +438,7 @@ public class GameMode : NetworkBehaviour
         Transform positionToSpawn = GetSpawnPosition(tank.team);
 
         tank.GetComponent<Rigidbody>().isKinematic = false;
-        tank.ResetTankPosition(positionToSpawn.position);
+        tank.ResetTankPosition(positionToSpawn);
         tank.canBeControlled = true;
     }
 
@@ -562,6 +574,12 @@ public class GameMode : NetworkBehaviour
     public static void KillTank0()
     {
         instance.TankKilled(0,1);
+    }
+
+    [MenuItem("Debug/Kill tank 1")]
+    public static void KillTank1()
+    {
+        instance.TankKilled(1,0);
     }
 
     #endif

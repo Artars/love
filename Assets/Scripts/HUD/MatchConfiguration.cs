@@ -205,13 +205,15 @@ public struct MatchSetting
     public float maxTime;
     public float timeToSetup;
     public float timeToRespawn;
+    public ushort serverPort;
 
     public MatchSetting( 
     int numTeams = 2, 
     int maxPoints = 5, 
     float maxTime = Mathf.Infinity,
     float timeToRespawn = 4f, 
-    float timeToSetup = 4f)
+    float timeToSetup = 4f,
+    ushort serverPort = 7777)
     {
         this.teamConfiguration = new int[numTeams];
         for (int i = 0; i < numTeams; i++)
@@ -223,6 +225,7 @@ public struct MatchSetting
         this.maxTime = maxTime;
         this.timeToSetup = timeToSetup;
         this.timeToRespawn = timeToRespawn;
+        this.serverPort = serverPort;
     }
 
 

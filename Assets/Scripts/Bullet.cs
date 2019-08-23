@@ -17,6 +17,7 @@ public class Bullet : NetworkBehaviour
     public bool canColide = false;
 
     public float angleFired;
+    public Tank tankWhoShot;
 
     public float lifeTime = 10;
 
@@ -58,7 +59,7 @@ public class Bullet : NetworkBehaviour
         velocityFired = velocity;
         angleFired = Mathf.Atan2(velocity.z,velocity.x) * Mathf.Rad2Deg;
 
-        canColide =true;
+        canColide = true;
     }
 
     public void OnTriggerEnter(Collider col) {
@@ -69,6 +70,15 @@ public class Bullet : NetworkBehaviour
         if(isServer) {
             if(col.gameObject.tag == "Tank"){
                 Tank tankScript = col.gameObject.GetComponentInParent<Tank>();
+
+                // If cannon would have damage
+                // if(tankScript == null)
+                // {
+                //     Cannon cannonScript = GetComponentInParent<Cannon>();
+                //     if(cannonScript != null)
+                //         tankScript = cannonScript.tankReference;
+                // }
+
                 if(tankScript != null)
                 {
                     tankScript.DealWithCollision(this.GetComponent<Collider>(), col);

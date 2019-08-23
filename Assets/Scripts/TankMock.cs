@@ -25,7 +25,7 @@ public class TankMock : MonoBehaviour
     {
         mainTransform.position = mainPosition;
         mainTransform.rotation = mainRotation;
-        turretTransform.localRotation = turretRotation;
+        turretTransform.rotation = turretRotation;
         cannonTransform.localRotation = cannonRotation;
     }
 
