@@ -140,12 +140,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   wayToDestroy: 3
-  timeToDestroy: 1
+  timeToDestroy: 5
   particlesToInstantiate: {fileID: 7726184353700153352, guid: bacccc3ee9b7f634c8a5dc272aac5419,
     type: 3}
   positionToSpawnParticles: {fileID: 7416167525823951050}
   pivotPoint: {fileID: 5100942550575111620}
-  timeToFall: 1
+  timeToFall: 2
 --- !u!1 &8121653981910944618
 GameObject:
   m_ObjectHideFlags: 0

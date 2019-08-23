@@ -152,7 +152,8 @@ MonoBehaviour:
   syncInterval: 0.1
   wayToDestroy: 1
   timeToDestroy: 1
-  particlesToInstantiate: {fileID: 0}
+  particlesToInstantiate: {fileID: 2067870743832164883, guid: 2e18130f49fa6f74784cce003bf4f712,
+    type: 3}
   positionToSpawnParticles: {fileID: 5927309154117526189}
   pivotPoint: {fileID: 0}
   timeToFall: 1

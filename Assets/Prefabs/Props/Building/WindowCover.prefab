@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 7080249118998174371}
   - component: {fileID: 7080249118997404291}
   - component: {fileID: 7080249118996404291}
+  - component: {fileID: 7889863137117843460}
+  - component: {fileID: 4614304138663120030}
+  - component: {fileID: 10388590989976526}
   m_Layer: 0
   m_Name: WindowCover
   m_TagString: Untagged
@@ -77,3 +80,52 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &7889863137117843460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7080249118998595203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 8a4aab569862200438385aed1b957123
+  m_SceneId: 0
+--- !u!114 &4614304138663120030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7080249118998595203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a6ab92e0f4fe149a347e1d0e2a55cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  wayToDestroy: 1
+  timeToDestroy: 1
+  particlesToInstantiate: {fileID: 2067870743832164883, guid: 2e18130f49fa6f74784cce003bf4f712,
+    type: 3}
+  positionToSpawnParticles: {fileID: 7080249118998174371}
+  pivotPoint: {fileID: 0}
+  timeToFall: 1
+--- !u!65 &10388590989976526
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7080249118998595203}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0100016985, y: 0.010000003, z: 0.011000003}
+  m_Center: {x: 0.00000084913336, y: 1.2066911e-20, z: 0.0055000014}
