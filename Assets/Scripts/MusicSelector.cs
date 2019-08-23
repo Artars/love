@@ -8,6 +8,7 @@ public class MusicSelector : NetworkBehaviour
     public static MusicSelector instance;
     public AudioSource audioSource;
     public AudioClip[] musicTracks;
+    [Range(0f,1f)]
     public float initialVolume = 1;
 
     protected Coroutine volumeCoroutine = null;
