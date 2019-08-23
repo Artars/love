@@ -35,6 +35,7 @@ public class GameMode : NetworkBehaviour
     public float timeToStartGame = 5;
     public float timeToEndGame = 10;
     public bool returnToLobby = true;
+    public float volumeInMatch = 0.25f;
 
     public List<InfoTank> infoTanks;
     public DictionaryIntPlayerInfo playersInfo;
@@ -145,6 +146,9 @@ public class GameMode : NetworkBehaviour
         SpawnTanks();
         SetupPlayers();
         StartCoroutine(WaitMatchPresentation());
+
+        if(MusicSelector.instance != null)
+            MusicSelector.instance.RpcReduceVolume(volumeInMatch, matchSettings.timeToSetup * 0.5f);
 
     }
 
