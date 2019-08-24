@@ -290,7 +290,7 @@ namespace Mirror
             float goalTime = goal != null ? goal.timeStamp : Time.time;
             float difference = goalTime - startTime;
             float timeSinceGoalReceived = Time.time - goalTime;
-            return timeSinceGoalReceived > difference * 2;
+            return timeSinceGoalReceived > difference * 5;
         }
 
         // moved since last time we checked it?
