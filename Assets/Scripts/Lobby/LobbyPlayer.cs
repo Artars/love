@@ -57,6 +57,7 @@ public class LobbyPlayer : NetworkBehaviour
                 LobbyManager.instance.RemovePlayer(this);
             }
         }
+        base.OnNetworkDestroy();
     }
 
     // Start is called before the first frame update
@@ -313,7 +314,7 @@ public class LobbyPlayer : NetworkBehaviour
 
     public void ClickExitButton()
     {
-        NetworkDiscovery.instance.StopDiscovery();
+        // NetworkDiscovery.instance.StopDiscovery();
         NetworkManager.Shutdown();
     }
 
