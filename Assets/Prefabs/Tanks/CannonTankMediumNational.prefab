@@ -562,7 +562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e95a52b43136a1848b58d601716f088a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
+  syncInterval: 0
   tankIdentity: {fileID: 0}
   tankReference: {fileID: 0}
   shootParticles: {fileID: 8614285570237731852}
@@ -584,7 +584,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
-  compressRotation: 0
+  compressRotation: 1
   target: {fileID: 488011423631083198}
 --- !u!114 &6526523720736799785
 MonoBehaviour:

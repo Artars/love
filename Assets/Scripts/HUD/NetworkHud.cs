@@ -73,7 +73,7 @@ public class NetworkHud : MonoBehaviour
 
         MatchConfiguration.instance.infoTanks = tankInfo;
 
-        NetworkDiscovery.instance.ServerPassiveBroadcastGame(CreateServerInformation());
+        // NetworkDiscovery.instance.ServerPassiveBroadcastGame(CreateServerInformation());
 
         NetworkManager.singleton.StartHost();
     }

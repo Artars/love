@@ -39,6 +39,7 @@ public class Cannon : NetworkBehaviour
 
         //Set tank references
         tankReference = tankIdentity.GetComponent<Tank>();
+        tankReference.cannonReference = this;
         tankReference.shootParticles = shootParticles;
         tankReference.firingSoundSource = firingSoundSource;
         tankReference.rotationPivot = rotationPivot;
@@ -58,6 +59,14 @@ public class Cannon : NetworkBehaviour
         {
             transformOriginal.position = transformToFollow.position;
             transformOriginal.up = transformToFollow.up;
+        }
+    }
+
+    public void ForceUpdate()
+    {
+        if(isFollowing)
+        {
+            Update();
         }
     }
 
