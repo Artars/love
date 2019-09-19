@@ -1207,7 +1207,7 @@ GameObject:
   - component: {fileID: 5378618044361311543}
   - component: {fileID: 5378618044361311541}
   - component: {fileID: 8069897468372611511}
-  - component: {fileID: 7224657846611481838}
+  - component: {fileID: 7098913159966096791}
   m_Layer: 10
   m_Name: TankMediumRepublican
   m_TagString: Tank
@@ -1350,7 +1350,7 @@ MonoBehaviour:
   localPlayerAuthority: 0
   m_AssetId: 0d0933c68f8aae746b39d8424e9f35af
   m_SceneId: 0
---- !u!114 &7224657846611481838
+--- !u!114 &7098913159966096791
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1362,8 +1362,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.08
-  compressRotation: 0
+  syncInterval: 0.1
+  compressRotation: 1
 --- !u!1 &5378618044769985989
 GameObject:
   m_ObjectHideFlags: 0

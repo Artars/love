@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.2945969, g: 0.6341339, b: 0.9921766, a: 1}
+  m_IndirectSpecularColor: {r: 0.29732597, g: 0.63431764, b: 0.9956333, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8408,9 +8408,100 @@ PrefabInstance:
       propertyPath: onlineScene
       value: DuelAtTheChurch
       objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: transport
+      value: 
+      objectReference: {fileID: 840804163}
     m_RemovedComponents:
     - {fileID: 1637338755, guid: b3703622212e9a4499168340844ad9a7, type: 3}
+    - {fileID: 3380199501274041195, guid: b3703622212e9a4499168340844ad9a7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b3703622212e9a4499168340844ad9a7, type: 3}
+--- !u!1 &840804162 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3380199501274041192, guid: b3703622212e9a4499168340844ad9a7,
+    type: 3}
+  m_PrefabInstance: {fileID: 840804161}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &840804163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840804162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5671dcb80f9d69240b71f5612676a3fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnClientConnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnClientDataReceived:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventArraySegment, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnClientError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventException, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnClientDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnServerConnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnServerDataReceived:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventIntArraySegment, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnServerError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventIntException, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnServerDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  clientAddress: 127.0.0.1
+  serverIPv4BindAddress: 0.0.0.0
+  serverIPv6BindAddress: '::'
+  port: 7777
+  useUpnP: 1
+  maxConnections: 20
+  ipv6Enabled: 1
+  channels: 0204010300
+  authCode: 
+  updateTime: 15
+  pingInterval: 1000
+  disconnectTimeout: 5000
+  reconnectDelay: 500
+  maxConnectAttempts: 10
+  simulatePacketLoss: 0
+  simulationPacketLossChance: 10
+  simulateLatency: 0
+  simulationMinLatency: 30
+  simulationMaxLatency: 500
+  onClientSocketError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.LiteNetLib4Mirror.UnityEventError, Mirror, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onServerSocketError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.LiteNetLib4Mirror.UnityEventIntError, Mirror, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1001 &854280503
 PrefabInstance:
   m_ObjectHideFlags: 0
