@@ -13,6 +13,4 @@ MonoBehaviour:
   m_Name: MapCollection
   m_EditorClassIdentifier: 
   mapOptions:
-  - {fileID: 11400000, guid: 149cb03b3ecc4a845b3205218a53724c, type: 2}
   - {fileID: 11400000, guid: 589f6c0ba6609fe4692de7601b4ac28d, type: 2}
-  - {fileID: 11400000, guid: 70202c88e71c1ef4da685ee1f9968c14, type: 2}

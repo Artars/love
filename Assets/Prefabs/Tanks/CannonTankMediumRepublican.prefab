@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e95a52b43136a1848b58d601716f088a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
+  syncInterval: 0
   tankIdentity: {fileID: 0}
   tankReference: {fileID: 0}
   shootParticles: {fileID: 4147590115406774945}
@@ -84,8 +84,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
-  compressRotation: 0
+  syncInterval: 0.08
+  compressRotation: 1
   target: {fileID: 1213213851985666214}
 --- !u!114 &3623674661022710019
 MonoBehaviour:
@@ -99,8 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncInterval: 0.1
-  compressRotation: 0
+  syncInterval: 0.08
+  compressRotation: 1
   target: {fileID: 1213213851985666416}
 --- !u!1 &1213213851985666137
 GameObject:

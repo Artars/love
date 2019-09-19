@@ -301,7 +301,8 @@ public class Tank : NetworkBehaviour
         transform.rotation = toSpawn.rotation;
         rgbd.velocity = Vector3.zero;
         currentRotationAngle = 0;
-        rotationPivot.rotation = cannonAttachmentPoint.rotation;
+        cannonReference.ForceUpdate();
+        rotationPivot.rotation = Quaternion.Euler(0,cannonAttachmentPoint.rotation.eulerAngles.y,0);
 
         currentInclinationAngle = 0;
         nivelTransform.localRotation = Quaternion.Euler(currentInclinationAngle, 0, 0);
@@ -556,7 +557,7 @@ public class Tank : NetworkBehaviour
 
         //Should rotate
         if (rotationAxis != 0) {
-            rotationPivot.Rotate(rotationPivot.up * rotationAxis * turnCannonSpeed * deltaTime);
+            rotationPivot.Rotate(0f, rotationAxis * turnCannonSpeed * deltaTime,0f);
             // currentRotationAngle += rotationAxis * turnCannonSpeed * deltaTime;
             // rotationPivot.localRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 

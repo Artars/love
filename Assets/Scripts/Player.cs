@@ -102,6 +102,7 @@ public class Player : NetworkBehaviour
                 GameMode.instance.NotifyPlayerLeft(this,playerInfo);
             }
         }
+        base.OnNetworkDestroy();
     }
 
     protected void Start() {
@@ -633,7 +634,7 @@ public class Player : NetworkBehaviour
 
     public void OnClickExit()
     {
-        NetworkDiscovery.instance.StopDiscovery();
+        // NetworkDiscovery.instance.StopDiscovery();
         NetworkManager.Shutdown();
     }
 
