@@ -70,6 +70,16 @@ public class NetworkHud : MonoBehaviour
         {
             transport.port = matchSetting.serverPort;
         }
+        else
+        {
+            Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorTransport liteTransport = 
+            NetworkManager.singleton.gameObject.GetComponent<Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorTransport>();
+
+            if(liteTransport != null)
+            {
+                liteTransport.port = matchSetting.serverPort;
+            }
+        }
 
         MatchConfiguration.instance.infoTanks = tankInfo;
 
@@ -103,7 +113,19 @@ public class NetworkHud : MonoBehaviour
         PlayerPrefs.SetString("LastAddress", address);
         PlayerPrefs.SetString("LastPort", port);
         NetworkManager.singleton.networkAddress = address;
-        NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>().port = ushort.Parse(port);
+        TelepathyTransport telTransport = NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>();
+        if(telTransport != null)
+            telTransport.port = ushort.Parse(port);
+        else
+        {
+            Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorTransport liteTransport = 
+            NetworkManager.singleton.gameObject.GetComponent<Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorTransport>();
+
+            if(liteTransport != null)
+            {
+                liteTransport.port = ushort.Parse(port);
+            }
+        }
         NetworkManager.singleton.StartClient();
     }
 
