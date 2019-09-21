@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7190371703457434842}
   - component: {fileID: 4356072012210116523}
   - component: {fileID: 94797582129713976}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: WoodenBridge (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
