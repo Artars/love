@@ -315,7 +315,17 @@ public class LobbyPlayer : NetworkBehaviour
     public void ClickExitButton()
     {
         // NetworkDiscovery.instance.StopDiscovery();
-        NetworkManager.Shutdown();
+
+        // NetworkManager.Shutdown();
+
+        if(isServer)
+        {
+            NetworkManager.singleton.StopHost();
+        }
+        else
+        {
+            NetworkManager.singleton.StopClient();
+        }
     }
 
     
