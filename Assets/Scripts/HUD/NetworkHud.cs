@@ -13,11 +13,17 @@ public class NetworkHud : MonoBehaviour
     public SettingsSelector settingsSelector;
     public Animator animator;
 
+    public TMPro.TMP_Text connectionStatus;
+    public TMPro.TMP_Text connectButtonText;
+
     protected int currentMenu = 0;
 
     public string address = "localhost";
     public string port = "7777";
     public string sceneToChange;
+
+    protected NetworkManager networkManager;
+    bool tryingToConnect = false;
 
 
     public void Start(){
@@ -29,6 +35,28 @@ public class NetworkHud : MonoBehaviour
             }
             portField.text = port;
         }
+
+        networkManager = NetworkManager.singleton;
+    }
+
+    public void Update()
+    {
+        if (!NetworkClient.isConnected && !NetworkServer.active)
+            {
+                if (!NetworkClient.active)
+                {
+                    connectionStatus.text = "";
+                    connectButtonText.text = "Connect";
+                    tryingToConnect = false;
+                }
+                else
+                {
+                    // Connecting
+                    connectionStatus.text = "Connecting to " + networkManager.networkAddress;
+                    connectButtonText.text = "Cancel";
+                    tryingToConnect = true;
+                }
+            }
     }
 
 
@@ -110,23 +138,30 @@ public class NetworkHud : MonoBehaviour
 
 
     public void OnClickStartClient(){
-        PlayerPrefs.SetString("LastAddress", address);
-        PlayerPrefs.SetString("LastPort", port);
-        NetworkManager.singleton.networkAddress = address;
-        TelepathyTransport telTransport = NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>();
-        if(telTransport != null)
-            telTransport.port = ushort.Parse(port);
+        if(!tryingToConnect)
+        {
+            PlayerPrefs.SetString("LastAddress", address);
+            PlayerPrefs.SetString("LastPort", port);
+            NetworkManager.singleton.networkAddress = address;
+            TelepathyTransport telTransport = NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>();
+            if(telTransport != null)
+                telTransport.port = ushort.Parse(port);
+            else
+            {
+                Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorTransport liteTransport = 
+                NetworkManager.singleton.gameObject.GetComponent<Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorTransport>();
+
+                if(liteTransport != null)
+                {
+                    liteTransport.port = ushort.Parse(port);
+                }
+            }
+            NetworkManager.singleton.StartClient();
+        }
         else
         {
-            Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorTransport liteTransport = 
-            NetworkManager.singleton.gameObject.GetComponent<Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorTransport>();
-
-            if(liteTransport != null)
-            {
-                liteTransport.port = ushort.Parse(port);
-            }
+            networkManager.StopClient();
         }
-        NetworkManager.singleton.StartClient();
     }
 
     public void ChangeMenu(int newMenu)
