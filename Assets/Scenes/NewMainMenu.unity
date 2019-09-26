@@ -1238,7 +1238,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1e2d840a949221e4fbb70037bf017bc8, type: 3}
       propertyPath: m_RootOrder
-      value: 22
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1e2d840a949221e4fbb70037bf017bc8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2205,7 +2205,7 @@ Transform:
   - {fileID: 1533088821}
   - {fileID: 1041180230}
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &253500805
 MonoBehaviour:
@@ -2773,7 +2773,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 23
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &291038519
 GameObject:
@@ -3989,7 +3989,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh522046
+  m_Name: pb_Mesh406476
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -5228,7 +5228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22451668, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_RootOrder
-      value: 26
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 22451668, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5702,7 +5702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: a46171e899852a348839bd9bce26edc4, type: 3}
       propertyPath: m_RootOrder
-      value: 24
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: a46171e899852a348839bd9bce26edc4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6074,7 +6074,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh524322
+  m_Name: pb_Mesh408830
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -8289,219 +8289,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 834511477}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &840804161
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3380199501274041192, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_Name
-      value: NetworkingManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 18
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.size
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
-        type: 3}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[1]
-      value: 
-      objectReference: {fileID: 18332451572104369, guid: bb8bff03f39ff904aa9174e33d4c73d2,
-        type: 3}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[2]
-      value: 
-      objectReference: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
-        type: 3}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[3]
-      value: 
-      objectReference: {fileID: 5378618044361311542, guid: 0d0933c68f8aae746b39d8424e9f35af,
-        type: 3}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[4]
-      value: 
-      objectReference: {fileID: 945030072491325362, guid: c29bbf87b1265a84893bc71b470548d2,
-        type: 3}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[5]
-      value: 
-      objectReference: {fileID: 7184059857796045811, guid: 364caccd376c45f439b5faf59a56c6c9,
-        type: 3}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[6]
-      value: 
-      objectReference: {fileID: 460630904971607289, guid: aa736e3a10cafc24c9be327c0d01cf16,
-        type: 3}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: onlineScene
-      value: DuelAtTheChurch
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380199501274041189, guid: b3703622212e9a4499168340844ad9a7,
-        type: 3}
-      propertyPath: transport
-      value: 
-      objectReference: {fileID: 840804163}
-    m_RemovedComponents:
-    - {fileID: 1637338755, guid: b3703622212e9a4499168340844ad9a7, type: 3}
-    - {fileID: 3380199501274041195, guid: b3703622212e9a4499168340844ad9a7, type: 3}
-  m_SourcePrefab: {fileID: 100100000, guid: b3703622212e9a4499168340844ad9a7, type: 3}
---- !u!1 &840804162 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3380199501274041192, guid: b3703622212e9a4499168340844ad9a7,
-    type: 3}
-  m_PrefabInstance: {fileID: 840804161}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &840804163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 840804162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5671dcb80f9d69240b71f5612676a3fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnClientConnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnClientDataReceived:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventArraySegment, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnClientError:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventException, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnClientDisconnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnServerConnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnServerDataReceived:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventIntArraySegment, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnServerError:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventIntException, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnServerDisconnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  clientAddress: 127.0.0.1
-  serverIPv4BindAddress: 0.0.0.0
-  serverIPv6BindAddress: '::'
-  port: 7777
-  useUpnP: 1
-  maxConnections: 20
-  ipv6Enabled: 1
-  channels: 0204010300
-  authCode: 
-  updateTime: 15
-  pingInterval: 1000
-  disconnectTimeout: 5000
-  reconnectDelay: 500
-  maxConnectAttempts: 10
-  simulatePacketLoss: 0
-  simulationPacketLossChance: 10
-  simulateLatency: 0
-  simulationMinLatency: 30
-  simulationMaxLatency: 500
-  onClientSocketError:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.LiteNetLib4Mirror.UnityEventError, Mirror, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  onServerSocketError:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.LiteNetLib4Mirror.UnityEventIntError, Mirror, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!1001 &854280503
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10923,7 +10710,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 21
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1041180229
 GameObject:
@@ -12258,7 +12045,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh523092
+  m_Name: pb_Mesh407616
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -12658,7 +12445,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh524356
+  m_Name: pb_Mesh408886
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -17371,6 +17158,80 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 61049e0afe2909a4e9a158b0570d866e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a46171e899852a348839bd9bce26edc4, type: 3}
+--- !u!1001 &1545212890
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6999486683127804352, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_Name
+      value: NetworkingManagerLiteNetLib
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.525776
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.0491889
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.907053
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: onlineScene
+      value: DuelAtTheChurch
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 85d693d748bc0ac48b897612da440c31, type: 3}
 --- !u!1 &1629650941
 GameObject:
   m_ObjectHideFlags: 0
@@ -17408,6 +17269,50 @@ RectTransform:
   m_AnchoredPosition: {x: -0.00000011509, y: -82}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1630105377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1630105379}
+  - component: {fileID: 1630105378}
+  m_Layer: 0
+  m_Name: KillTheNonBeliever
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1630105378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630105377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3acbf056c2f90db4fad237812a3a110d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notToKill: {fileID: 0}
+--- !u!4 &1630105379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630105377}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 26
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1635826358
 GameObject:
   m_ObjectHideFlags: 0
@@ -20035,7 +19940,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 20
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1899138862
 GameObject:
@@ -22282,7 +22187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 89156ddd3a0fc704d85b2a29c0024730, type: 3}
       propertyPath: m_RootOrder
-      value: 25
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 89156ddd3a0fc704d85b2a29c0024730, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -23358,7 +23263,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh524004
+  m_Name: pb_Mesh408574
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2

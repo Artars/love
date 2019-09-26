@@ -635,7 +635,16 @@ public class Player : NetworkBehaviour
     public void OnClickExit()
     {
         // NetworkDiscovery.instance.StopDiscovery();
-        NetworkManager.Shutdown();
+        // NetworkManager.Shutdown();
+        if(isServer)
+        {
+            NetworkManager.singleton.StopHost();
+
+        }
+        else
+        {
+            NetworkManager.singleton.StopClient();
+        }
     }
 
 

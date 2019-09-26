@@ -15,8 +15,8 @@ namespace Mirror.LiteNetLib4Mirror
 		{
 			GetComponent<LiteNetLib4MirrorTransport>().InitializeTransport();
 			base.Awake();
-			singleton = this;
-			NetworkManager.singleton = this;
+			if(NetworkManager.singleton == this)
+				singleton = this;
 		}
 
 		/// <summary>
