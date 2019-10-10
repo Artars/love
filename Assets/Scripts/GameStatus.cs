@@ -114,13 +114,21 @@ public class GameStatus : NetworkBehaviour
 
     public string GetCurrentScore(int team = 0)
     {
-        string newText = (MatchSetting.maxPoints - score[team]).ToString("D2");
-        for(int i = 0; i < score.Count; i++) {
-            if(i != team){
-                newText += "x" + (MatchSetting.maxPoints - score[i]).ToString("D2"); 
-            }
+        if(team < 0 || team >= score.Count)
+        {
+            return "00x00";
         }
-        return newText;
+        else
+        {
+            string newText = (MatchSetting.maxPoints - score[team]).ToString("D2");
+            for(int i = 0; i < score.Count; i++) {
+                if(i != team){
+                    newText += "x" + (MatchSetting.maxPoints - score[i]).ToString("D2"); 
+                }
+            }
+            return newText;
+        }
+        
     }
     
 

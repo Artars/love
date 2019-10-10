@@ -15949,6 +15949,16 @@ PrefabInstance:
       propertyPath: onlineScene
       value: DuelAtTheChurch
       objectReference: {fileID: 0}
+    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: showDebugMessages
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
+        type: 3}
+      propertyPath: maxConnections
+      value: 120
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85d693d748bc0ac48b897612da440c31, type: 3}
 --- !u!1 &1629650941
