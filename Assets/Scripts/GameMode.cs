@@ -32,10 +32,13 @@ public class GameMode : NetworkBehaviour
     [Header("Game settings")]
     [SyncVar]
     public MatchSetting matchSettings;
+    [Tooltip("Will force all tanks to use this parameters")]
+    public TankParametersObject forceTankParameters = null;
     public float timeToStartGame = 5;
     public float timeToEndGame = 10;
     public bool returnToLobby = true;
     public float volumeInMatch = 0.25f;
+    
 
     public List<InfoTank> infoTanks;
     public DictionaryIntPlayerInfo playersInfo;
@@ -229,6 +232,13 @@ public class GameMode : NetworkBehaviour
         Tank tankRef = tank.GetComponent<Tank>();
         tankRef.team = tankInfo.team;
         tankRef.tankId = tankInfo.id;
+        
+        // Set tank forced parametters
+        if(forceTankParameters != null)
+        {
+            tankRef.SetTankParameters(forceTankParameters.tankParameters);
+        }
+
         tanks[tankInfo.id] = tankRef;
         tankRef.ResetTank();
         NetworkServer.Spawn(tank);

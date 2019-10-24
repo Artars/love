@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
-[CreateAssetMenu(fileName = "Data", menuName = "Game Parameters/Tank parameters", order = 1)]
+[CreateAssetMenu(fileName = "TankParameters", menuName = "Game Parameters/Tank parameters", order = 1)]
 [System.Serializable]
-public class TankParameters : ScriptableObject
+public class TankParametersObject : ScriptableObject
+{
+    public TankParameters tankParameters;
+}
+
+[System.Serializable]
+public class TankParameters
 {
     [Header("Driver")]
     
@@ -16,6 +21,7 @@ public class TankParameters : ScriptableObject
 
 
     [Header("Gunner")]
+    public ShootMode shootMode = ShootMode.Damage;
     public float turnCannonSpeed = 20;
     public float nivelCannonSpeed = 20;
     public float minCannonNivel = -30;
@@ -29,6 +35,12 @@ public class TankParameters : ScriptableObject
 
 
 
+}
+
+[System.Serializable]
+public enum ShootMode
+{
+    Damage,Stop
 }
 
 [System.Serializable]

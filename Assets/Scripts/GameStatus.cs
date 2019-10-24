@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Clase de autoridade do servidor para mostrar status de jogo
+/// </summary>
 public class GameStatus : NetworkBehaviour
 {
     public static GameStatus instance = null;
