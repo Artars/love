@@ -331,6 +331,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0099967355
@@ -698,6 +702,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (20)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.02276109
@@ -776,6 +784,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1562,6 +1574,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (27)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2883,6 +2899,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.010248734
@@ -3634,6 +3654,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (26)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.028486397
@@ -3874,6 +3898,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (24)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.023871226
@@ -4009,7 +4037,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh15112
+  m_Name: pb_Mesh46356
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -4251,6 +4279,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (29)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.025963223
@@ -4329,6 +4361,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4669,6 +4705,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (21)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.025045328
@@ -4747,6 +4787,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4941,6 +4985,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5138,6 +5186,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (16)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6110,7 +6162,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh16100
+  m_Name: pb_Mesh48584
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -6487,6 +6539,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7085,6 +7141,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8020,6 +8080,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (23)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.029641954
@@ -8265,6 +8329,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (18)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.028599711
@@ -8344,6 +8412,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (19)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.03083512
@@ -8422,6 +8494,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9836,6 +9912,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (22)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.027371064
@@ -9914,6 +9994,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10445,6 +10529,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0048101787
@@ -10523,6 +10611,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10679,6 +10771,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (25)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11205,7 +11301,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh16128
+  m_Name: pb_Mesh48642
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -14288,6 +14384,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.0027712858
@@ -14530,6 +14630,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -15428,6 +15532,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (28)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.027172828
@@ -15588,6 +15696,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16917,7 +17029,6 @@ GameObject:
   - component: {fileID: 1714153251}
   - component: {fileID: 1714153253}
   - component: {fileID: 1714153252}
-  - component: {fileID: 1891304805}
   m_Layer: 0
   m_Name: Cloud (8)
   m_TagString: Untagged
@@ -17526,6 +17637,82 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100010, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100016, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100018, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100020, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100022, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100024, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100026, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100028, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100030, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100032, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100034, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100036, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100038, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 76d0a6a7aec7a57449f762ac57992e78, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.363
@@ -17885,43 +18072,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!23 &1891304805
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1714153250}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 05bf2774318953a408755e864daa1728, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
 --- !u!1 &1899138862
 GameObject:
   m_ObjectHideFlags: 0
@@ -18723,6 +18873,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tiro (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0019662234
@@ -19038,6 +19192,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_Name
       value: Tiro (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: e0028e7383a9f004393af2b7089bd2f7, type: 3}
       propertyPath: m_LocalPosition.x
