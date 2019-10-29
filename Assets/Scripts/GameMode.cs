@@ -45,26 +45,28 @@ public class GameMode : NetworkBehaviour
 
 
     [Header("References")]
+    public GameObject goalPointPrefab;
     public TankOptionCollection tankColection;
     public MapCollection mapCollection;
     public Transform spectatorPosition;
     public Transform hideTankPosition;
     public float spectatorDistance = 10;
-    public Tank[] tanks;
-    public List<Player> players;
-    public List<Player> spectators;
-    public List<Player>[] teamPlayers;
+    protected Tank[] tanks;
+    protected List<Player> players;
+    protected List<Player> spectators;
+    protected List<Player>[] teamPlayers;
     protected Dictionary<int,List<SpawnPoint>> spawnPoints;
 
     [Header("Game State")]
     public string hostIP;
     [SyncVar]
     public GameStage gameStage = GameStage.Lobby;
-    public List<float> score;
-    public List<int> deaths;
-    public List<int> kills;
-    public List<KillPair> killHistory;
+    protected List<float> score;
+    protected List<int> deaths;
+    protected List<int> kills;
+    protected List<KillPair> killHistory;
     public float matchTime;
+    protected List<GoalPoint>[] teamGoals;
     
 
 
@@ -195,6 +197,9 @@ public class GameMode : NetworkBehaviour
         {
             spawnPoints.Add(i, new List<SpawnPoint>());
         }
+        // Goals references for each team
+        teamGoals = new List<GoalPoint>[matchConfiguration.matchSetting.numTeams];
+        for (int i = 0; i < matchConfiguration.matchSetting.numTeams; i++) teamGoals[i] = new List<GoalPoint>();
 
         GameStatus.instance.Setup(matchSettings);
     }
@@ -319,6 +324,7 @@ public class GameMode : NetworkBehaviour
             Tank toAssing = tanks[player.playerInfo.tankID];
             toAssing.AssignPlayer(player, player.playerInfo.role);
             player.RpcAssignPlayer(player.playerInfo.team, player.playerInfo.role, toAssing.GetComponent<NetworkIdentity>());
+            player.currentMode = Player.Mode.Playing;
         }
         else
         {
@@ -372,7 +378,7 @@ public class GameMode : NetworkBehaviour
         GameStatus.instance.deaths[ownerId]++;
         KillPair newKill = new KillPair(enemyId,ownerId,matchTime);
         killHistory.Add(newKill);
-        // GameStatus.instance.killHistory.Add(newKill);
+        GameStatus.instance.killHistory.Add(newKill);
 
         if(!hasSuicided)
             BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f);
@@ -575,6 +581,126 @@ public class GameMode : NetworkBehaviour
 
     #endregion
 
+    #region Goal
+
+    public void ClearAllTeamGoals()
+    {
+        for (int i = 0; i < matchSettings.numTeams; i++)
+        {
+            ClearTeamGoals(i);
+        }
+    }
+
+    public void ClearTeamGoals(int team)
+    {
+        for (int i = teamGoals[team].Count-1; i > -1; i--)
+        {
+            NetworkServer.Destroy(teamGoals[team][i].gameObject);
+            teamGoals[team].RemoveAt(i);
+
+        }
+        //Update game status
+        if(team == 0)
+            GameStatus.instance.goalIdentitiesTeam0.Clear();
+        else
+            GameStatus.instance.goalIdentitiesTeam1.Clear();
+
+    }
+
+    public void AddTeamGoal(int team, Vector3 target)
+    {
+        GameObject newGoal = GameObject.Instantiate(goalPointPrefab);
+        GoalPoint goalScript = newGoal.GetComponent<GoalPoint>();
+        goalScript.SetTarget(target);
+        NetworkServer.Spawn(newGoal);
+
+        teamGoals[team].Add(goalScript);
+
+        //Update Game Status
+        NetworkIdentity ni = newGoal.GetComponent<NetworkIdentity>();
+        if(team == 0)
+            GameStatus.instance.goalIdentitiesTeam0.Add(ni);
+        else if(team == 1)
+            GameStatus.instance.goalIdentitiesTeam1.Add(ni);
+
+    }
+
+    public void AddTeamGoal(int team, NetworkIdentity target)
+    {
+        GameObject newGoal = GameObject.Instantiate(goalPointPrefab);
+        GoalPoint goalScript = newGoal.GetComponent<GoalPoint>();
+        goalScript.SetTarget(target);
+        NetworkServer.Spawn(newGoal);
+
+        teamGoals[team].Add(goalScript);
+        
+        //Update Game Status
+        NetworkIdentity ni = newGoal.GetComponent<NetworkIdentity>();
+        if(team == 0)
+            GameStatus.instance.goalIdentitiesTeam0.Add(ni);
+        else if(team == 1)
+            GameStatus.instance.goalIdentitiesTeam1.Add(ni);
+    }
+
+    public void SetTeamGoal(int team, Vector3 target, int id = 0)
+    {
+        // Verify bounds
+        if(team >= teamGoals.Length)
+        {
+            Debug.LogError("Team " + team + " is not in the array!");
+            return;    
+        }
+
+        if(id < teamGoals[team].Count)
+        {
+            teamGoals[team][id].SetTarget(target);
+        }
+        else
+        {
+            Debug.LogError("Target " + id + " does not exist on team " + team);
+        }
+    }
+
+    public void SetTeamGoal(int team, NetworkIdentity target,int id = 0)
+    {
+        // Verify bounds
+        if(team >= teamGoals.Length)
+        {
+            Debug.LogError("Team " + team + " is not in the array!");
+            return;    
+        }
+        
+        if(id < teamGoals[team].Count)
+        {
+            teamGoals[team][id].SetTarget(target);
+        }
+        else
+        {
+            Debug.LogError("Target " + id + " does not exist on team " + team);
+        }
+    }
+
+    public void SetTeamGoalColor(int team, Color newColor, int id=0)
+    {
+        // Verify bounds
+        if(team >= teamGoals.Length)
+        {
+            Debug.LogError("Team " + team + " is not in the array!");
+            return;    
+        }
+        
+        if(id < teamGoals[team].Count)
+        {
+            teamGoals[team][id].SetColor(newColor);
+        }
+        else
+        {
+            Debug.LogError("Target " + id + " does not exist on team " + team);
+        }
+    }
+
+    #endregion
+
 
     #region DEBUG
 
@@ -591,6 +717,21 @@ public class GameMode : NetworkBehaviour
     {
         instance.TankKilled(1,0);
     }
+
+    [MenuItem("Debug/Set goal to 0")]
+    public static void SetGoalTo0()
+    {
+        instance.AddTeamGoal(0, Vector3.zero);
+        instance.SetTeamGoalColor(0,Color.blue,0);
+    }
+
+    [MenuItem("Debug/Set goal to Tank1")]
+    public static void SetGoalToTank1()
+    {
+        instance.AddTeamGoal(0, instance.GetTank(1).GetComponent<NetworkIdentity>());
+        instance.SetTeamGoalColor(0,Color.red,0);
+    }
+    
 
     #endif
 

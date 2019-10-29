@@ -8,12 +8,17 @@ using Mirror;
 /// </summary>
 public class GameStatus : NetworkBehaviour
 {
+    public class SyncListGoal : SyncList<NetworkIdentity> {};
+    public class SyncListKillPair : SyncList<GameMode.KillPair> {};
+
     public static GameStatus instance = null;
 
-    public SyncListInt score;
-    public SyncListInt deaths;
-    public SyncListInt kills;
-    // public SyncList<GameMode.KillPair> killHistory;
+    public readonly SyncListInt score = new SyncListInt();
+    public readonly SyncListInt deaths = new SyncListInt();
+    public readonly SyncListInt kills = new SyncListInt();
+    public readonly SyncListKillPair killHistory = new SyncListKillPair();
+    public readonly SyncListGoal goalIdentitiesTeam0 = new SyncListGoal();
+    public readonly SyncListGoal goalIdentitiesTeam1 = new SyncListGoal();
 
     protected TMPro.TMP_Text timeText;
     protected bool timeRunning = false;
@@ -47,7 +52,9 @@ public class GameStatus : NetworkBehaviour
         score.Clear();
         deaths.Clear();
         kills.Clear();
-        // killHistory.Clear();
+        killHistory.Clear();
+        goalIdentitiesTeam0.Clear();
+        goalIdentitiesTeam1.Clear();
 
         for (int i = 0; i < MatchSetting.numTeams; i++)
         {

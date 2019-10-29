@@ -1101,7 +1101,8 @@ MonoBehaviour:
   team: -1
   color: {r: 1, g: 1, b: 1, a: 0}
   playerRoles: []
-  tankParameters: {fileID: 11400000, guid: 6161ec92fd19a8242b3ba9ed4740280c, type: 2}
+  tankParametersObject: {fileID: 11400000, guid: 4eb2be6e5c648d943bd96b462757f93f,
+    type: 2}
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
   shootParticles: {fileID: 4318217866929469304}
@@ -2236,6 +2237,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 507560451021067165}
     m_Modifications:
+    - target: {fileID: 2376525488028269151, guid: f8814ec6b3b3878418e8789b65092c69,
+        type: 3}
+      propertyPath: m_Name
+      value: Shooting
+      objectReference: {fileID: 0}
+    - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
+        type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2855305167267900382, guid: f8814ec6b3b3878418e8789b65092c69,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2290,16 +2301,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
-        type: 3}
-      propertyPath: looping
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2376525488028269151, guid: f8814ec6b3b3878418e8789b65092c69,
-        type: 3}
-      propertyPath: m_Name
-      value: Shooting
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8814ec6b3b3878418e8789b65092c69, type: 3}
