@@ -13,6 +13,7 @@ public class Player : NetworkBehaviour
 
     public static Player localPlayer = null;
 
+    [Header("DO NOT MESS WITH THESE VARIABLES!")]
     [SyncVar]
     public PlayerInfo playerInfo;
     [SyncVar]
@@ -50,33 +51,6 @@ public class Player : NetworkBehaviour
     protected Vector3 pointToObserve;
     protected float rotateSpeed;
 
-    [Header("HUD")]
-    public GameObject canvasPilot;
-    public GameObject canvasGunner;
-    public GameObject hitPointer;
-    public Slider rightSlider;
-    public Slider leftSlider;
-    public FixedJoystick joyStick;
-    public bool buttonState = false;
-    public GameObject[] mobileHUD;
-
-    public Slider healthSlider;
-    public Slider loadingSlider;
-    public TMPro.TextMeshProUGUI scoreText;
-    public TMPro.TextMeshProUGUI timeText;
-
-    public GameObject informationCanvas;
-    public TMPro.TextMeshProUGUI ipText;
-    public TMPro.TextMeshProUGUI messageText;
-
-    public GameObject compassTank;
-    public GameObject compassCannon;
-
-    public GameObject goalCompassPrefab;
-    public Transform goalCompassParent;
-    protected List<Image> goalCompassReference;
-    protected List<GoalPoint> goalReferences;
-
     [Header("Pilot")]
     public GearSystem gearSystem;
     protected int rightGear;
@@ -97,6 +71,8 @@ public class Player : NetworkBehaviour
     protected bool assignedCallback = false;
     protected Coroutine messageCoroutine = null;
 
+    protected PlayerHUD playerHUD;
+
     #region Initialization
 
     //Remove player from the game
@@ -112,10 +88,15 @@ public class Player : NetworkBehaviour
     }
 
     protected void Start() {
+        //Set Player HUD
+        playerHUD = GetComponent<PlayerHUD>();
+
         //Update referece
         if(isLocalPlayer){
+            //Set player HUD
+            playerHUD.AddPilotCallback(onUpdateLeftSlider,onUpdateRightSlider);
+
             observerTransform.gameObject.SetActive(true);
-            informationCanvas.SetActive(true);
             localPlayer = this;
 
             //Create inputs
@@ -123,7 +104,6 @@ public class Player : NetworkBehaviour
             leftGearInput = new AxisToButton("Vertical2");
 
             //Set time reference
-            GameStatus.instance.SetTimeText(timeText);
         }
 
         if(GameMode.instance != null) {
@@ -153,7 +133,7 @@ public class Player : NetworkBehaviour
         if(isLocalPlayer){
             Debug.Log("Will observe " + position);
             currentMode = Mode.Observing;
-            HideHUD();
+            playerHUD.HideHUD();
             firstPersonCamera.gameObject.SetActive(false);
             observerTransform.gameObject.SetActive(true);
 
@@ -169,7 +149,7 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcAssignSpectator()
     {
-        TryToAssignCallback();
+        playerHUD.TryToAssignCallback();
     }
 
     [ClientRpc]
@@ -188,9 +168,6 @@ public class Player : NetworkBehaviour
         tankRef = possesedObject.GetComponent<Tank>();
         currentMode = Mode.Playing;
         
-        // Assign HUD
-        TryToAssignCallback();
-
         if(role == Role.Pilot){
             firstPersonCamera.position = tankRef.cameraPositionDriver.position;
             firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
@@ -202,24 +179,16 @@ public class Player : NetworkBehaviour
             firstPersonCamera.SetParent(tankRef.cameraPositionGunner);
         }
 
+
+        //Assign HUD
+        playerHUD.AssignTank(team, role, tankRef);
+
+        
         //Update control values
         //Update axis
         rightGear = tankRef.rightGear;
         leftGear = tankRef.leftGear;
-
-        //Update gears
-        gearSystem = tankRef.gearSystem;
-        leftSlider.minValue = gearSystem.lowestGear;
-        leftSlider.maxValue = gearSystem.highestGear;
-        rightSlider.minValue = gearSystem.lowestGear;
-        rightSlider.maxValue = gearSystem.highestGear;
-
-        //Update gunner
-        loadingSlider.minValue = 0;
-        loadingSlider.maxValue = tankRef.ShootCooldown;
-
-
-        assignHUD();
+        playerHUD.SetPilotValue(leftGear,rightGear);
 
     }
 
@@ -232,36 +201,25 @@ public class Player : NetworkBehaviour
         //Reset control variables
         rightGear = 0;
         leftGear = 0;
-        rightSlider.value = 0;
-        leftSlider.value = 0;
         fireCounter = 0;
 
         //Remove tank references
         tankRef = null;
         possesedObject = null;
 
+        playerHUD.ResetInput();
 
-        HideHUD();
+        playerHUD.HideHUD();
     }
 
     [ClientRpc]
     public void RpcDisplayMessage(string message, float duration, float fadeIn, float fadeOut){
         if(isLocalPlayer){
-            if(messageCoroutine != null)
-                StopCoroutine(messageCoroutine);
-            messageCoroutine = StartCoroutine(showMessage(messageText, message, messageText.color, duration, fadeIn, fadeOut));
+            playerHUD.AddMessage(new PlayerHUD.PlayerMessage(playerHUD.defaultMessageText, 
+            message,playerHUD.defaultMessageColor, duration, fadeIn, fadeOut));
         }
     }
 
-    [ClientRpc]
-    public void RpcShowHostIp(string ip){
-        if(isLocalPlayer)
-        {
-            ipText.gameObject.SetActive(true);
-            ipText.text = ip;
-
-        }
-    }
 
     [ClientRpc]
     public void RpcPlayVictoryMusic()
@@ -279,10 +237,7 @@ public class Player : NetworkBehaviour
         if(isLocalPlayer)
         {
             Debug.Log("Received " + damage + " damage from direction " + angle);
-            GameObject pointer = Instantiate(hitPointer, Vector3.zero, Quaternion.identity);
-            pointer.transform.parent = informationCanvas.transform;
-            pointer.GetComponent<HitPointer>().hitAngle = angle;
-            pointer.GetComponent<HitPointer>().cameraTransform = firstPersonCamera;
+            playerHUD.CreateHitpoint(angle,firstPersonCamera);
         }
     }
 
@@ -294,8 +249,7 @@ public class Player : NetworkBehaviour
             leftGear = old_leftGear = 0;
             rightGear = old_rightGear = 0;
 
-            leftSlider.value = leftGear;
-            rightSlider.value = rightGear;
+            playerHUD.SetPilotValue(leftGear,rightGear);
         }
     }
 
@@ -393,8 +347,7 @@ public class Player : NetworkBehaviour
         rightGear = gearSystem.ClampGear(rightGear);
         leftGear = gearSystem.ClampGear(leftGear);
 
-        if(rightSlider != null) rightSlider.value = rightGear;
-        if(leftSlider != null) leftSlider.value = leftGear;
+        playerHUD.SetPilotValue(leftGear,rightGear);
 
         if(old_leftGear != leftGear || old_rightGear != rightGear) {
             old_leftGear = leftGear;
@@ -406,7 +359,7 @@ public class Player : NetworkBehaviour
     protected void gunnerUpdate(float deltaTime) {
         UpdateGunnerCooldown(deltaTime);
 
-        bool isPressing = Input.GetButton("Fire") || buttonState;
+        bool isPressing = Input.GetButton("Fire") || playerHUD.buttonState;
 
         if(fireCounter <= 0 && isPressing){
             Debug.Log("Tried to shoot from " + tankRef.bulletSpawnPosition.position);
@@ -417,9 +370,10 @@ public class Player : NetworkBehaviour
         float horizontalAxis = Input.GetAxis("Horizontal");
         float verticalAxis = Input.GetAxis("Vertical");
 
-        if(joyStick != null && joyStick.gameObject.activeInHierarchy){
-            horizontalAxis = joyStick.Horizontal;
-            verticalAxis = joyStick.Vertical;
+        if(playerHUD.IsJoystickValid()){
+            Vector2 joyStickInput = playerHUD.GetJoystickInput();
+            horizontalAxis = joyStickInput.x;
+            verticalAxis = joyStickInput.y;
         }
         else if(!Input.GetButton("SprintCannon"))
         {
@@ -459,67 +413,6 @@ public class Player : NetworkBehaviour
 
     #region HUD
 
-    protected void assignHUD() {
-        healthSlider.gameObject.SetActive(true);
-        tankRef.SetHealthSlider(healthSlider);
-        TryToAssignCallback();
-
-        ipText.gameObject.SetActive(false);
-
-        if(role == Role.Pilot){
-            canvasGunner.SetActive(false);
-            canvasPilot.SetActive(true);
-
-            rightSlider.gameObject.SetActive(true);
-            rightSlider.onValueChanged.AddListener(onUpdateRightSlider);
-            rightSlider.value = rightGear;
-            leftSlider.gameObject.SetActive(true);
-            leftSlider.onValueChanged.AddListener(onUpdateLeftSlider);
-            leftSlider.value = leftGear;
-
-        }
-        else if(role == Role.Gunner){
-            canvasGunner.SetActive(true);
-            buttonState = false;
-            canvasPilot.SetActive(false);
-        }
-
-        //Define a bússola
-        if(role == Role.Gunner)
-        {
-            compassTank.GetComponent<Image>().color = Color.white;
-            compassCannon.GetComponent<Image>().color = Color.red;
-        }else
-        {
-            compassTank.GetComponent<Image>().color = Color.red;
-            compassCannon.GetComponent<Image>().color = Color.white;
-        }
-
-        //Set mobile HUD
-        bool isMobile = false;
-        #if UNITY_ANDROID
-            isMobile = true;
-        #endif
-
-        for(int i = 0 ; i < mobileHUD.Length; i++)
-        {
-            mobileHUD[i].SetActive(isMobile);
-        }
-
-
-        
-    }
-
-    protected void HideHUD(){
-        healthSlider.gameObject.SetActive(false);
-
-        if(role == Role.Pilot){
-            rightSlider.onValueChanged.RemoveListener(onUpdateRightSlider);
-            leftSlider.onValueChanged.RemoveListener(onUpdateLeftSlider);
-        }
-        canvasGunner.SetActive(false);
-        canvasPilot.SetActive(false);
-    }
 
     protected void onUpdateRightSlider(float value) {
         if(currentMode == Mode.Playing){
@@ -534,189 +427,13 @@ public class Player : NetworkBehaviour
 
     void UpdateHUD(float deltaTime)
     {
-        //Compass update
-        if(tankRef != null)
-        {
-            compassTank.transform.eulerAngles = new Vector3(0, 0, -tankRef.tankTransform.eulerAngles.y - 180);
-            compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.rotationPivot.eulerAngles.y);
-            
-            //Update goal compass
-            if(goalCompassReference.Count > 0)
-            {
-                UpdateGoalCompassHUD(deltaTime);
-            }
-        }
+        playerHUD.UpdateHUD(deltaTime);
     }
 
     void UpdateGunnerCooldown(float deltaTime)
     {
         fireCounter -= deltaTime;
-        loadingSlider.value = loadingSlider.maxValue - fireCounter;
-    }
-
-    public void TryToAssignCallback()
-    {
-        if(!assignedCallback)
-        {
-            if(GameStatus.instance != null)
-            {
-                assignedCallback = true;
-                GameStatus.instance.score.Callback += ScoreCallBack;
-                InitializeGoalCompass();
-            }
-        }
-        if(assignedCallback)
-        {
-            ScoreCallBack(SyncListInt.Operation.OP_DIRTY,0,0);
-        }
-    }
-
-    public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
-        int useTeam = (team != -1) ? team : 0;
-        if(scoreText != null && useTeam != -1){
-            scoreText.text = GameStatus.instance.GetCurrentScore(useTeam);
-        }
-    }
-
-
-    protected IEnumerator showMessage(TMPro.TextMeshProUGUI textRef, string message, Color colorToUse, float duration, float fadeIn, float fadeOut){
-        textRef.text = message;
-        Color colorToChange = colorToUse;
-        float counter = 0;
-        
-        
-        //Do fade in
-        if(fadeIn != 0) {
-            colorToChange.a = 0;
-            textRef.color = colorToChange;
-
-            while(counter < fadeIn){
-                counter += Time.deltaTime;
-                
-                colorToChange.a = counter/fadeIn;
-                textRef.color = colorToChange;
-
-                yield return null;        
-            }
-        }
-
-        colorToChange.a = 1;
-        textRef.color = colorToChange;
-
-        //Wait duration of message
-        counter = 0;
-        while(counter < duration){
-            counter += Time.deltaTime;
-
-            yield return null;
-        }
-
-        //Do fade out
-        counter = 0;
-        if(fadeOut != 0) {
-            while(counter < fadeOut){
-                counter += Time.deltaTime;
-
-                colorToChange.a = (fadeOut - counter)/fadeOut;
-                textRef.color = colorToChange;
-
-                yield return null;
-            }
-        }
-
-        colorToChange.a = 0;
-        textRef.color = colorToChange;
-
-        messageCoroutine = null;
-
-    }
-
-    public void OnShootButtonDown(){
-        buttonState = true;
-    }
-
-    public void OnShootButtonUp(){
-        buttonState = false;
-    }
-
-    public void OnClickExit()
-    {
-        // NetworkDiscovery.instance.StopDiscovery();
-        // NetworkManager.Shutdown();
-        if(isServer)
-        {
-            NetworkManager.singleton.StopHost();
-
-        }
-        else
-        {
-            NetworkManager.singleton.StopClient();
-        }
-    }
-
-    // Goal processing
-    protected void InitializeGoalCompass()
-    {
-        if(goalCompassReference == null)
-            goalCompassReference = new List<Image>();
-        if(goalReferences == null)
-            goalReferences = new List<GoalPoint>();
-
-        // Avoid spectator having a goal
-        if(team == -1) return;
-        GameStatus.SyncListGoal goalList = (team == 1) ? GameStatus.instance.goalIdentitiesTeam1 : GameStatus.instance.goalIdentitiesTeam0;
-        
-        //Subscribe to changes in the goal
-        goalList.Callback += (GoalCallBack);
-        
-        GoalCallBack(GameStatus.SyncListGoal.Operation.OP_DIRTY, 0, null);
-    }
-
-    protected void UpdateGoalCompassHUD(float delta)
-    {
-        if(tankRef == null) return;
-        for (int i = 0; i < goalReferences.Count; i++)
-        {
-            goalCompassReference[i].color = goalReferences[i].goalColor;
-            Vector3 distance = goalReferences[i].Position - tankRef.transform.position;
-            float angle = Mathf.Atan2(distance.z,distance.x) * Mathf.Rad2Deg;
-            angle -= 90; //Fix rotation
-            goalCompassReference[i].transform.eulerAngles = new Vector3(0,0,angle);
-        }
-    }
-
-    protected void GoalCallBack(GameStatus.SyncListGoal.Operation operation, int index, NetworkIdentity item) {
-        // Get team
-        if(team == -1) return;
-        GameStatus.SyncListGoal goalList = (team == 1) ? GameStatus.instance.goalIdentitiesTeam1 : GameStatus.instance.goalIdentitiesTeam0;
-        
-        //Add targets
-        goalReferences.Clear();
-        foreach (var goal in goalList)
-        {
-            GoalPoint goalScript = goal.GetComponent<GoalPoint>();
-            goalReferences.Add(goalScript);
-        }
-        
-        //Add necessary compasses
-        while (goalCompassReference.Count < goalReferences.Count)
-        {
-            GameObject newCompass = GameObject.Instantiate(goalCompassPrefab, goalCompassParent);
-            newCompass.SetActive(true);
-            Image compassImage = newCompass.GetComponent<Image>();
-            goalCompassReference.Add(compassImage);
-        }
-        //Remove unecessaries compasses
-        while (goalCompassReference.Count > goalReferences.Count)
-        {
-            Image toRemove = goalCompassReference[goalCompassReference.Count-1];
-            goalCompassReference.RemoveAt(goalCompassReference.Count-1);
-            Destroy(toRemove.gameObject);
-        }
-
-        // Update HUD
-        UpdateGoalCompassHUD(Time.deltaTime);
-
+        playerHUD.SetShootCooldown(fireCounter);
     }
 
     #endregion
