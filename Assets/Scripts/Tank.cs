@@ -78,6 +78,7 @@ public class Tank : NetworkBehaviour
     [Header("Shooting")]
     public GameObject bulletPrefab;
     public ParticleSystem shootParticles;
+    protected bool canMoveCannon = true;
     protected float shootCooldown = 1;
     public float ShootCooldown {
         get{return shootCooldown;}
@@ -105,7 +106,9 @@ public class Tank : NetworkBehaviour
 
     [Header("Movement")]
     [SyncVar]
-    public bool canBeControlled = true;
+    protected bool canBeMoved = true;
+    public bool useNavMesh = false;
+    public UnityEngine.AI.NavMeshAgent navMeshAgent;
     protected float forwardSpeed = 10;
     protected float backwardSpeed = 5;
     protected float turnSpeed = 10;
@@ -213,6 +216,19 @@ public class Tank : NetworkBehaviour
     #region Initialization
 
     void Awake() {
+        if(navMeshAgent == null)
+            navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if(navMeshAgent == null)
+        {
+            useNavMesh = false;
+        }
+        else if(isClient)
+        {
+            navMeshAgent.enabled = false;
+        }
+        {
+            navMeshAgent.enabled = useNavMesh;
+        }
         if(!isClient)
             tankParameters = tankParametersObject.tankParameters;
         UpdateTankParameters(tankParameters);
@@ -262,6 +278,12 @@ public class Tank : NetworkBehaviour
         this.bulletDamage = tankParameters.bulletDamage;
         this.maxHeath = tankParameters.maxHeath;
         this.shootMode = tankParameters.shootMode;
+
+        if(navMeshAgent != null)
+        {
+            navMeshAgent.speed = forwardSpeed;
+            navMeshAgent.angularSpeed = turnSpeed;
+        }
     }
 
     [Server]
@@ -269,6 +291,21 @@ public class Tank : NetworkBehaviour
     {
         tankParameters = tankParam;
         UpdateTankParameters(tankParameters);
+    }
+
+    public void SetCanMove(bool canMove)
+    {
+        this.canMoveCannon = canMove;
+        SetNavMeshEnabled(canMove);
+    }
+
+    public void SetNavMeshEnabled(bool canMove)
+    {
+        this.canBeMoved = canMove && !useNavMesh;
+        if(navMeshAgent != null)
+        {
+            navMeshAgent.enabled = canMove;
+        }
     }
 
     void Start() {
@@ -367,7 +404,7 @@ public class Tank : NetworkBehaviour
             foreach (var p in players)
             {
                 p.SetCanSwitchRoles(true);
-                p.RpcDisplayMessage("You can change roles", 2, 0.1f, 0.5f);
+                p.RpcDisplayMessage("You can change roles", 2, GameMode.instance.defaultMessageColor, 0.1f, 0.5f);
             }
         }
 
@@ -447,7 +484,7 @@ public class Tank : NetworkBehaviour
     }
 
     public void cannonShoot() {
-        if (cannonShootCounter < 0 && canBeControlled) {
+        if (cannonShootCounter < 0 && canMoveCannon) {
             ShootCannon(team);
             cannonShootCounter = shootCooldown;
         }
@@ -715,7 +752,7 @@ public class Tank : NetworkBehaviour
 
     // }
     protected void moveTank(float deltaTime) {
-        if(!canBeControlled) return;
+        if(!canBeMoved) return;
 
         Vector3 nonControllableSpeed = Vector3.Dot(rgbd.velocity, transform.up) * transform.up;
 
@@ -751,7 +788,7 @@ public class Tank : NetworkBehaviour
     public void CheckTankRotation(float deltaTime)
     {
         //Avoid killing and uncontrollable tank
-        if(!canBeControlled)
+        if(!canBeMoved)
             return;
 
         //Verify if it's currently flipped
@@ -833,7 +870,7 @@ public class Tank : NetworkBehaviour
     public void DealDamage(float damage, int otherTank, float angle) {
         Debug.Log("Tank from team " + team + " received " + damage + " damage!");
         currentHealth -= damage;
-        if(currentHealth <= 0 && canBeControlled) {
+        if(currentHealth <= 0 && canBeMoved) {
             Debug.Log("Is ded. RIP team " + team);
             KillTank(otherTank);
         }

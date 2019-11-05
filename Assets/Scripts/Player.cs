@@ -42,7 +42,7 @@ public class Player : NetworkBehaviour
     protected Vector3 pointToObserve;
     protected float rotateSpeed;
 
-    protected PlayerController playerController;
+    protected IPlayerControler playerController;
 
     #region Initialization
 
@@ -60,7 +60,7 @@ public class Player : NetworkBehaviour
 
     protected void Start() {
         //Set Player HUD
-        playerController = GetComponent<PlayerController>();
+        playerController = GetComponent<IPlayerControler>();
 
         //Update referece
         if(isLocalPlayer){
@@ -116,7 +116,7 @@ public class Player : NetworkBehaviour
         currentMode = newMode;
         if(playerController != null)
         {   
-            playerController.currentMode = newMode;
+            playerController.CurrentMode = newMode;
         }
     }
 
@@ -126,7 +126,7 @@ public class Player : NetworkBehaviour
         this.canSwitchRoles = canSwitchRoles;
         if(playerController != null)
         {
-            playerController.canSwitchRoles = canSwitchRoles;
+            playerController.CanSwitchRoles = canSwitchRoles;
         }
     }
 
@@ -147,7 +147,6 @@ public class Player : NetworkBehaviour
             currentMode = Mode.Observing;
             if(playerController != null)
             {
-
                 playerController.HideHUD();
             }
             firstPersonCamera.gameObject.SetActive(false);
@@ -165,7 +164,10 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     protected void RpcAssignSpectator()
     {
-        playerController.TryToAssignCallback();
+        if(playerController != null)
+        {
+            playerController.TryToAssignCallback();
+        }
     }
 
     [ClientRpc]
@@ -212,12 +214,11 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcDisplayMessage(string message, float duration, float fadeIn, float fadeOut){
+    public void RpcDisplayMessage(string message, float duration, Color color, float fadeIn, float fadeOut){
         if(isLocalPlayer){
             if(playerController != null)
             {
-                playerController.AddMessage(new PlayerController.PlayerMessage(playerController.defaultMessageText, 
-                message,playerController.defaultMessageColor, duration, fadeIn, fadeOut));
+                playerController.AddMessage(new PlayerMessage(message, duration, fadeIn, fadeOut, color));
             }
         }
     }
@@ -274,7 +275,6 @@ public class Player : NetworkBehaviour
 
     #endregion
 
-    #region Input
 
     protected void Update() {
         if(!isLocalPlayer) return;
@@ -287,11 +287,5 @@ public class Player : NetworkBehaviour
         }
     }
 
-    void UpdateHUD(float deltaTime)
-    {
-        playerController.UpdateHUD(deltaTime);
-    }
-
-    #endregion
 
 }

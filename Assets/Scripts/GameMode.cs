@@ -39,6 +39,7 @@ public class GameMode : NetworkBehaviour
     public bool returnToLobby = true;
     public float volumeInMatch = 0.25f;
     public bool assingAIToMissingTanks = true;
+    public Color defaultMessageColor = Color.yellow;
     
 
     public List<InfoTank> infoTanks;
@@ -47,6 +48,7 @@ public class GameMode : NetworkBehaviour
 
     [Header("References")]
     public GameObject goalPointPrefab;
+    public GameObject AIPlayerPrefab;
     public TankOptionCollection tankColection;
     public MapCollection mapCollection;
     public Transform spectatorPosition;
@@ -99,39 +101,39 @@ public class GameMode : NetworkBehaviour
         }
     }
 
-    public void BroadcastMessageToAllConnected(string message, float duration, float fadeIn = 0.5f, float fadeOut = 1f)
+    public void BroadcastMessageToAllConnected(string message, float duration, Color color, float fadeIn = 0.5f, float fadeOut = 1f)
     {
         foreach(Player p in players)
         {
-            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+            p.RpcDisplayMessage(message, duration, color, fadeIn, fadeOut);
         }
         foreach(Player p in spectators)
         {
-            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+            p.RpcDisplayMessage(message, duration, color, fadeIn, fadeOut);
         }
     }
 
-    public void BroadcastMessageToTeam(int team, string message, float duration, float fadeIn = 0.5f, float fadeOut = 1f)
+    public void BroadcastMessageToTeam(int team, string message, float duration, Color color, float fadeIn = 0.5f, float fadeOut = 1f)
     {
         foreach(Player p in teamPlayers[team])
         {
-            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+            p.RpcDisplayMessage(message, duration, color, fadeIn, fadeOut);
         }
     }
 
-    public void BroadcastMessageToPlayers(string message, float duration, float fadeIn = 0.5f, float fadeOut = 1f)
+    public void BroadcastMessageToPlayers(string message, float duration, Color color, float fadeIn = 0.5f, float fadeOut = 1f)
     {
         foreach(Player p in players)
         {
-            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+            p.RpcDisplayMessage(message, duration, color, fadeIn, fadeOut);
         }
     }
 
-    public void BroadcastMessageToSpectators(string message, float duration, float fadeIn = 0.5f, float fadeOut = 1f)
+    public void BroadcastMessageToSpectators(string message, float duration, Color color, float fadeIn = 0.5f, float fadeOut = 1f)
     {
         foreach(Player p in spectators)
         {
-            p.RpcDisplayMessage(message, duration, fadeIn, fadeOut);
+            p.RpcDisplayMessage(message, duration, color, fadeIn, fadeOut);
         }
     }
 
@@ -166,7 +168,7 @@ public class GameMode : NetworkBehaviour
         gameStage = GameStage.Match;
         GameStatus.instance.RpcStartCounter(matchSettings.maxTime);
         
-        BroadcastMessageToAllConnected("Match has started!", 2f);
+        BroadcastMessageToAllConnected("Match has started!", 2f, defaultMessageColor);
     }
 
     protected void InitializeVariables()
@@ -289,8 +291,52 @@ public class GameMode : NetworkBehaviour
                     teamPlayers[playerInfo.team].Add(playerRef);
 
                 playerRef.ObservePosition(tanks[playerInfo.tankID].transform.position,10,45,10);
-                playerRef.RpcDisplayMessage("You are on Team " + teamAliases[playerInfo.team] + " with role " + playerInfo.role.ToString(),timeToStartGame/2, 0.5f, 1f);
+                playerRef.RpcDisplayMessage("You are on Team " + teamAliases[playerInfo.team] + " with role " + playerInfo.role.ToString(),
+                timeToStartGame/2, defaultMessageColor, 0.5f, 1f);
             }
+        }
+
+        //First will look for tanks that don't have assignments
+        if(assingAIToMissingTanks)
+        {
+            var infoTanks = MatchConfiguration.instance.infoTanks;
+            for (int i = 0; i < infoTanks.Count; i++)
+            {
+                bool hasAssigments = false;
+                for (int j = 0; j < infoTanks[i].assigments.Length; j++)
+                {
+                    if(infoTanks[i].assigments[j].playerAssigned != -1)
+                    {
+                        hasAssigments = true;
+                        break;
+                    }
+
+                }
+                // Spawn AI
+                if(!hasAssigments)
+                {
+                    GameObject aiPlayer = GameObject.Instantiate(AIPlayerPrefab);
+                    Player playerRef = aiPlayer.GetComponent<Player>();
+                    NetworkServer.Spawn(aiPlayer);
+
+                    players.Add(playerRef);
+
+                    PlayerInfo playerInfo = new PlayerInfo(-1, "BOT");
+                    playerInfo.team = infoTanks[i].team;
+                    playerInfo.role = Role.Pilot;
+                    playerInfo.tankID = infoTanks[i].id;
+                    playerInfo.roleIndex = 0;
+
+                    playerRef.team = playerInfo.team;
+                    playerRef.role = playerInfo.role;
+                    playerRef.playerInfo = playerInfo;
+
+
+                    if(teamPlayers[playerInfo.team] == null) teamPlayers[playerInfo.team] = new List<Player>();
+                        teamPlayers[playerInfo.team].Add(playerRef);
+                }
+            }
+
         }
     }
 
@@ -302,7 +348,7 @@ public class GameMode : NetworkBehaviour
                 spectators.Add(player);
             player.ObservePosition(spectatorPosition.position, 0, 90f, spectatorDistance);
             player.AssignSpectator();
-            player.RpcDisplayMessage("You joined as spectator!", 2, 0.25f, 1f);
+            player.RpcDisplayMessage("You joined as spectator!", 2f, defaultMessageColor, 0.25f, 1f);
         }
     }
 
@@ -352,7 +398,7 @@ public class GameMode : NetworkBehaviour
 
     public void NotifyPlayerLeft(Player player,PlayerInfo playerInfo)
     {
-        BroadcastMessageToAllConnected("Player " + playerInfo.name + " has left!", 2);
+        BroadcastMessageToAllConnected("Player " + playerInfo.name + " has left!", 2,defaultMessageColor);
 
         players.Remove(player);
         teamPlayers[playerInfo.team].Remove(player);
@@ -379,9 +425,9 @@ public class GameMode : NetworkBehaviour
         GameStatus.instance.killHistory.Add(newKill);
 
         if(!hasSuicided)
-            BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f);
+            BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f,defaultMessageColor);
         else
-            BroadcastMessageToAllConnected("Tank " + ownerId + " killed itself!", 2f);
+            BroadcastMessageToAllConnected("Tank " + ownerId + " killed itself!", 2f,defaultMessageColor);
 
         ResetTank(ownerId);
         
@@ -408,7 +454,7 @@ public class GameMode : NetworkBehaviour
     public void ResetTank(int tankId){
         Tank tankToReset = tanks[tankId];
 
-        tankToReset.canBeControlled = false;
+        tankToReset.SetCanMove(false);
 
         int assigmentId = -1;
         foreach(var assigment in tankToReset.playerRoles)
@@ -453,7 +499,7 @@ public class GameMode : NetworkBehaviour
 
         tank.GetComponent<Rigidbody>().isKinematic = false;
         tank.ResetTankPosition(positionToSpawn);
-        tank.canBeControlled = true;
+        tank.SetCanMove(true);
     }
 
     private IEnumerator waitToAssignBack(float time, Player toAssing) {
@@ -530,15 +576,15 @@ public class GameMode : NetworkBehaviour
                     if(!hasDraw)
                     {
                         if(winningTeams.Contains(i)){
-                            p.RpcDisplayMessage("Outstanding performance, comrades! We have won this battle!", 10, 0.1f, 1);
+                            p.RpcDisplayMessage("Outstanding performance, comrades! We have won this battle!", 10, defaultMessageColor, 0.1f, 1);
                         }
                         else
                             p.RpcDisplayMessage("A shameful display! " + winningString + " has beaten us this time!"
-                            , 10, 0.1f, 1);
+                            , 10f, defaultMessageColor, 0.1f, 1);
                     }
                     else
                     {
-                        p.RpcDisplayMessage("I can't believe it, a Draw! Nice work teams " + winningString + "!", 10, 0.1f, 1);
+                        p.RpcDisplayMessage("I can't believe it, a Draw! Nice work teams " + winningString + "!", 10, defaultMessageColor, 0.1f, 1);
                     }
                 }
             }
@@ -549,7 +595,7 @@ public class GameMode : NetworkBehaviour
         {
             if(spectators[i] != null)
             {
-                spectators[i].RpcDisplayMessage("Nice work teams " + winningString + "!", 10, 0.1f, 1);
+                spectators[i].RpcDisplayMessage("Nice work teams " + winningString + "!", 10, defaultMessageColor, 0.1f, 1);
                 spectators[i].RpcPlayVictoryMusic();
             }
         }

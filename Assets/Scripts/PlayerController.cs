@@ -5,34 +5,14 @@ using UnityEngine.UI;
 using Mirror;
 using TMPro;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : NetworkBehaviour, IPlayerControler
 {
-
-    public struct PlayerMessage
-    {
-        public TMPro.TextMeshProUGUI textRef;
-        public string message; 
-        public Color colorToUse;
-        public float duration;
-        public float fadeIn;
-        public float fadeOut;
-
-        public PlayerMessage(TextMeshProUGUI textRef, string message, Color colorToUse, float duration, float fadeIn, float fadeOut)
-        {
-            this.textRef = textRef;
-            this.message = message;
-            this.colorToUse = colorToUse;
-            this.duration = duration;
-            this.fadeIn = fadeIn;
-            this.fadeOut = fadeOut;
-        }
-    }
 
     #region Variables
 
     [Header("Control")]
     [SyncVar]
-    public Player.Mode currentMode = Player.Mode.Selecting;
+    protected Player.Mode currentMode = Player.Mode.Selecting;
     [SyncVar]
     public bool canSwitchRoles = false;
 
@@ -111,6 +91,25 @@ public class PlayerController : NetworkBehaviour
             return Color.yellow;
         }
     }
+
+    public Player.Mode CurrentMode { 
+        get {
+            return currentMode;
+        } 
+        set {
+            currentMode = value;
+        } 
+    }
+
+    public bool CanSwitchRoles { 
+        get {
+            return canSwitchRoles;            
+        } 
+        set {
+            canSwitchRoles = value;
+        } 
+    }
+
     protected Queue<PlayerMessage> messageQueue = new Queue<PlayerMessage>();
     protected Coroutine messageCoroutine;
 
@@ -640,7 +639,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     protected IEnumerator showMessage(PlayerMessage displayMessage){
-        displayMessage.textRef.text = displayMessage.message;
+        messageText.text = displayMessage.message;
         Color colorToChange = displayMessage.colorToUse;
         float counter = 0;
         
@@ -648,20 +647,20 @@ public class PlayerController : NetworkBehaviour
         //Do fade in
         if(displayMessage.fadeIn != 0) {
             colorToChange.a = 0;
-            displayMessage.textRef.color = colorToChange;
+            messageText.color = colorToChange;
 
             while(counter < displayMessage.fadeIn){
                 counter += Time.deltaTime;
                 
                 colorToChange.a = counter/displayMessage.fadeIn;
-                displayMessage.textRef.color = colorToChange;
+                messageText.color = colorToChange;
 
                 yield return null;        
             }
         }
 
         colorToChange.a = 1;
-        displayMessage.textRef.color = colorToChange;
+        messageText.color = colorToChange;
 
         //Wait duration of message
         counter = 0;
@@ -678,14 +677,14 @@ public class PlayerController : NetworkBehaviour
                 counter += Time.deltaTime;
 
                 colorToChange.a = (displayMessage.fadeOut - counter)/displayMessage.fadeOut;
-                displayMessage.textRef.color = colorToChange;
+                messageText.color = colorToChange;
 
                 yield return null;
             }
         }
 
         colorToChange.a = 0;
-        displayMessage.textRef.color = colorToChange;
+        messageText.color = colorToChange;
 
         if(messageQueue.Count > 0)
         {
