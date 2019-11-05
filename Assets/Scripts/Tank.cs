@@ -56,10 +56,11 @@ public class Tank : NetworkBehaviour
     public Color color;
     public List<Assigment> playerRoles;
 
-    public TankParametersObject tankParametersObject;
     [Header("Parameters")]
+    
+    public TankParametersObject tankParametersObject;
     [SyncVar(hook="UpdateTankParameters")]
-    protected TankParameters tankParameters = null;
+    public TankParameters tankParameters = null;
 
     [Header("Cannon")]
     protected float turnCannonSpeed = 20;
@@ -103,7 +104,6 @@ public class Tank : NetworkBehaviour
 
 
     [Header("Movement")]
-    [HideInInspector]
     [SyncVar]
     public bool canBeControlled = true;
     protected float forwardSpeed = 10;
@@ -213,7 +213,7 @@ public class Tank : NetworkBehaviour
     #region Initialization
 
     void Awake() {
-        if(tankParameters == null)
+        if(!isClient)
             tankParameters = tankParametersObject.tankParameters;
         UpdateTankParameters(tankParameters);
         rgbd = GetComponent<Rigidbody>();
@@ -339,13 +339,13 @@ public class Tank : NetworkBehaviour
         bool hasOnlyOnePlayer = players.Count == 1;
         if (hasOnlyOnePlayer)
         {
-            player.canSwitchRoles = true;
+            player.SetCanSwitchRoles(true);
         }
         else
         {
             foreach (var p in players)
             {
-                p.canSwitchRoles = false;
+                p.SetCanSwitchRoles(false);
             }
         }
 
@@ -366,7 +366,7 @@ public class Tank : NetworkBehaviour
         {
             foreach (var p in players)
             {
-                p.canSwitchRoles = true;
+                p.SetCanSwitchRoles(true);
                 p.RpcDisplayMessage("You can change roles", 2, 0.1f, 0.5f);
             }
         }
@@ -385,14 +385,14 @@ public class Tank : NetworkBehaviour
         foreach(var assigment in playerRoles)
         {
             if(assigment.playerRef != null)
-                assigment.playerRef.canSwitchRoles = false;
+                assigment.playerRef.SetCanSwitchRoles(false);
             assigment.playerRef = null;
         }
     }
 
     public void SwitchPlayerRole(Player player, Role currentRole)
     {
-        if (!player.canSwitchRoles) return; //Avoid changin if the player is not available
+        if (!player.GetCanSwitchRoles()) return; //Avoid changin if the player is not available
         Role roleToSwitch = (currentRole == Role.Pilot) ? Role.Gunner : Role.Pilot;
 
         for (int i = 0; i < playerRoles.Count; i++) {
@@ -405,7 +405,7 @@ public class Tank : NetworkBehaviour
             {
                 playerRoles[i].playerRef = player;
                 player.role = roleToSwitch;
-                player.RpcAssignPlayer(team, roleToSwitch, GetComponent<NetworkIdentity>());
+                player.AssignPlayer(team, roleToSwitch, GetComponent<NetworkIdentity>());
             }
         }
     }

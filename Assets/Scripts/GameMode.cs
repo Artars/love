@@ -38,6 +38,7 @@ public class GameMode : NetworkBehaviour
     public float timeToEndGame = 10;
     public bool returnToLobby = true;
     public float volumeInMatch = 0.25f;
+    public bool assingAIToMissingTanks = true;
     
 
     public List<InfoTank> infoTanks;
@@ -287,7 +288,7 @@ public class GameMode : NetworkBehaviour
                 if(teamPlayers[playerInfo.team] == null) teamPlayers[playerInfo.team] = new List<Player>();
                     teamPlayers[playerInfo.team].Add(playerRef);
 
-                playerRef.RpcObservePosition(tanks[playerInfo.tankID].transform.position,10,45,10);
+                playerRef.ObservePosition(tanks[playerInfo.tankID].transform.position,10,45,10);
                 playerRef.RpcDisplayMessage("You are on Team " + teamAliases[playerInfo.team] + " with role " + playerInfo.role.ToString(),timeToStartGame/2, 0.5f, 1f);
             }
         }
@@ -299,9 +300,8 @@ public class GameMode : NetworkBehaviour
         {
             if(!spectators.Contains(player))
                 spectators.Add(player);
-            player.RpcObservePosition(spectatorPosition.position, 0, 90f, spectatorDistance);
-            player.RpcAssignSpectator();
-            player.currentMode = Player.Mode.Spectator;
+            player.ObservePosition(spectatorPosition.position, 0, 90f, spectatorDistance);
+            player.AssignSpectator();
             player.RpcDisplayMessage("You joined as spectator!", 2, 0.25f, 1f);
         }
     }
@@ -320,11 +320,9 @@ public class GameMode : NetworkBehaviour
     {
         if(player != null)
         {
-            player.SetTankReference(tanks[player.playerInfo.tankID], player.playerInfo.team, player.playerInfo.role);
             Tank toAssing = tanks[player.playerInfo.tankID];
             toAssing.AssignPlayer(player, player.playerInfo.role);
-            player.RpcAssignPlayer(player.playerInfo.team, player.playerInfo.role, toAssing.GetComponent<NetworkIdentity>());
-            player.currentMode = Player.Mode.Playing;
+            player.AssignPlayer(player.playerInfo.team, player.playerInfo.role, toAssing.GetComponent<NetworkIdentity>());
         }
         else
         {
@@ -421,8 +419,8 @@ public class GameMode : NetworkBehaviour
 
             player.playerInfo.role = assigment.role;
             player.playerInfo.roleIndex = assigmentId;
-            player.RpcRemoveOwnership();
-            player.RpcObservePosition(tankToReset.transform.position, 20, 45, 5);
+            player.RemoveOwnership();
+            player.ObservePosition(tankToReset.transform.position, 20, 45, 5);
             StartCoroutine(waitToAssignBack(matchSettings.timeToRespawn, player));
         }
 

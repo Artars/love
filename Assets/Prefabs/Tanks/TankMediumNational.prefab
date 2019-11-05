@@ -1103,6 +1103,29 @@ MonoBehaviour:
   playerRoles: []
   tankParametersObject: {fileID: 11400000, guid: 4eb2be6e5c648d943bd96b462757f93f,
     type: 2}
+  tankParameters:
+    forwardSpeed: 10
+    backwardSpeed: 5
+    turnSpeed: 10
+    gearSystem:
+      lowestGear: -2
+      highestGear: 3
+      values:
+      - -1
+      - -0.5
+      - 1
+      - 0.33333334
+      - 0.6666667
+      - 1
+    shootMode: 0
+    turnCannonSpeed: 20
+    nivelCannonSpeed: 20
+    minCannonNivel: -30
+    maxCannonNivel: 30
+    shootCooldown: 1
+    bulletSpeed: 30
+    bulletDamage: 20
+    maxHeath: 100
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
   shootParticles: {fileID: 4318217866929469304}

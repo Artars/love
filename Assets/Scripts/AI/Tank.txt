@@ -1,0 +1,14 @@
+tree("Root")
+	sequence
+		SetTargetPosition(0.0,0.0,0.0)
+		GoToTarget()
+		mute
+			repeat
+				not
+					HasReachedDestination
+		SetTargetPosition(10.0,0.0,10.0)
+		GoToTarget()
+		mute
+			repeat
+				not
+					HasReachedDestination
