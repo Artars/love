@@ -38,6 +38,7 @@ public class GameMode : NetworkBehaviour
     public float timeToEndGame = 10;
     public bool returnToLobby = true;
     public float volumeInMatch = 0.25f;
+    public bool updateScoreInkill =  true;
     
 
     public List<InfoTank> infoTanks;
@@ -387,7 +388,8 @@ public class GameMode : NetworkBehaviour
 
         ResetTank(ownerId);
         
-        UpdateScore();
+        if(updateScoreInkill)
+            UpdateScore();
     }
 
     public virtual void UpdateScore(){
