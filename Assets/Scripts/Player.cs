@@ -174,6 +174,10 @@ public class Player : NetworkBehaviour
     protected void RpcAssignPlayer(int team, Role role, NetworkIdentity toAssign){
         Debug.Log("Assigning player team " + team + " with role " + role.ToString());
 
+        Tank receivedTank = toAssign.GetComponent<Tank>();
+        if(playerController != null)
+            playerController.AssignTank(team, role, receivedTank);
+
         if(!isLocalPlayer) return;
 
 
@@ -182,8 +186,8 @@ public class Player : NetworkBehaviour
 
         this.team = team;
         this.role = role;
+        tankRef = receivedTank;
         this.possesedObject = toAssign;
-        tankRef = possesedObject.GetComponent<Tank>();
         currentMode = Mode.Playing;
         
         if(role == Role.Pilot){
@@ -199,13 +203,10 @@ public class Player : NetworkBehaviour
 
 
         //Assign HUD
-        playerController.AssignTank(team, role, tankRef);
     }
 
     [ClientRpc]
     protected void RpcRemoveOwnership(){
-        if(!isLocalPlayer) return;
-
         // currentMode = Mode.Observing;
         if(playerController != null)
         {

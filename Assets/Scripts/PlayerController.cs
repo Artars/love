@@ -156,6 +156,7 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
 
     public void AssignTank(int team, Role role, Tank tank)
     {
+        if(!isLocalPlayer) return;
         tankRef = tank;
         this.role = role;
         this.team = team;
@@ -267,6 +268,7 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
 
     public void RemoveOwnership()
     {
+        if(!isLocalPlayer) return;
         //Reset control variables
         rightGear = 0;
         leftGear = 0;

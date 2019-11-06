@@ -104,9 +104,9 @@ public class Tank : NetworkBehaviour
     public Transform backCollisionCheck;
 
 
-    [Header("Movement")]
     [SyncVar]
     protected bool canBeMoved = true;
+    [Header("Movement")]
     public bool useNavMesh = false;
     public UnityEngine.AI.NavMeshAgent navMeshAgent;
     protected float forwardSpeed = 10;

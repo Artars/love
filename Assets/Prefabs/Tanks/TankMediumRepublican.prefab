@@ -1317,7 +1317,7 @@ MonoBehaviour:
   frontCollisionCheck: {fileID: 8562296871388542648}
   backCollisionCheck: {fileID: 1452575082716232643}
   useNavMesh: 0
-  navMeshAgent: {fileID: 0}
+  navMeshAgent: {fileID: 630832974258463933}
   distanceCheckGround: 0.5
   distanceCollisionCheck: 0.5
   maxHeath: 100

@@ -2,54 +2,115 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Panda;
 
 public class AIControler : NetworkBehaviour, IPlayerControler
 {
-    public Player.Mode CurrentMode { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public bool CanSwitchRoles { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public Player.Mode CurrentMode {
+        get 
+        {
+            return _currentMode;
+        } 
+        set 
+        {
+            _currentMode = value;
+        
+           if(_currentMode == Player.Mode.Playing)
+           {
+               behaviour.Reset();
+           }
+        } 
+    }
+    public bool CanSwitchRoles {
+        get {
+            return false;
+        }
+        set {
+            
+        }
+    }
+    
+    protected Player.Mode _currentMode = Player.Mode.Selecting;
+
+    public PandaBehaviour behaviour;
+    public TankAI tankAI;
+
+    protected Tank tankRef;
+    protected int team;
+
+    void Start()
+    {
+        if(behaviour == null)
+        {
+            behaviour = GetComponent<PandaBehaviour>();
+        }
+        if(tankAI == null)
+        {
+            tankAI = GetComponent<TankAI>();
+        }
+    }
+
+    void Update()
+    {
+        if(_currentMode == Player.Mode.Playing && tankRef != null)
+        {
+            behaviour.Tick();
+        }
+    }
 
     public void AddMessage(PlayerMessage newMessage)
     {
-        throw new System.NotImplementedException();
+
     }
 
     public void AssignTank(int team, Role role, Tank tank)
     {
-        throw new System.NotImplementedException();
-    }
+        if(!isServer) return;
+        tankRef = tank;
+        this.team = team;
 
-    public void ForcePilotStop()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void HideHUD()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void PlayVictoryMusic()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void ReceiveDamageFromDirection(float damage, float angle, Transform firstPersonCamera)
-    {
-        throw new System.NotImplementedException();
+        tankAI.tank = tankRef;
+        tankAI.navMeshAgent = tank.navMeshAgent;
+        tank.SetNavMeshEnabled(true);
     }
 
     public void RemoveOwnership()
     {
-        throw new System.NotImplementedException();
+        if(!isServer) return;
+        tankRef.SetNavMeshEnabled(false);
+        tankRef = null;
+        tankAI.tank = null;
+        tankAI.navMeshAgent = null;
     }
+
+    public void ForcePilotStop()
+    {
+
+    }
+
+    public void HideHUD()
+    {
+
+    }
+
+    public void PlayVictoryMusic()
+    {
+
+    }
+
+    public void ReceiveDamageFromDirection(float damage, float angle, Transform firstPersonCamera)
+    {
+
+    }
+
 
     public void ShowHitmark(Vector3 position)
     {
-        throw new System.NotImplementedException();
+
     }
 
     public void TryToAssignCallback()
     {
-        throw new System.NotImplementedException();
+
     }
 }

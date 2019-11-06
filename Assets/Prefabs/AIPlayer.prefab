@@ -243,6 +243,9 @@ GameObject:
   - component: {fileID: 6294147252703653733}
   - component: {fileID: 6294147252703653730}
   - component: {fileID: 8041565400985053530}
+  - component: {fileID: 4677577794780698488}
+  - component: {fileID: 3266188339805984893}
+  - component: {fileID: 4185650067252534588}
   m_Layer: 0
   m_Name: AIPlayer
   m_TagString: Untagged
@@ -314,6 +317,58 @@ MonoBehaviour:
   localPlayerAuthority: 0
   m_AssetId: 07eacf146b148d1419f95603284adc3d
   m_SceneId: 0
+--- !u!114 &4677577794780698488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6294147252703653731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07929bb2897c95841a1cb0eca9263f8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  behaviour: {fileID: 3266188339805984893}
+  tankAI: {fileID: 4185650067252534588}
+--- !u!114 &3266188339805984893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6294147252703653731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e43e7170fb45b4b81dcd16d0ff55d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scripts:
+  - {fileID: 4900000, guid: b59f3ec3c0d44044f8b141d41c481b6f, type: 3}
+  autoReset: 1
+  tickOn: 3
+  sourceInfos:
+  - isFoldout: 1
+    breakPoints: 
+    breakPointStatuses: 
+    collapsedLines: 
+    btScript: 
+--- !u!114 &4185650067252534588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6294147252703653731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b38f19a4e3d30449b3886aeee182680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tank: {fileID: 0}
+  navMeshAgent: {fileID: 0}
+  navegableArea: {fileID: 0}
 --- !u!1 &6654988560631103917
 GameObject:
   m_ObjectHideFlags: 0
