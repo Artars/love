@@ -9,15 +9,35 @@ public class TankAI : MonoBehaviour
     public Tank tank;
     public NavMeshAgent navMeshAgent;
     public BoxCollider navegableArea;
+    public float reachDistance = 10;
+
+    protected Tank lastEnemySeen;
+    protected bool hasLastEnemyPosition = false;
+    protected Vector3 lastPositionSeen;
+    protected bool hasSetDestination = false;
 
     Vector3 destination;
+
+    void Update()
+    {
+        //Check if last seen enemy is dead
+        if(lastEnemySeen != null)
+        {
+            if(lastEnemySeen.currentHealth < 0)
+            {
+                lastEnemySeen = null;
+                hasLastEnemyPosition = false;
+                lastPositionSeen = Vector3.zero;
+            }
+        }
+    }
 
     [Task]
     void GetRandomPosition()
     {
-        Vector3 sourcePosition = Vector3.zero; //PLACEHOLDER
+        Vector3 sourcePosition = AIHelper.instance.GetRandomPosition(); //PLACEHOLDER
         NavMeshHit navHit;
-        if(NavMesh.SamplePosition(sourcePosition, out navHit, Mathf.Infinity, 0))
+        if(NavMesh.SamplePosition(sourcePosition, out navHit, 2f, NavMesh.AllAreas))
         {
             destination = navHit.position;
             Task.current.Succeed();
@@ -50,6 +70,7 @@ public class TankAI : MonoBehaviour
     {
         if(navMeshAgent.SetDestination(destination))
         {
+            hasSetDestination = true;
             Task.current.Succeed();
         }
         else
@@ -61,7 +82,27 @@ public class TankAI : MonoBehaviour
     [Task]
     void HasReachedDestination()
     {
-        if((transform.position - destination).magnitude < 1)
+        if(!hasSetDestination || (tank.transform.position - destination).magnitude < reachDistance)
+        {
+            hasSetDestination = false;
+            Task.current.Succeed();
+        }
+        else
+        {
+            Task.current.Fail();
+        }
+    }
+
+    [Task]
+    void Say(string toSay)
+    {
+        Debug.Log(toSay);
+    }
+
+    [Task]
+    void FoundEnemy()
+    {
+        if(lastEnemySeen != null || hasLastEnemyPosition)
         {
             Task.current.Succeed();
         }

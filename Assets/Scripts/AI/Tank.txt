@@ -1,14 +1,28 @@
 tree("Root")
+	parallel
+		tree("Sense") //Sense all the time
+		fallback
+			tree("Hunt")
+			tree("Wander")
+
+//Will look for the player
+tree("Sense")
 	sequence
-		SetTargetPosition(0.0,0.0,0.0)
-		GoToTarget()
-		mute
-			repeat
-				not
-					HasReachedDestination
-		SetTargetPosition(10.0,0.0,10.0)
-		GoToTarget()
-		mute
-			repeat
-				not
-					HasReachedDestination
+		Wait(100)
+		Succeed
+
+//Will try to find the player
+tree("Hunt")
+	sequence
+		FoundEnemy()
+		Say("Hunting")
+
+tree("Wander")
+	sequence
+		not 
+			FoundEnemy()
+		sequence
+			HasReachedDestination()
+			GetRandomPosition()
+			GoToTarget()
+
