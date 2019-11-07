@@ -28,8 +28,15 @@ public class DominationGoalPoint : NetworkBehaviour
         checkTankTeams();
         
         time += Time.deltaTime;
-        if (time >= 1){// 1 second update
-            time =0;
+        if (time > 1){// 1 second update
+            time =0.0f;
+            
+            if (currentTeam != -404)//make score
+            {
+                if(GameMode.instance != null){
+                    GameMode.instance.UpdateScore();
+                }
+            }
 
             if (inChange)
             {
@@ -54,24 +61,29 @@ public class DominationGoalPoint : NetworkBehaviour
 
     }
 
-    protected void OnCollisionEnter(Collision col){
-
+    protected void OnTriggerEnter(Collider col){
+        
         GameObject inComing = col.gameObject;
-        if (inComing.GetComponent(typeof(Tank))  != null)
+        Debug.Log(inComing);
+
+        Tank domineering = inComing.GetComponentInParent<Tank>();
+        if (domineering  != null)
         {
-            Tank domineering = inComing.GetComponent<Tank>();
-            tanks.Add(domineering);
+            Debug.Log("detectou o tank");
+            if (!tanks.Contains(domineering))
+                tanks.Add(domineering);
         }
     }
 
-    protected void OnCollisionExit(Collision col) {
+    protected void OnTriggerExit(Collider col) {
     
         GameObject exited = col.gameObject;
+        Tank left = exited.GetComponentInParent<Tank>();
 
-        if (exited.GetComponent(typeof(Tank)) != null)
+        if (left != null)
         {
-            Tank left = exited.GetComponent<Tank>();
-            tanks.Remove(left);
+            if (!tanks.Contains(left))
+                tanks.Remove(left);
 
             if (tanks.Count == 0 && inChange)
             {

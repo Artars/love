@@ -167,7 +167,11 @@ public class GameMode : NetworkBehaviour
         GameStatus.instance.RpcStartCounter(matchSettings.maxTime);
         
         BroadcastMessageToAllConnected("Match has started!", 2f);
+
+        PrepareGoal();
     }
+
+    public virtual void PrepareGoal(){}
 
     protected void InitializeVariables()
     {

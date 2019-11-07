@@ -19,21 +19,39 @@ public class DominationGMode : GameMode
             Destroy(gameObject);
             return;
         }
-
-        ClearAllTeamGoals();//preparing to add a new goal
-        addAllTeamGoal(DominationGoal.transform.position);
     }
 
     void Update()
     {
+        if(gameStage == GameStage.Match)
+        {
+            matchTime += Time.deltaTime;
+            if(matchTime > matchSettings.maxTime)
+            {
+                MatchTimeEnded();
+            }
+        }
+    }
+
+    public override void PrepareGoal()
+    {
+        ClearAllTeamGoals();//preparing to add a new goal
+        addAllTeamGoal(DominationGoal.transform.position);
+    }
+
+    public override void UpdateScore(){
         for(int i = 0; i < matchSettings.numTeams; i++){
             if (i == DominationGoal.GetComponent<DominationGoalPoint>().currentTeam)
             {
                 score[i]+= scoreBySecond;
             }
-        }
-    }
+            Debug.Log("o score do time" + i + "é " + score[i]);
 
+            GameStatus.instance.score[i] = (int)score[i];
+        }
+
+        CheckWinCondition();
+    }
 
     #region goal
     

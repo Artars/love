@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
   m_Name: TestDomination
   m_EditorClassIdentifier: 
-  scene: 
+  scene: Burgsgrad(Dom)
   mapName: domination test
   mapThumbnail: {fileID: 21300000, guid: 84487d73ca4b791498332d8f6858417f, type: 3}
