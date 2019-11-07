@@ -43,7 +43,8 @@ public class DominationGMode : GameMode
         for(int i = 0; i < matchSettings.numTeams; i++){
             if (i == DominationGoal.GetComponent<DominationGoalPoint>().currentTeam)
             {
-                score[i]+= scoreBySecond;
+                if (score[i] < matchSettings.maxPoints)
+                    score[i]+= scoreBySecond;
             }
             Debug.Log("o score do time" + i + "é " + score[i]);
 
