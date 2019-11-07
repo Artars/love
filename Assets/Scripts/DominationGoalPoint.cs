@@ -7,11 +7,13 @@ public class DominationGoalPoint : NetworkBehaviour
 {
     [Header("Domination States")]
     public int currentTeam = -404;//there is no team dominating
+    public int tryingTeam =  -404;
     public bool isDominating = false;
     [Tooltip("there is a new team dominating")]
     public bool inChange =  false;
-    public int scoreBySecond = 1;
-    private int time = 0;
+    public bool restoreTime = false;
+    private float time = 0;
+    private int dominationTime = 0;
 
     public List<Tank> tanks;
 
@@ -25,17 +27,31 @@ public class DominationGoalPoint : NetworkBehaviour
 
         checkTankTeams();
         
-        if(inChange){//a team is trying to dominate
-            time += Time.deltaTime;
+        time += Time.deltaTime;
+        if (time >= 1){// 1 second update
+            time =0;
 
-            if (time == 10)//full Domination
+            if (inChange)
             {
-                inChange = false;
-                currentTeam = tanks[0].Team;
-                time = 0; 
-                isDominating = true;
+                dominationTime++;
+                if (dominationTime == 10)
+                {
+                    inChange = false;
+                    currentTeam = tryingTeam;
+                }
+            }
+
+            if (restoreTime)
+            {
+                dominationTime--;
+                if (dominationTime == 0)
+                {
+                    restoreTime = false;
+                    tryingTeam = currentTeam;
+                }
             }
         }
+
     }
 
     protected void OnCollisionEnter(Collision col){
@@ -44,10 +60,6 @@ public class DominationGoalPoint : NetworkBehaviour
         if (inComing.GetComponent(typeof(Tank))  != null)
         {
             Tank domineering = inComing.GetComponent<Tank>();
-            if (tanks.Count == 0)
-            {
-                inChange = true;
-            }
             tanks.Add(domineering);
         }
     }
@@ -64,6 +76,10 @@ public class DominationGoalPoint : NetworkBehaviour
             if (tanks.Count == 0 && inChange)
             {
                 inChange = false;
+                if ( dominationTime != 0 )
+                {
+                    restoreTime = true;
+                }
             }
         }
     }
@@ -73,10 +89,26 @@ public class DominationGoalPoint : NetworkBehaviour
         if (tanks.Count == 0)
         {
             inChange = false;
+            return;
         }
+
+        int team = tanks[0].team;
         for (int i = 0; i < tanks.Count; i++)
         {
-            
+            if (tanks[i].team != team)
+            {
+                inChange = false;//pause time
+                return;
+            }
+        }
+        if (team  != currentTeam && team != tryingTeam)
+        {
+            tryingTeam = team;
+            inChange = true;// time ++
+            restoreTime = false;
+        }
+        else if(team == currentTeam && dominationTime != 0){
+            restoreTime = true;// time--
         }
     }
 }

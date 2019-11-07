@@ -8,6 +8,7 @@ public class DominationGMode : GameMode
 {
     [Header("References")]
     public GameObject DominationGoal;
+    public int scoreBySecond = 1;
 
     protected void awake(){
         //Initialize singleton
@@ -25,6 +26,12 @@ public class DominationGMode : GameMode
 
     void Update()
     {
+        for(int i = 0; i < matchSettings.numTeams; i++){
+            if (i == DominationGoal.GetComponent<DominationGoalPoint>().currentTeam)
+            {
+                score[i]+= scoreBySecond;
+            }
+        }
     }
 
 
