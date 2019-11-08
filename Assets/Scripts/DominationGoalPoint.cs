@@ -36,7 +36,7 @@ public class DominationGoalPoint : NetworkBehaviour
         
         time += Time.deltaTime;
         if (time > scoreTime){// 1 second update
-            if (currentTeam != -404)//make score
+            if (!removeCurrentTeamDomination && currentTeam != -404)//make score
             {
                 if(GameMode.instance != null){
                     GameMode.instance.UpdateScore();

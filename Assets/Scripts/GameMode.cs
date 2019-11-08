@@ -517,6 +517,7 @@ public class GameMode : NetworkBehaviour
     }
 
     public virtual void EndGame(List<int> winningTeams, bool hasDraw = false){
+        if(gameStage == GameStage.End) return;
         gameStage = GameStage.End;
         float finalTime = (matchSettings.maxTime == Mathf.Infinity) ? Mathf.Infinity : matchSettings.maxTime - matchTime;
         GameStatus.instance.RpcStopCounter(finalTime);
