@@ -36,12 +36,13 @@ public class DominationGMode : GameMode
     public override void PrepareGoal()
     {
         matchSettings.maxPoints *= 10;
-        GameStatus.instance.MatchSetting.maxPoints *= 10;
+        GameStatus.instance.MatchSetting = matchSettings;
         ClearAllTeamGoals();//preparing to add a new goal
         addAllTeamGoal(DominationGoal.transform.position);
     }
 
     public override void UpdateScore(){
+        if(gameStage != GameStage.Match) return;
         for(int i = 0; i < matchSettings.numTeams; i++){
             if (i == DominationGoal.GetComponent<DominationGoalPoint>().currentTeam)
             {
