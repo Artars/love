@@ -72,6 +72,11 @@ public class Player : NetworkBehaviour
     public GameObject compassTank;
     public GameObject compassCannon;
 
+    public GameObject goalCompassPrefab;
+    public Transform goalCompassParent;
+    protected List<Image> goalCompassReference;
+    protected List<GoalPoint> goalReferences;
+
     [Header("Pilot")]
     public GearSystem gearSystem;
     protected int rightGear;
@@ -92,6 +97,7 @@ public class Player : NetworkBehaviour
     protected bool assignedCallback = false;
     protected Coroutine messageCoroutine = null;
 
+    #region Initialization
 
     //Remove player from the game
     public override void OnNetworkDestroy () {
@@ -126,13 +132,21 @@ public class Player : NetworkBehaviour
                 GameMode.instance.TryToJoinAsSpectator(this);
             }
         }
-
         //Wil disable comands for HUD
-        else {
+        else if(isServer) {
             currentMode = Mode.Selecting;
         }
     }
 
+    public void SetTankReference(Tank tank, int team, Role role){
+        tankRef = tank;
+        this.team = team;
+        this.role = role;
+    }
+
+    #endregion
+
+    #region Networking
 
     [ClientRpc]
     public void RpcObservePosition(Vector3 position, float speed, float angle, float distance) {
@@ -164,7 +178,6 @@ public class Player : NetworkBehaviour
 
         if(!isLocalPlayer) return;
 
-        TryToAssignCallback();
 
         observerTransform.gameObject.SetActive(false);
         firstPersonCamera.gameObject.SetActive(true);
@@ -174,22 +187,19 @@ public class Player : NetworkBehaviour
         this.possesedObject = toAssign;
         tankRef = possesedObject.GetComponent<Tank>();
         currentMode = Mode.Playing;
+        
+        // Assign HUD
+        TryToAssignCallback();
 
         if(role == Role.Pilot){
             firstPersonCamera.position = tankRef.cameraPositionDriver.position;
             firstPersonCamera.rotation = tankRef.cameraPositionDriver.rotation;
             firstPersonCamera.SetParent(tankRef.cameraPositionDriver);
-
-            
-
         }
         else if(role == Role.Gunner){
             firstPersonCamera.position = tankRef.cameraPositionGunner.position;
             firstPersonCamera.rotation = tankRef.cameraPositionGunner.rotation;
             firstPersonCamera.SetParent(tankRef.cameraPositionGunner);
-
-
-
         }
 
         //Update control values
@@ -298,12 +308,6 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void SetTankReference(Tank tank, int team, Role role){
-        tankRef = tank;
-        this.team = team;
-        this.role = role;
-    }
-
     [Command]
     public void CmdSwitchRole(Role currentRole)
     {
@@ -312,6 +316,7 @@ public class Player : NetworkBehaviour
             tankRef.SwitchPlayerRole(this, currentRole);
         }
     }
+
 
     //Input update on server
     [Command]
@@ -341,6 +346,10 @@ public class Player : NetworkBehaviour
         }
     }
 
+    #endregion
+
+    #region Input
+
     protected void Update() {
         if(!isLocalPlayer) return;
         
@@ -351,7 +360,7 @@ public class Player : NetworkBehaviour
             }
         }
         else if(currentMode == Mode.Playing) {
-            UpdateHUD();
+            UpdateHUD(Time.deltaTime);
             if(role == Role.Pilot){
                 pilotUpdate(Time.deltaTime);
             }
@@ -446,6 +455,10 @@ public class Player : NetworkBehaviour
         }
     }
 
+    #endregion
+
+    #region HUD
+
     protected void assignHUD() {
         healthSlider.gameObject.SetActive(true);
         tankRef.SetHealthSlider(healthSlider);
@@ -519,12 +532,19 @@ public class Player : NetworkBehaviour
         }
     }
 
-    void UpdateHUD()
+    void UpdateHUD(float deltaTime)
     {
+        //Compass update
         if(tankRef != null)
         {
             compassTank.transform.eulerAngles = new Vector3(0, 0, -tankRef.tankTransform.eulerAngles.y - 180);
             compassCannon.transform.eulerAngles = new Vector3(0, 0, -tankRef.rotationPivot.eulerAngles.y);
+            
+            //Update goal compass
+            if(goalCompassReference.Count > 0)
+            {
+                UpdateGoalCompassHUD(deltaTime);
+            }
         }
     }
 
@@ -542,6 +562,7 @@ public class Player : NetworkBehaviour
             {
                 assignedCallback = true;
                 GameStatus.instance.score.Callback += ScoreCallBack;
+                InitializeGoalCompass();
             }
         }
         if(assignedCallback)
@@ -551,23 +572,9 @@ public class Player : NetworkBehaviour
     }
 
     public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
-        Debug.Log("Callbacked");
         int useTeam = (team != -1) ? team : 0;
         if(scoreText != null && useTeam != -1){
             scoreText.text = GameStatus.instance.GetCurrentScore(useTeam);
-
-            // SyncListInt syncList = GameStatus.instance.score;
-
-            // if(syncList == null || syncList.Count < 1) return;
-
-            // string newText = syncList[useTeam].ToString();
-            // for(int i = 0; i < syncList.Count; i++) {
-            //     if(i != useTeam){
-            //         newText += " x " + syncList[i]; 
-            //     }
-            // }
-
-            // scoreText.text = newText;
         }
     }
 
@@ -647,71 +654,71 @@ public class Player : NetworkBehaviour
         }
     }
 
-
-
-}
-
-
-public class AxisToButton
-{
-    public string input;
-    public float threshold = 0.1f;
-    public int currentValue = 0;
-
-    public AxisToButton(string inputString, float threshold = 0.2f)
+    // Goal processing
+    protected void InitializeGoalCompass()
     {
-        input = inputString;
-        this.threshold = threshold;
-    }
+        if(goalCompassReference == null)
+            goalCompassReference = new List<Image>();
+        if(goalReferences == null)
+            goalReferences = new List<GoalPoint>();
 
-    public bool GetButtonDown()
-    {
-        int state = GetNewState();
-
-        if(state != currentValue)
-        {
-            currentValue = state;
-            if(state != 0)
-                return true;
-        }
-        return false;
-    }
-
-    public bool GetButtonUp()
-    {
-        int state = GetNewState();
+        // Avoid spectator having a goal
+        if(team == -1) return;
+        GameStatus.SyncListGoal goalList = (team == 1) ? GameStatus.instance.goalIdentitiesTeam1 : GameStatus.instance.goalIdentitiesTeam0;
         
-
-        if(state != currentValue)
-        {
-            currentValue = state;
-            if(state == 0)
-                return true;
-        }
-        return false;
-    }
-
-    public bool GetState()
-    {
-        int state = GetNewState();
-
-        if(state != currentValue)
-        {
-            currentValue = state;
-        }
-        if(state != 0)
-            return true;
-        else
-            return false;
-    }
-
-    protected int GetNewState()
-    {
-        float currentInputValue = Input.GetAxisRaw(input);
-        int state = currentInputValue > threshold ? 1 : 0;
-        state = currentInputValue < -threshold ? -1 : state;
+        //Subscribe to changes in the goal
+        goalList.Callback += (GoalCallBack);
         
-        return state;
+        GoalCallBack(GameStatus.SyncListGoal.Operation.OP_DIRTY, 0, null);
     }
+
+    protected void UpdateGoalCompassHUD(float delta)
+    {
+        if(tankRef == null) return;
+        for (int i = 0; i < goalReferences.Count; i++)
+        {
+            goalCompassReference[i].color = goalReferences[i].goalColor;
+            Vector3 distance = goalReferences[i].Position - tankRef.transform.position;
+            float angle = Mathf.Atan2(distance.z,distance.x) * Mathf.Rad2Deg;
+            angle -= 90; //Fix rotation
+            goalCompassReference[i].transform.eulerAngles = new Vector3(0,0,angle);
+        }
+    }
+
+    protected void GoalCallBack(GameStatus.SyncListGoal.Operation operation, int index, NetworkIdentity item) {
+        // Get team
+        if(team == -1) return;
+        GameStatus.SyncListGoal goalList = (team == 1) ? GameStatus.instance.goalIdentitiesTeam1 : GameStatus.instance.goalIdentitiesTeam0;
+        
+        //Add targets
+        goalReferences.Clear();
+        foreach (var goal in goalList)
+        {
+            GoalPoint goalScript = goal.GetComponent<GoalPoint>();
+            goalReferences.Add(goalScript);
+        }
+        
+        //Add necessary compasses
+        while (goalCompassReference.Count < goalReferences.Count)
+        {
+            GameObject newCompass = GameObject.Instantiate(goalCompassPrefab, goalCompassParent);
+            newCompass.SetActive(true);
+            Image compassImage = newCompass.GetComponent<Image>();
+            goalCompassReference.Add(compassImage);
+        }
+        //Remove unecessaries compasses
+        while (goalCompassReference.Count > goalReferences.Count)
+        {
+            Image toRemove = goalCompassReference[goalCompassReference.Count-1];
+            goalCompassReference.RemoveAt(goalCompassReference.Count-1);
+            Destroy(toRemove.gameObject);
+        }
+
+        // Update HUD
+        UpdateGoalCompassHUD(Time.deltaTime);
+
+    }
+
+    #endregion
 
 }

@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Most of the processing happen on the server. There is some local processing as well, such as sound
+/// </summary>
 public class Tank : NetworkBehaviour
 {
-
+    /// <summary>
+    /// Used to keep track of who is on the tank
+    /// </summary>
     [System.Serializable]
     public class Assigment
     {
@@ -51,8 +56,10 @@ public class Tank : NetworkBehaviour
     public Color color;
     public List<Assigment> playerRoles;
 
+    public TankParametersObject tankParametersObject;
     [Header("Parameters")]
-    public TankParameters tankParameters;
+    [SyncVar(hook="UpdateTankParameters")]
+    protected TankParameters tankParameters = null;
 
     [Header("Cannon")]
     protected float turnCannonSpeed = 20;
@@ -77,6 +84,7 @@ public class Tank : NetworkBehaviour
     protected float bulletSpeed = 30;
     protected float bulletDamage = 20;
     protected float cannonShootCounter;
+    protected ShootMode shootMode;
 
     [Header("Transform references")]
     public Transform cannonAttachmentPoint;
@@ -205,7 +213,9 @@ public class Tank : NetworkBehaviour
     #region Initialization
 
     void Awake() {
-        LoadTankParameters();
+        if(tankParameters == null)
+            tankParameters = tankParametersObject.tankParameters;
+        UpdateTankParameters(tankParameters);
         rgbd = GetComponent<Rigidbody>();
         myTransform = transform;
         if (isServer) {
@@ -236,7 +246,7 @@ public class Tank : NetworkBehaviour
         
     }
 
-    protected void LoadTankParameters()
+    protected void UpdateTankParameters(TankParameters tankParameters)
     {
         if (tankParameters == null) return;
         this.forwardSpeed = tankParameters.forwardSpeed;
@@ -251,6 +261,14 @@ public class Tank : NetworkBehaviour
         this.bulletSpeed = tankParameters.bulletSpeed;
         this.bulletDamage = tankParameters.bulletDamage;
         this.maxHeath = tankParameters.maxHeath;
+        this.shootMode = tankParameters.shootMode;
+    }
+
+    [Server]
+    public void SetTankParameters(TankParameters tankParam)
+    {
+        tankParameters = tankParam;
+        UpdateTankParameters(tankParameters);
     }
 
     void Start() {
@@ -524,6 +542,7 @@ public class Tank : NetworkBehaviour
         bulletScript.damage = bulletDamage;
         bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
         bulletScript.tankWhoShot = this;
+        bulletScript.shootMode = shootMode;
 
         Debug.Log("Firing from: " + positionToUse);
 
@@ -646,7 +665,7 @@ public class Tank : NetworkBehaviour
         Ray forwardRay = new Ray(frontCollisionCheck.position, frontCollisionCheck.forward);
         RaycastHit forwardResult;
         Physics.Raycast(forwardRay, out forwardResult,distanceCollisionCheck, layer);
-        if(forwardResult.collider != null && rightGear > 0 && leftGear > 0)
+        if(forwardResult.collider != null && !forwardResult.collider.isTrigger && rightGear > 0 && leftGear > 0)
         {
             CauseCollision(true);
             return;
@@ -656,7 +675,7 @@ public class Tank : NetworkBehaviour
         Ray backRay = new Ray(backCollisionCheck.position, backCollisionCheck.forward);
         RaycastHit backResult;
         Physics.Raycast(backRay, out backResult,distanceCollisionCheck, layer);
-        if(backResult.collider != null && rightGear < 0 && leftGear < 0)
+        if(backResult.collider != null && !backResult.collider.isTrigger && rightGear < 0 && leftGear < 0)
         {
             CauseCollision(false);
             return;
@@ -669,18 +688,7 @@ public class Tank : NetworkBehaviour
         // Call collision for everyone
         RpcHadCollision(inFront);
 
-        // Stop tank
-        leftGear = rightGear = 0;
-        leftAxis = rightAxis = 0;
-        // Make pilot stop
-        foreach(var player in playerRoles)
-        {
-            if(player.role == Role.Pilot && player.playerRef != null)
-            {
-                player.playerRef.RpcForcePilotStop();
-                break;
-            }
-        }
+        ForceStop();
 
     }
 
@@ -794,9 +802,28 @@ public class Tank : NetworkBehaviour
             if(bullet != null) {
                 Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
-                    DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+
+                    // Reaction to different shoot modes
+                    switch (bullet.shootMode)
+                    {
+                        case ShootMode.Damage:
+                            DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+                            break;
+                        
+                        case ShootMode.Stop:
+                            ForceStop();
+                            break;
+
+                        default:
+                            DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+                            break;
+
+                    }
+
+                    // Make callback to shooter
                     if(bullet.tankWhoShot != null)
                         bullet.tankWhoShot.NotifyHitToGunner(otherCollider.transform.position);
+                    // Destroy bullet
                     NetworkServer.Destroy(otherCollider.gameObject);
                 }
             }
@@ -813,6 +840,22 @@ public class Tank : NetworkBehaviour
         else {
             RpcOnChangeHealth(currentHealth, true);
             NotifyDamageToPlayers(damage,angle);
+        }
+    }
+
+    public void ForceStop()
+    {
+        // Stop tank
+        leftGear = rightGear = 0;
+        leftAxis = rightAxis = 0;
+        // Make pilot stop 
+        foreach(var player in playerRoles)
+        {
+            if(player.role == Role.Pilot && player.playerRef != null)
+            {
+                player.playerRef.RpcForcePilotStop();
+                break;
+            }
         }
     }
 

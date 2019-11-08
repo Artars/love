@@ -58,26 +58,25 @@ MonoBehaviour:
     maxTime: 0
     timeToSetup: 0
     timeToRespawn: 0
+    serverPort: 0
+  forceTankParameters: {fileID: 0}
   timeToStartGame: 5
   timeToEndGame: 5
   returnToLobby: 1
+  volumeInMatch: 0.25
   infoTanks: []
   playersInfo:
     m_keys: 
     m_values: []
+  goalPointPrefab: {fileID: 4007267603957463762, guid: 5f8273cd295dfa74d8fff1a48db96e13,
+    type: 3}
   tankColection: {fileID: 11400000, guid: 8ee9146f28a416b47955744ad9642fd9, type: 2}
   mapCollection: {fileID: 11400000, guid: de069ced1d9d3bc4a844b8ad780447dd, type: 2}
   spectatorPosition: {fileID: 6269615099947831946}
   hideTankPosition: {fileID: 8642200796779929620}
   spectatorDistance: 10
-  tanks: []
-  players: []
-  spectators: []
   hostIP: 
   gameStage: 0
-  score: []
-  deaths: 
-  kills: 
   matchTime: 0
 --- !u!114 &1094133066987509114
 MonoBehaviour:

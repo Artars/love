@@ -15,6 +15,8 @@ public class Bullet : NetworkBehaviour
     public Vector3 velocityFired;
     [SyncVar]
     public bool canColide = false;
+    [SyncVar]
+    public ShootMode shootMode;
 
     public float angleFired;
     public Tank tankWhoShot;
