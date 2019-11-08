@@ -16,7 +16,7 @@ public class DominationGoalPoint : NetworkBehaviour
     private float dominationTime = 0;
 
     [Header("References")]
-    public Flag flag;
+    public Flag[] flags;
     
  
 
@@ -26,7 +26,7 @@ public class DominationGoalPoint : NetworkBehaviour
     {
         tanks =new List<Tank>();
         dominationTime = 0;
-        flag.SetFlagVisibility(false);
+        SetFlagsVisibility(false);
     }
 
     public void Update()
@@ -63,11 +63,11 @@ public class DominationGoalPoint : NetworkBehaviour
             {
                 removeCurrentTeamDomination = false;
                 currentTeam = -404;
-                flag.SetFlagVisibility(false);
+                SetFlagsVisibility(false);
             }
         }
         
-        flag.SetFlagPosition(dominationTime / timeToDominate);
+        SetFlagsPosition(dominationTime / timeToDominate);
     }
 
 
@@ -132,8 +132,8 @@ public class DominationGoalPoint : NetworkBehaviour
                 currentTeam = team;
                 removeCurrentTeamDomination = false;
                 dominationTime = 0;
-                flag.SetFlagVisibility(true);
-                flag.SetFlagTeam(currentTeam);
+                SetFlagsVisibility(true);
+                SetFlagsTeam(currentTeam);
             }
             //Reduce current team
             else
@@ -146,6 +146,30 @@ public class DominationGoalPoint : NetworkBehaviour
         else if(team == currentTeam){
             assertDomination = true;
             removeCurrentTeamDomination = false;
+        }
+    }
+
+    protected void SetFlagsVisibility(bool visibility)
+    {
+        foreach (var flag in flags)
+        {
+            flag.SetFlagVisibility(visibility);
+        }
+    }
+
+    protected void SetFlagsPosition(float porcent)
+    {
+        foreach (var flag in flags)
+        {
+            flag.SetFlagPosition(porcent);
+        }
+    }
+
+    protected void SetFlagsTeam(int team)
+    {
+        foreach (var flag in flags)
+        {
+            flag.SetFlagTeam(team);
         }
     }
 }

@@ -19,9 +19,6 @@ public class DominationGMode : GameMode
             Destroy(gameObject);
             return;
         }
-
-        // Force more points for this gamemode
-        MatchConfiguration.instance.matchSetting.maxPoints *= 10;
     }
 
     void Update()
@@ -38,6 +35,8 @@ public class DominationGMode : GameMode
 
     public override void PrepareGoal()
     {
+        matchSettings.maxPoints *= 10;
+        GameStatus.instance.MatchSetting.maxPoints *= 10;
         ClearAllTeamGoals();//preparing to add a new goal
         addAllTeamGoal(DominationGoal.transform.position);
     }
