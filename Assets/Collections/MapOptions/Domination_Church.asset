@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
   m_Name: Domination_Church
   m_EditorClassIdentifier: 
-  scene: DuelAtTheChurch_Domination
-  mapName: '[DOM] Duel at the Church'
+  scene: 
+  mapName: '[KOTH] Duel at the Church'
   mapThumbnail: {fileID: 21300000, guid: de2b6afb0a85b3f42b6edd1e42ee55eb, type: 3}
