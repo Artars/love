@@ -7,19 +7,26 @@ public class DominationGoalPoint : NetworkBehaviour
 {
     [Header("Domination States")]
     public int currentTeam = -404;//there is no team dominating
-    public int tryingTeam =  -404;
-    public bool isDominating = false;
+    public float timeToDominate = 10f;
     [Tooltip("there is a new team dominating")]
-    public bool inChange =  false;
-    public bool restoreTime = false;
+    public bool assertDomination =  false;
+    public bool removeCurrentTeamDomination = false;
     private float time = 0;
-    private int dominationTime = 0;
+    private float scoreTime = 1f;
+    private float dominationTime = 0;
+
+    [Header("References")]
+    public Flag flag;
+    
+ 
 
     public List<Tank> tanks;
 
     public void Awake()
     {
         tanks =new List<Tank>();
+        dominationTime = 0;
+        flag.SetFlagVisibility(false);
     }
 
     public void Update()
@@ -28,38 +35,41 @@ public class DominationGoalPoint : NetworkBehaviour
         checkTankTeams();
         
         time += Time.deltaTime;
-        if (time > 1){// 1 second update
-            time =0.0f;
-            
+        if (time > scoreTime){// 1 second update
             if (currentTeam != -404)//make score
             {
                 if(GameMode.instance != null){
                     GameMode.instance.UpdateScore();
                 }
             }
+            time = 0.0f;
+        }
+            
 
-            if (inChange)
+        if (assertDomination)
+        {
+            dominationTime += Time.deltaTime;
+            if (dominationTime >= timeToDominate)
             {
-                dominationTime++;
-                if (dominationTime == 10)
-                {
-                    inChange = false;
-                    currentTeam = tryingTeam;
-                }
-            }
-
-            if (restoreTime)
-            {
-                dominationTime--;
-                if (dominationTime == 0)
-                {
-                    restoreTime = false;
-                    tryingTeam = currentTeam;
-                }
+                dominationTime = timeToDominate;
+                assertDomination = false;
             }
         }
 
+        if (removeCurrentTeamDomination)
+        {
+            dominationTime -= Time.deltaTime;
+            if (dominationTime <= 0)
+            {
+                removeCurrentTeamDomination = false;
+                currentTeam = -404;
+                flag.SetFlagVisibility(false);
+            }
+        }
+        
+        flag.SetFlagPosition(dominationTime / timeToDominate);
     }
+
 
     protected void OnTriggerEnter(Collider col){
         
@@ -82,16 +92,13 @@ public class DominationGoalPoint : NetworkBehaviour
 
         if (left != null)
         {
-            if (!tanks.Contains(left))
+            if (tanks.Contains(left))
                 tanks.Remove(left);
 
-            if (tanks.Count == 0 && inChange)
+            if (tanks.Count == 0)
             {
-                inChange = false;
-                if ( dominationTime != 0 )
-                {
-                    restoreTime = true;
-                }
+                assertDomination = false;
+                removeCurrentTeamDomination = false;
             }
         }
     }
@@ -100,7 +107,8 @@ public class DominationGoalPoint : NetworkBehaviour
         
         if (tanks.Count == 0)
         {
-            inChange = false;
+            removeCurrentTeamDomination = false;
+            assertDomination = false;
             return;
         }
 
@@ -109,18 +117,35 @@ public class DominationGoalPoint : NetworkBehaviour
         {
             if (tanks[i].team != team)
             {
-                inChange = false;//pause time
+                assertDomination = false;//pause time
+                removeCurrentTeamDomination = true;
                 return;
             }
         }
-        if (team  != currentTeam && team != tryingTeam)
+
+        if (team  != currentTeam)
         {
-            tryingTeam = team;
-            inChange = true;// time ++
-            restoreTime = false;
+            // Change teams
+            if(dominationTime <= 0)
+            {
+                assertDomination = true;
+                currentTeam = team;
+                removeCurrentTeamDomination = false;
+                dominationTime = 0;
+                flag.SetFlagVisibility(true);
+                flag.SetFlagTeam(currentTeam);
+            }
+            //Reduce current team
+            else
+            {
+                assertDomination = false;
+                removeCurrentTeamDomination = true;
+            }
         }
-        else if(team == currentTeam && dominationTime != 0){
-            restoreTime = true;// time--
+        // Increase domination
+        else if(team == currentTeam){
+            assertDomination = true;
+            removeCurrentTeamDomination = false;
         }
     }
 }

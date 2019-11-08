@@ -718,6 +718,17 @@ public class GameMode : NetworkBehaviour
         instance.TankKilled(0,1);
     }
 
+    [MenuItem("Debug/Change Team")]
+    public static void ChangePlayerTeam()
+    {
+        Player p = instance.players[0];
+        int otherTeam = (p.team == 0) ? 1 : 0;
+        p.RpcRemoveOwnership();
+        Tank toSet = instance.GetTank(otherTeam);
+        p.SetTankReference(toSet,otherTeam, Role.Pilot);
+        p.RpcAssignPlayer(otherTeam,Role.Pilot, toSet.GetComponent<NetworkIdentity>());
+    }
+
     [MenuItem("Debug/Kill tank 1")]
     public static void KillTank1()
     {

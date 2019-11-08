@@ -10,7 +10,7 @@ public class DominationGMode : GameMode
     public GameObject DominationGoal;
     public int scoreBySecond = 1;
 
-    protected void awake(){
+    protected new void Awake(){
         //Initialize singleton
         if(instance == null) 
             instance = this;
@@ -19,6 +19,9 @@ public class DominationGMode : GameMode
             Destroy(gameObject);
             return;
         }
+
+        // Force more points for this gamemode
+        MatchConfiguration.instance.matchSetting.maxPoints *= 10;
     }
 
     void Update()
