@@ -1,0 +1,141 @@
+fileFormatVersion: 2
+guid: 0ba71fdb163dbe544b2cd3c2ded528f8
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: ????
+    100002: AquelaCalcadona
+    100004: Bandejao
+    100006: Biblioteca
+    100008: BlocoDidatico
+    100010: "Cal\xE7ada"
+    100012: //RootNode
+    100014: EngAmbiental
+    100016: EngComp
+    100018: Ruas
+    400000: ????
+    400002: AquelaCalcadona
+    400004: Bandejao
+    400006: Biblioteca
+    400008: BlocoDidatico
+    400010: "Cal\xE7ada"
+    400012: //RootNode
+    400014: EngAmbiental
+    400016: EngComp
+    400018: Ruas
+    2100000: Ladrilho
+    2100002: Cp2
+    2100004: Material.001
+    2300000: ????
+    2300002: AquelaCalcadona
+    2300004: Bandejao
+    2300006: Biblioteca
+    2300008: BlocoDidatico
+    2300010: "Cal\xE7ada"
+    2300012: EngAmbiental
+    2300014: EngComp
+    2300016: Ruas
+    3300000: ????
+    3300002: AquelaCalcadona
+    3300004: Bandejao
+    3300006: Biblioteca
+    3300008: BlocoDidatico
+    3300010: "Cal\xE7ada"
+    3300012: EngAmbiental
+    3300014: EngComp
+    3300016: Ruas
+    4300000: AquelaCalcadona
+    4300002: ????
+    4300004: EngAmbiental
+    4300006: Biblioteca
+    4300008: EngComp
+    4300010: Bandejao
+    4300012: BlocoDidatico
+    4300014: "Cal\xE7ada"
+    4300016: Ruas
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
