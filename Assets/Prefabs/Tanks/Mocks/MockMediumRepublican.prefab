@@ -314,11 +314,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1784536855501313011}
     m_Modifications:
-    - target: {fileID: 8104824366075016191, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
-        type: 3}
-      propertyPath: m_Name
-      value: Explosion
-      objectReference: {fileID: 0}
     - target: {fileID: 7817728438866836332, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -374,6 +369,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8104824366075016191, guid: c4529c1a1e57fe64ea9cf19f190ffafe,
+        type: 3}
+      propertyPath: m_Name
+      value: Explosion
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4529c1a1e57fe64ea9cf19f190ffafe, type: 3}
 --- !u!198 &5736755449533215895 stripped
@@ -389,11 +389,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1784536855501313011}
     m_Modifications:
-    - target: {fileID: 1171651539030024062, guid: 6ffd5cbd099e44a46a8657684df3995e,
-        type: 3}
-      propertyPath: m_Name
-      value: Smoke
-      objectReference: {fileID: 0}
     - target: {fileID: 874279804722334953, guid: 6ffd5cbd099e44a46a8657684df3995e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -448,6 +443,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1171651539030024062, guid: 6ffd5cbd099e44a46a8657684df3995e,
+        type: 3}
+      propertyPath: m_Name
+      value: Smoke
       objectReference: {fileID: 0}
     - target: {fileID: 6665693901485348345, guid: 6ffd5cbd099e44a46a8657684df3995e,
         type: 3}
@@ -526,12 +526,12 @@ PrefabInstance:
     - target: {fileID: 8069897468372611511, guid: 0d0933c68f8aae746b39d8424e9f35af,
         type: 3}
       propertyPath: m_SceneId
-      value: 0
+      value: 2997108766
       objectReference: {fileID: 0}
     - target: {fileID: 8069897468372611511, guid: 0d0933c68f8aae746b39d8424e9f35af,
         type: 3}
       propertyPath: m_AssetId
-      value: 
+      value: 0d0933c68f8aae746b39d8424e9f35af
       objectReference: {fileID: 0}
     - target: {fileID: 23090892533621720, guid: 0d0933c68f8aae746b39d8424e9f35af,
         type: 3}
@@ -544,6 +544,9 @@ PrefabInstance:
     - {fileID: 7224657846611481838, guid: 0d0933c68f8aae746b39d8424e9f35af, type: 3}
     - {fileID: 7966311994603384186, guid: 0d0933c68f8aae746b39d8424e9f35af, type: 3}
     - {fileID: 4424370814397781558, guid: 0d0933c68f8aae746b39d8424e9f35af, type: 3}
+    - {fileID: 7098913159966096791, guid: 0d0933c68f8aae746b39d8424e9f35af, type: 3}
+    - {fileID: 630832974258463933, guid: 0d0933c68f8aae746b39d8424e9f35af, type: 3}
+    - {fileID: 8069897468372611511, guid: 0d0933c68f8aae746b39d8424e9f35af, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0d0933c68f8aae746b39d8424e9f35af, type: 3}
 --- !u!1 &1784536855500820435 stripped
 GameObject:

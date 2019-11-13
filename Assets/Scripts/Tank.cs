@@ -702,7 +702,7 @@ public class Tank : NetworkBehaviour
         Ray forwardRay = new Ray(frontCollisionCheck.position, frontCollisionCheck.forward);
         RaycastHit forwardResult;
         Physics.Raycast(forwardRay, out forwardResult,distanceCollisionCheck, layer);
-        if(forwardResult.collider != null && rightGear > 0 && leftGear > 0)
+        if(forwardResult.collider != null && !forwardResult.collider.isTrigger && rightGear > 0 && leftGear > 0)
         {
             CauseCollision(true);
             return;
@@ -712,7 +712,7 @@ public class Tank : NetworkBehaviour
         Ray backRay = new Ray(backCollisionCheck.position, backCollisionCheck.forward);
         RaycastHit backResult;
         Physics.Raycast(backRay, out backResult,distanceCollisionCheck, layer);
-        if(backResult.collider != null && rightGear < 0 && leftGear < 0)
+        if(backResult.collider != null && !backResult.collider.isTrigger && rightGear < 0 && leftGear < 0)
         {
             CauseCollision(false);
             return;

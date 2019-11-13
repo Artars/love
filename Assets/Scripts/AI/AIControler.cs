@@ -17,7 +17,7 @@ public class AIControler : NetworkBehaviour, IPlayerControler
         
            if(_currentMode == Player.Mode.Playing)
            {
-               behaviour.Reset();
+               tankAI.Reset();
            }
         } 
     }
@@ -54,7 +54,7 @@ public class AIControler : NetworkBehaviour, IPlayerControler
     {
         if(_currentMode == Player.Mode.Playing && tankRef != null)
         {
-            behaviour.Tick();
+            tankAI.CallUpdate(Time.deltaTime);
         }
     }
 
@@ -69,8 +69,7 @@ public class AIControler : NetworkBehaviour, IPlayerControler
         tankRef = tank;
         this.team = team;
 
-        tankAI.tank = tankRef;
-        tankAI.navMeshAgent = tank.navMeshAgent;
+        tankAI.SetTank(tankRef);
         tank.SetNavMeshEnabled(true);
     }
 
@@ -79,8 +78,7 @@ public class AIControler : NetworkBehaviour, IPlayerControler
         if(!isServer) return;
         tankRef.SetNavMeshEnabled(false);
         tankRef = null;
-        tankAI.tank = null;
-        tankAI.navMeshAgent = null;
+        tankAI.RemoveTank();
     }
 
     public void ForcePilotStop()

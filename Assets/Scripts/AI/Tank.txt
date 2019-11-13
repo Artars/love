@@ -1,21 +1,15 @@
 tree("Root")
-	parallel
-		tree("Sense") //Sense all the time
-		fallback
-			tree("Hunt")
-			tree("Wander")
-
-//Will look for the player
-tree("Sense")
-	sequence
-		Wait(100)
-		Succeed
+	fallback
+		tree("Hunt")
+		tree("Wander")
 
 //Will try to find the player
 tree("Hunt")
-	sequence
+	sequence 
 		FoundEnemy()
-		Say("Hunting")
+		Stop()
+		repeat
+			AimAtEnemy()
 
 tree("Wander")
 	sequence
