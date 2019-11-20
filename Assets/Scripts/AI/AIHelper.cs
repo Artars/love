@@ -6,8 +6,10 @@ public class AIHelper : MonoBehaviour
 {
     public static AIHelper instance;
 
-    public BoxCollider mapBounds;
-    public float baseY = 0;
+    public Transform bottomLeftTransform;
+    public Transform topRightTransform;
+
+    public float topY = 10;
 
     public void Awake()
     {
@@ -23,9 +25,36 @@ public class AIHelper : MonoBehaviour
 
     public Vector3 GetRandomPosition()
     {
-       Vector3 randomPosition = mapBounds.center + Random.Range(-1f,1f) * mapBounds.size * 0.5f;
-       randomPosition.y = baseY;
+        Ray ray = new Ray();
+        RaycastHit hit;
+        ray.direction = Vector3.down;
+        do
+        {
 
-       return randomPosition;
+            Vector3 diference = topRightTransform.position - bottomLeftTransform.position;
+
+            Vector3 randomDirection = new Vector3(Random.Range(0f,1f) * diference.x,0,Random.Range(0,1f) * diference.z);
+            Vector3 randomPosition = bottomLeftTransform.position + randomDirection;
+            randomPosition.y = topY;
+            ray.origin = randomPosition;
+        }
+        while(!Physics.Raycast(ray, out hit, topY * 1.1f, LayerMask.GetMask("Default")));
+       
+
+       return hit.point;
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        if(bottomLeftTransform != null && topRightTransform != null)
+        {
+            Vector3 diference = topRightTransform.position - bottomLeftTransform.position;
+
+            Vector3 center = bottomLeftTransform.position + diference*0.5f;
+            center.y = topY/2;
+            diference.y = topY;
+            Gizmos.DrawWireCube(center, diference);
+
+        }
     }
 }

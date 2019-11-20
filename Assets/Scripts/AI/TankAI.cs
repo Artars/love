@@ -7,16 +7,19 @@ using Panda;
 public class TankAI : MonoBehaviour
 {
     [Header("Parameters")]
-    public float reachDistance = 10;
+    public float reachDistance = 2;
+    public float turnTankThreshold = 0.1f;
+    public float cannonTurnThreshold = 0.1f;
+    public float turretInclinationThreshold = 0.5f;
 
     [Header("References")]
     public TankVision[] visions;
 
     protected Tank tank;
-    protected NavMeshAgent navMeshAgent;
 
     protected PandaBehaviour behaviour;
 
+    // Enemy detection
     protected Tank lastEnemySeen;
     protected bool hasLastEnemyPosition = false;
     protected bool canEnemyBeSeen = false;
@@ -27,12 +30,17 @@ public class TankAI : MonoBehaviour
     protected bool shouldAimCannon = false;
     protected Vector3 cannonTargetPosition;
 
-    protected bool hasSetDestination = false;
-    Vector3 destination;
+    // Movement
+    protected bool hasSetPath = false;
+    protected NavMeshPath path;
+    protected Vector3 waypointDestination;
+    protected Vector3 finalDestination;
+    protected int currentWaypoint = -1;
 
     void Awake()
     {
         behaviour = GetComponent<PandaBehaviour>();
+        path = new NavMeshPath();
         Reset();
     }
 
@@ -47,7 +55,6 @@ public class TankAI : MonoBehaviour
         Reset();
 
         this.tank = tank;
-        this.navMeshAgent = tank.navMeshAgent;
 
         visions[0].SetToFollow(tank.cameraPositionDriver, tank);
         visions[1].SetToFollow(tank.rotationPivot, tank);
@@ -56,7 +63,6 @@ public class TankAI : MonoBehaviour
     public void RemoveTank()
     {
         this.tank = null;
-        this.navMeshAgent = null;
         foreach (var vision in visions)
         {
             vision.StopFollowing();
@@ -66,7 +72,7 @@ public class TankAI : MonoBehaviour
 
     public void Reset()
     {
-        hasSetDestination = false;
+        hasSetPath = false;
         hasLastEnemyPosition = false;
         lastEnemySeen = null;
         behaviour.Reset();
@@ -75,28 +81,18 @@ public class TankAI : MonoBehaviour
 
     public void CallUpdate(float timeDelta)
     {
-        //Check if last enemy position is still valid
-        if(hasLastEnemyPosition)
-        {
-            if(!canEnemyBeSeen)
-            {
-                Vector3 dist = lastPositionSeen - tank.transform.position;
-                if(dist.magnitude < reachDistance || lastEnemySeen.currentHealth <= 0)
-                {
-                    lastEnemySeen = null;
-                    hasLastEnemyPosition = false;
-                }
-            }
-        }
+
+        VerifyCurrentEnemyValid();
+
+        MoveTank();
+        SenseEnemy();
+        AimCannon();
 
         // Update behaviour ticks
         if(behaviour != null)
         {
             behaviour.Tick();
         }
-
-        SenseEnemy();
-        AimCannon();
 
     }
 
@@ -127,6 +123,23 @@ public class TankAI : MonoBehaviour
         return false;
     }
 
+    protected void VerifyCurrentEnemyValid()
+    {
+        //Check if last enemy position is still valid
+        if(hasLastEnemyPosition)
+        {
+            if(!canEnemyBeSeen)
+            {
+                Vector3 dist = lastPositionSeen - tank.transform.position;
+                if(dist.magnitude < reachDistance || lastEnemySeen.currentHealth <= 0)
+                {
+                    lastEnemySeen = null;
+                    hasLastEnemyPosition = false;
+                }
+            }
+        }
+    }
+
     protected void AimCannon()
     {
         isAimCorrect = false;
@@ -137,7 +150,7 @@ public class TankAI : MonoBehaviour
 
             Vector3 turretDiference = cannonTargetPosition - tank.rotationPivot.position;
             float dot = Vector3.Dot(turretDiference.normalized, tank.rotationPivot.right);
-            if(Mathf.Abs(dot) > 0.2f)
+            if(Mathf.Abs(dot) > cannonTurnThreshold)
                 turnInput = (dot > 0) ? 1 : -1;
             
 
@@ -161,7 +174,7 @@ public class TankAI : MonoBehaviour
 
             Debug.Log("Theta: " + theta + "Current: " + currentNivel);
 
-            if(Mathf.Abs(theta - currentNivel) > 2f)
+            if(Mathf.Abs(theta - currentNivel) > turretInclinationThreshold)
             {
                 nivelInput = (theta - currentNivel) > 0 ? 1 : -1;
             } 
@@ -176,15 +189,87 @@ public class TankAI : MonoBehaviour
         }
     }
 
+    //Should face destination and then moving to it
+    protected void MoveTank()
+    {
+        //Find direction
+        Vector3 targetDestination = waypointDestination - tank.transform.position;
+
+        //Check if reached target
+        if(targetDestination.magnitude < reachDistance)
+        {
+            UpdateDestination();
+
+            // Has no more destination
+            if(!hasSetPath) return;
+        }
+
+
+        //Check if direction is the same
+        int turnInput = 0;
+
+        float dot = Vector3.Dot(targetDestination.normalized, tank.transform.right);
+        float dotForward = Vector3.Dot(targetDestination.normalized, tank.transform.forward);
+        if(Mathf.Abs(dot) > turnTankThreshold)
+            turnInput = (dot > 0) ? 1 : -1;
+        //Facing backwards
+        else if (dotForward < 0)
+        {
+            turnInput = 1;
+        }
+
+        //If it doesn't, face the direction
+        if(turnInput != 0)
+        {
+            if(turnInput == 1)
+            {
+                tank.SetGear(tank.gearSystem.highestGear, tank.gearSystem.lowestGear);
+            }
+            else
+            {
+                tank.SetGear(tank.gearSystem.lowestGear, tank.gearSystem.highestGear);
+            }
+        }
+        //Else will go to the destination
+        else
+        {
+            tank.SetGear(tank.gearSystem.highestGear,tank.gearSystem.highestGear);
+        }
+
+    }
+
+    //Will get the next waypoint from the path
+    protected void UpdateDestination()
+    {
+        if(path != null)
+        {
+            currentWaypoint ++;
+            if(currentWaypoint < path.corners.Length)
+            {
+                waypointDestination = path.corners[currentWaypoint];
+            }
+            else
+            {
+                currentWaypoint = -1;
+                hasSetPath = false;
+            }
+        }
+    }
+
     [Task]
-    void GetRandomPosition()
+    void SetRandomPosition()
     {
         Vector3 sourcePosition = AIHelper.instance.GetRandomPosition(); //PLACEHOLDER
-        NavMeshHit navHit;
-        if(NavMesh.SamplePosition(sourcePosition, out navHit, 2f, NavMesh.AllAreas))
+        SetTargetPosition(sourcePosition);
+    }
+
+    [Task]
+    void SetPositionToEnemy()
+    {
+        if(hasLastEnemyPosition)
         {
-            destination = navHit.position;
-            Task.current.Succeed();
+            Vector3 sourcePosition = lastPositionSeen; //PLACEHOLDER
+            SetTargetPosition(sourcePosition);
         }
         else
         {
@@ -196,54 +281,49 @@ public class TankAI : MonoBehaviour
     void SetTargetPosition(Vector3 position)
     {
         NavMeshHit navHit;
-        if(NavMesh.SamplePosition(position, out navHit, 1, NavMesh.AllAreas))
+        int navArea = NavMesh.AllAreas;
+        // Will try to find valid position, starting with smallest distance
+        for(int i = 0; i < 10; i++)
         {
-            destination = navHit.position;
-            Task.current.Succeed();
+            if(NavMesh.SamplePosition(position, out navHit, i, navArea))
+            {
+                finalDestination = navHit.position;
+                if(NavMesh.CalculatePath(tank.transform.position, finalDestination, navArea, path))
+                {
+                    // Configurate path
+                    hasSetPath = true;
+                    currentWaypoint = 0;
+                    UpdateDestination();
+
+                    Task.current.Succeed();
+                    return;
+                }
+            }
         }
-        else
-        {
-            Task.current.Fail();
-        }
+
+        // If can't find position, failed
+        Task.current.Fail();
     }
 
-    [Task]
-    void SetPositionToEnemy()
-    {
-        Vector3 sourcePosition = lastPositionSeen; //PLACEHOLDER
-        NavMeshHit navHit;
-        if(NavMesh.SamplePosition(sourcePosition, out navHit, 2f, NavMesh.AllAreas))
-        {
-            destination = navHit.position;
-            Task.current.Succeed();
-        }
-        else
-        {
-            Task.current.Fail();
-        }
-    }
-
-    [Task]
-    void GoToTarget()
-    {
-        navMeshAgent.isStopped = false;
-        if(navMeshAgent.SetDestination(destination))
-        {
-            hasSetDestination = true;
-            Task.current.Succeed();
-        }
-        else
-        {
-            Task.current.Fail();
-        }
-    }
 
     [Task]
     void HasReachedDestination()
     {
-        if(!hasSetDestination || (tank.transform.position - destination).magnitude < reachDistance)
+        if(!hasSetPath)
         {
-            hasSetDestination = false;
+            Task.current.Succeed();
+        }
+        else
+        {
+            Task.current.Fail();
+        }
+    }
+
+    [Task]
+    void CloseToTarget(float distance)
+    {
+        if( (finalDestination - tank.transform.position).magnitude <= distance)
+        {
             Task.current.Succeed();
         }
         else
@@ -255,8 +335,13 @@ public class TankAI : MonoBehaviour
     [Task]
     void Stop()
     {
-        hasSetDestination = false;
-        navMeshAgent.isStopped = true;
+        hasSetPath = false;
+
+        if(tank != null)
+        {
+            tank.SetGear(0,0);
+        }
+
         Task.current.Succeed();
     }
 
@@ -323,5 +408,24 @@ public class TankAI : MonoBehaviour
     bool AimCorrect()
     {
         return isAimCorrect;
+    }
+
+    public void OnDrawGizmos()
+    {
+        if(hasSetPath)
+        {
+            for(int i = 1; i < path.corners.Length; i++)
+            {
+                Gizmos.color = (i != currentWaypoint) ? Color.red : Color.green;
+                Gizmos.DrawLine(path.corners[i-1], path.corners[i]);
+            }
+        }
+
+        if(hasLastEnemyPosition)
+        {
+            Gizmos.color = Color.red;
+
+            Gizmos.DrawSphere(lastPositionSeen, 1);
+        }
     }
 }

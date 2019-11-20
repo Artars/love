@@ -7,21 +7,30 @@ tree("Root")
 tree("Hunt")
 	sequence 
 		FoundEnemy
-		Stop
+		SetPositionToEnemy
 		while
 			FoundEnemy
-			sequence
-				AimAtEnemy
-				CanEnemyBeSeen
-				AimCorrect
-				Shoot
+			mute
+				sequence
+					mute 
+						fallback
+							sequence
+								CanEnemyBeSeen
+								CloseToTarget(20.0)
+								Stop
+							sequence
+								HasReachedDestination
+								SetPositionToEnemy
+					sequence
+						AimAtEnemy
+						CanEnemyBeSeen
+						AimCorrect
+						Shoot
 
 tree("Wander")
 	sequence
 		not 
 			FoundEnemy
-		sequence
-			HasReachedDestination
-			GetRandomPosition
-			GoToTarget
+		HasReachedDestination
+		SetRandomPosition
 

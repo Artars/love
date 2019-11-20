@@ -1034,7 +1034,6 @@ GameObject:
   - component: {fileID: 5378618044361311541}
   - component: {fileID: 8069897468372611511}
   - component: {fileID: 2274091356584265944}
-  - component: {fileID: 2930897617179981648}
   m_Layer: 10
   m_Name: TankMediumNational
   m_TagString: Tank
@@ -1144,7 +1143,7 @@ MonoBehaviour:
   frontCollisionCheck: {fileID: 7002582128167053666}
   backCollisionCheck: {fileID: 3241487782289654065}
   useNavMesh: 0
-  navMeshAgent: {fileID: 2930897617179981648}
+  navMeshAgent: {fileID: 0}
   distanceCheckGround: 0.5
   distanceCollisionCheck: 0.5
   maxHeath: 100
@@ -1217,28 +1216,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   compressRotation: 1
---- !u!195 &2930897617179981648
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5378618044361311542}
-  m_Enabled: 0
-  m_AgentTypeID: 0
-  m_Radius: 1
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!1 &5378618044769985989
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,6 +2261,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 507560451021067165}
     m_Modifications:
+    - target: {fileID: 2376525488028269151, guid: f8814ec6b3b3878418e8789b65092c69,
+        type: 3}
+      propertyPath: m_Name
+      value: Shooting
+      objectReference: {fileID: 0}
+    - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
+        type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2855305167267900382, guid: f8814ec6b3b3878418e8789b65092c69,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2339,27 +2326,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
-        type: 3}
-      propertyPath: looping
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2376525488028269151, guid: f8814ec6b3b3878418e8789b65092c69,
-        type: 3}
-      propertyPath: m_Name
-      value: Shooting
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8814ec6b3b3878418e8789b65092c69, type: 3}
---- !u!198 &4318217866929469304 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
-    type: 3}
-  m_PrefabInstance: {fileID: 3410323208859120084}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &645125288438946314 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2855305167267900382, guid: f8814ec6b3b3878418e8789b65092c69,
+    type: 3}
+  m_PrefabInstance: {fileID: 3410323208859120084}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &4318217866929469304 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
     type: 3}
   m_PrefabInstance: {fileID: 3410323208859120084}
   m_PrefabAsset: {fileID: 0}

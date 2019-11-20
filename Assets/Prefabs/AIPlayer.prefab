@@ -426,7 +426,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b38f19a4e3d30449b3886aeee182680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reachDistance: 10
+  reachDistance: 2
+  turnTankThreshold: 0.1
+  cannonTurnThreshold: 0.1
+  turretInclinationThreshold: 0.5
   visions:
   - {fileID: 553169779097918082}
   - {fileID: 4495662671246158544}

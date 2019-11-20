@@ -226,6 +226,7 @@ public class Tank : NetworkBehaviour
         {
             navMeshAgent.enabled = false;
         }
+        else
         {
             navMeshAgent.enabled = useNavMesh;
         }

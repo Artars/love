@@ -47,8 +47,14 @@ public enum ShootMode
 public class GearSystem
 {
     [Range(-5,0)]
+    /// <summary>
+    /// Negative only, lowest reverse gear possible
+    /// </summary>
     public int lowestGear = -2;
     [Range(0,5)]
+    /// <summary>
+    /// Positive only, highest foward gear possible
+    /// </summary>
     public int highestGear = 3;
     public float[] values;
 
