@@ -22,6 +22,8 @@ public class TankAI : MonoBehaviour
     protected bool canEnemyBeSeen = false;
     public Vector3 lastPositionSeen;
 
+    // Aim
+    protected bool isAimCorrect = false;
     protected bool shouldAimCannon = false;
     protected Vector3 cannonTargetPosition;
 
@@ -79,7 +81,7 @@ public class TankAI : MonoBehaviour
             if(!canEnemyBeSeen)
             {
                 Vector3 dist = lastPositionSeen - tank.transform.position;
-                if(dist.magnitude < reachDistance)
+                if(dist.magnitude < reachDistance || lastEnemySeen.currentHealth <= 0)
                 {
                     lastEnemySeen = null;
                     hasLastEnemyPosition = false;
@@ -127,20 +129,49 @@ public class TankAI : MonoBehaviour
 
     protected void AimCannon()
     {
+        isAimCorrect = false;
         if(tank != null && shouldAimCannon)
         {
-            float direction = 0;
+            // Calculate turning
+            float turnInput = 0;
 
             Vector3 turretDiference = cannonTargetPosition - tank.rotationPivot.position;
             float dot = Vector3.Dot(turretDiference.normalized, tank.rotationPivot.right);
-            if(Mathf.Abs(dot) > 0.1f)
-                direction = (dot > 0) ? 1 : -1;
+            if(Mathf.Abs(dot) > 0.2f)
+                turnInput = (dot > 0) ? 1 : -1;
             
-            tank.setCannonAxis(direction,0);
 
-            if(direction == 0)
+            // Nivel calculation
+            Vector3 nivelDiference = cannonTargetPosition - tank.nivelTransform.position;
+            float dy = nivelDiference.y;
+            float dxz = Mathf.Sqrt(nivelDiference.x * nivelDiference.x + nivelDiference.z * nivelDiference.z);
+
+            // Use the equation provided by https://en.wikipedia.org/wiki/Projectile_motion
+            float alpha = Mathf.Atan(dy/dxz) * Mathf.Rad2Deg;
+            // float theta = 90 - 0.5f*(90-alpha);
+            float theta = alpha;
+            // float theta =  Mathf.Atan(dy/dxz + Mathf.Sqrt((dy*dy)/(dxz*dxz) + 1)) * Mathf.Rad2Deg;
+
+            float currentY = tank.nivelTransform.forward.y;
+            float currentXZ = Mathf.Sqrt(tank.nivelTransform.forward.x * tank.nivelTransform.forward.x + 
+                                         tank.nivelTransform.forward.z * tank.nivelTransform.forward.z);
+
+            float currentNivel = Mathf.Atan(currentY/currentXZ) * Mathf.Rad2Deg;
+            float nivelInput = 0;
+
+            Debug.Log("Theta: " + theta + "Current: " + currentNivel);
+
+            if(Mathf.Abs(theta - currentNivel) > 2f)
             {
-                shouldAimCannon = false;
+                nivelInput = (theta - currentNivel) > 0 ? 1 : -1;
+            } 
+
+
+            tank.setCannonAxis(turnInput,nivelInput);
+
+            if(turnInput == 0 && nivelInput == 0)
+            {
+                isAimCorrect = true;
             }
         }
     }
@@ -272,5 +303,25 @@ public class TankAI : MonoBehaviour
 
         Task.current.Succeed();
 
+    }
+
+    [Task]
+    void Shoot()
+    {
+        if(tank != null && tank.CanShootCannon())
+        {
+            tank.cannonShoot();
+            Task.current.Succeed();
+        }
+        else
+        {
+            Task.current.Fail();
+        }
+    }
+
+    [Task]
+    bool AimCorrect()
+    {
+        return isAimCorrect;
     }
 }

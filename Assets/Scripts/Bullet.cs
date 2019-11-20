@@ -86,7 +86,7 @@ public class Bullet : NetworkBehaviour
                     tankScript.DealWithCollision(this.GetComponent<Collider>(), col);
                 }
             }
-            else
+            else if (!col.isTrigger)
             {
                 NetworkServer.Destroy(gameObject);
             }

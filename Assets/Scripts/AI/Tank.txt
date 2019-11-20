@@ -6,17 +6,22 @@ tree("Root")
 //Will try to find the player
 tree("Hunt")
 	sequence 
-		FoundEnemy()
-		Stop()
-		repeat
-			AimAtEnemy()
+		FoundEnemy
+		Stop
+		while
+			FoundEnemy
+			sequence
+				AimAtEnemy
+				CanEnemyBeSeen
+				AimCorrect
+				Shoot
 
 tree("Wander")
 	sequence
 		not 
-			FoundEnemy()
+			FoundEnemy
 		sequence
-			HasReachedDestination()
-			GetRandomPosition()
-			GoToTarget()
+			HasReachedDestination
+			GetRandomPosition
+			GoToTarget
 

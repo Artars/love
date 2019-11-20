@@ -490,6 +490,11 @@ public class Tank : NetworkBehaviour
         }
     }
 
+    public bool CanShootCannon()
+    {
+        return cannonShootCounter < 0 && canMoveCannon;
+    }
+
     #endregion
 
 
