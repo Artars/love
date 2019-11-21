@@ -100,6 +100,8 @@ public class Player : NetworkBehaviour
         SetCurrentMode(Mode.Playing);
         this.team = team;
         this.role = role;
+        this.tankRef = toAssign.GetComponent<Tank>();
+        if(playerController != null) playerController.AssignTank(team,role,tankRef);
         RpcAssignPlayer(team, role, toAssign);
     }
 
@@ -178,9 +180,9 @@ public class Player : NetworkBehaviour
     protected void RpcAssignPlayer(int team, Role role, NetworkIdentity toAssign){
         Debug.Log("Assigning player team " + team + " with role " + role.ToString());
 
-        Tank receivedTank = toAssign.GetComponent<Tank>();
+        tankRef = toAssign.GetComponent<Tank>();
         if(playerController != null)
-            playerController.AssignTank(team, role, receivedTank);
+            playerController.AssignTank(team, role, tankRef);
 
         if(!isLocalPlayer) return;
 
@@ -190,7 +192,6 @@ public class Player : NetworkBehaviour
 
         this.team = team;
         this.role = role;
-        tankRef = receivedTank;
         this.possesedObject = toAssign;
         currentMode = Mode.Playing;
         

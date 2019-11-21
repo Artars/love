@@ -140,6 +140,8 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
 
         if(currentMode == Player.Mode.Playing) {
             UpdateHUD(Time.deltaTime);
+            UpdateGunnerCooldown(Time.deltaTime);
+
             if(role == Role.Pilot){
                 pilotUpdate(Time.deltaTime);
             }
@@ -156,10 +158,10 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
 
     public void AssignTank(int team, Role role, Tank tank)
     {
-        if(!isLocalPlayer) return;
         tankRef = tank;
         this.role = role;
         this.team = team;
+        if(!isLocalPlayer) return;
 
         //Update gears
         gearSystem = tankRef.gearSystem;
@@ -346,8 +348,6 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
     }
 
     protected void gunnerUpdate(float deltaTime) {
-        UpdateGunnerCooldown(deltaTime);
-
         bool isPressing = Input.GetButton("Fire") || buttonState;
 
         if(fireCounter <= 0 && isPressing){
@@ -376,7 +376,7 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
             CmdUpdateAxisGunner(horizontalAxis, verticalAxis);
         }
 
-    }
+     }
 
     protected void TrySwitchRole()
     {
