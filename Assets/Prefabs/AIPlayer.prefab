@@ -428,8 +428,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reachDistance: 2
   turnTankThreshold: 0.1
-  cannonTurnThreshold: 0.1
-  turretInclinationThreshold: 0.5
+  cannonTurnThreshold: 0.02
+  turretInclinationThreshold: 0.02
   visions:
   - {fileID: 553169779097918082}
   - {fileID: 4495662671246158544}
