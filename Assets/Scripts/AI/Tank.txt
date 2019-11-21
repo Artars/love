@@ -16,7 +16,7 @@ tree("Hunt")
 						fallback
 							sequence
 								CanEnemyBeSeen
-								CloseToTarget(20.0)
+								CloseToTarget(50.0)
 								Stop
 							sequence
 								HasReachedDestination
