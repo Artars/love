@@ -102,6 +102,7 @@ public class Tank : NetworkBehaviour
     public Transform leftThreadEnd;
     public Transform frontCollisionCheck;
     public Transform backCollisionCheck;
+    public Transform centerTransform;
 
 
     [SyncVar]

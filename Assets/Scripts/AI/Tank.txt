@@ -31,6 +31,12 @@ tree("Wander")
 	sequence
 		not 
 			FoundEnemy
-		HasReachedDestination
-		SetRandomPosition
+		mute //Movement
+			sequence
+				HasReachedDestination
+				SetRandomPosition
+		mute //Cannon
+			sequence
+				AimCorrect
+				AimAtRandomDirection
 

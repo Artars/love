@@ -48,6 +48,7 @@ public class TankVision : MonoBehaviour
     protected Transform toFollow;
     
     protected Tank toIgnore;
+    protected int teamToIgnore = -1;
 
     protected bool shouldTrack = false;
     protected Transform myTransform;
@@ -70,6 +71,10 @@ public class TankVision : MonoBehaviour
 
         this.toFollow = target;
         toIgnore = ignore;
+        if(ignore != null)
+        {
+            teamToIgnore = ignore.team;
+        }
         shouldTrack = true;
 
         myCollider.enabled = true;
@@ -79,6 +84,7 @@ public class TankVision : MonoBehaviour
     {
         this.toFollow = null;
         toIgnore = null;
+        teamToIgnore = -1;
         shouldTrack = false;
         myCollider.enabled = false;
     }
@@ -105,7 +111,7 @@ public class TankVision : MonoBehaviour
             {
                 Vector3 position;
                 if(i == 0)
-                    position = detected.transform.position;
+                    position = detected.centerTransform.position;
                 else if(i == 1)
                     position = detected.frontCollisionCheck.position;
                 else
@@ -140,7 +146,7 @@ public class TankVision : MonoBehaviour
         {
             Tank t = col.GetComponentInParent<Tank>();
 
-            if(t != null && t != toIgnore)
+            if(t != null && t != toIgnore && t.team != teamToIgnore)
             {
                 detectedTanks.Add(t);
             }
@@ -155,7 +161,7 @@ public class TankVision : MonoBehaviour
         {
             Tank t = col.GetComponentInParent<Tank>();
 
-            if(t != null && detectedTanks.Contains(t))
+            if(t != null && t.team != teamToIgnore && detectedTanks.Contains(t))
             {
                 detectedTanks.Remove(t);
             }

@@ -172,12 +172,13 @@ public class TankAI : MonoBehaviour
             float currentNivel = Mathf.Atan(currentY/currentXZ) * Mathf.Rad2Deg;
             float nivelInput = 0;
 
-            Debug.Log("Theta: " + theta + "Current: " + currentNivel);
+            //Clamp theta to available angles
+            theta = Mathf.Clamp(theta, tank.tankParameters.minCannonNivel, tank.tankParameters.maxCannonNivel);
 
             if(Mathf.Abs(theta - currentNivel) > turretInclinationThreshold)
             {
                 nivelInput = (theta - currentNivel) > 0 ? 1 : -1;
-            } 
+            }
 
 
             tank.setCannonAxis(turnInput,nivelInput);
@@ -379,15 +380,28 @@ public class TankAI : MonoBehaviour
             cannonTargetPosition = lastPositionSeen;
             shouldAimCannon = true;
 
-            // Task.current.Succeed();
+            Task.current.Succeed();
         }
         else
         {
-            // Task.current.Fail();
+            Task.current.Fail();
         }
 
-        Task.current.Succeed();
+        // Task.current.Succeed();
 
+    }
+
+    [Task]
+    void AimAtRandomDirection()
+    {
+        Vector2 direction = Random.insideUnitCircle.normalized;
+        Vector3 offset = new Vector3(direction.x,0,direction.y);
+
+        cannonTargetPosition = tank.centerTransform.position + offset*20;
+
+        shouldAimCannon = true;
+
+        Task.current.Succeed();
     }
 
     [Task]
@@ -408,6 +422,13 @@ public class TankAI : MonoBehaviour
     bool AimCorrect()
     {
         return isAimCorrect;
+    }
+
+    [Task]
+    bool StopAim()
+    {
+        shouldAimCannon = false;
+        return true;
     }
 
     public void OnDrawGizmos()

@@ -775,6 +775,16 @@ public class GameMode : NetworkBehaviour
         instance.AddTeamGoal(0, instance.GetTank(1).GetComponent<NetworkIdentity>());
         instance.SetTeamGoalColor(0,Color.red,0);
     }
+
+    [MenuItem("Debug/Start game")]
+    public static void StartGame()
+    {
+        instance.StartMatchSetup();
+        if(LobbyManager.instance != null)
+        {
+            LobbyManager.instance.HideLobbyForAllPlayers();
+        }
+    }
     
 
     #endif
