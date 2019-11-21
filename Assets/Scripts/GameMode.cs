@@ -40,6 +40,7 @@ public class GameMode : NetworkBehaviour
     public float volumeInMatch = 0.25f;
     public bool assingAIToMissingTanks = true;
     public Color defaultMessageColor = Color.yellow;
+    public bool updateScoreInkill =  true;
     
 
     public List<InfoTank> infoTanks;
@@ -169,7 +170,11 @@ public class GameMode : NetworkBehaviour
         GameStatus.instance.RpcStartCounter(matchSettings.maxTime);
         
         BroadcastMessageToAllConnected("Match has started!", 2f, defaultMessageColor);
+
+        PrepareGoal();
     }
+
+    public virtual void PrepareGoal(){}
 
     protected void InitializeVariables()
     {
@@ -431,7 +436,8 @@ public class GameMode : NetworkBehaviour
 
         ResetTank(ownerId);
         
-        UpdateScore();
+        if(updateScoreInkill)
+            UpdateScore();
     }
 
     public virtual void UpdateScore(){
@@ -555,6 +561,7 @@ public class GameMode : NetworkBehaviour
     }
 
     public virtual void EndGame(List<int> winningTeams, bool hasDraw = false){
+        if(gameStage == GameStage.End) return;
         gameStage = GameStage.End;
         float finalTime = (matchSettings.maxTime == Mathf.Infinity) ? Mathf.Infinity : matchSettings.maxTime - matchTime;
         GameStatus.instance.RpcStopCounter(finalTime);
@@ -754,6 +761,16 @@ public class GameMode : NetworkBehaviour
     public static void KillTank0()
     {
         instance.TankKilled(0,1);
+    }
+
+    [MenuItem("Debug/Change Team")]
+    public static void ChangePlayerTeam()
+    {
+        Player p = instance.players[0];
+        int otherTeam = (p.team == 0) ? 1 : 0;
+        p.RemoveOwnership();
+        Tank toSet = instance.GetTank(otherTeam);
+        p.AssignPlayer(otherTeam,Role.Pilot,toSet.GetComponent<NetworkIdentity>());
     }
 
     [MenuItem("Debug/Kill tank 1")]

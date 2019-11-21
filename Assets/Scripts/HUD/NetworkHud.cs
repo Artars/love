@@ -116,22 +116,6 @@ public class NetworkHud : MonoBehaviour
         NetworkManager.singleton.StartHost();
     }
 
-    protected byte[] CreateServerInformation()
-    {
-        // Wire in broadcaster pipeline here
-        Assets.Scripts.NetworkMessages.GameBroadcastPacket gameBroadcastPacket = new Assets.Scripts.NetworkMessages.GameBroadcastPacket();
-
-        gameBroadcastPacket.serverAddress = NetworkManager.singleton.networkAddress;
-        gameBroadcastPacket.port = ((TelepathyTransport)Transport.activeTransport).port;
-        gameBroadcastPacket.hostName = PlayerPrefs.GetString("Name", "Dummy");
-        gameBroadcastPacket.serverGUID = NetworkDiscovery.instance.serverId;
-
-        byte[] broadcastData = Assets.Scripts.Utility.Serialisation.ByteStreamer.StreamToBytes(gameBroadcastPacket);
-        // NetworkDiscovery.instance.ServerPassiveBroadcastGame(broadcastData);
-
-        return broadcastData;
-    }
-
     public void OnServerStart(){
     }
 
