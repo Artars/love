@@ -168,6 +168,10 @@ public class Player : NetworkBehaviour
         {
             playerController.TryToAssignCallback();
         }
+        if(isLocalPlayer)
+        {
+            RenderSettings.fog = false;
+        }
     }
 
     [ClientRpc]
