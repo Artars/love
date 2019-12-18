@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameMaps/DuelAtTheChurch_Domination.unity
     guid: 9764b6398677ad943b636c35b0f46cab
+  - enabled: 1
+    path: Assets/Scenes/Burgsgrad(Race).unity
+    guid: 01178ed980366794bbcb98986036f99e
   m_configObjects: {}
