@@ -134,9 +134,13 @@ public class Tank : NetworkBehaviour
     public AudioSource frontCollisionSoundSource;
     public AudioSource backCollisionSoundSource;
     public AudioSource hitSoundSource;
+    public AudioSource turretRotationSoundSource;
     public float pitchStopped = 0.8f;
     public float pitchForward = 1.4f;
     public float pitchRotating = 1.0f;
+    public float turretMaxPitch = 1.4f;
+    public float turretDefaultPitch = 0.8f;
+    protected float turretDefaultVolume = 0.5f;
 
     [Header("Threads")]
     public float threadSpeed = 0.2f;
@@ -261,6 +265,12 @@ public class Tank : NetworkBehaviour
         motorSoundSource.loop = true;
         motorSoundSource.pitch = pitchStopped;
         motorSoundSource.Play();
+
+        turretRotationSoundSource.loop = true;
+        turretRotationSoundSource.pitch = turretDefaultPitch;
+        turretDefaultVolume = turretRotationSoundSource.volume;
+        turretRotationSoundSource.volume = 0;
+        turretRotationSoundSource.Play();
         
     }
 
@@ -506,6 +516,7 @@ public class Tank : NetworkBehaviour
         //Both
         UpdateThreadsVisual();
         UpdateMotorPitch();
+        UpdateTurretPitch();
         //Only server
         if(isServer)
         {
@@ -554,6 +565,33 @@ public class Tank : NetworkBehaviour
         }
 
         motorSoundSource.pitch = pitch;
+    }
+
+    protected void UpdateTurretPitch()
+    {
+        float realRightAxis = rightThreadOnGround ? rightAxis : 0;
+        float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
+
+        //Rotation compensation
+        
+        float dif = 0;
+        if (Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon) {
+            dif = realRightAxis - realLeftAxis;
+            dif *= 0.5f;
+        }
+
+        //Rotation from tank moving
+        float totalRotation = dif * turnSpeed;
+        //Rotation from turret itself
+        totalRotation += rotationAxis * turnCannonSpeed;
+
+        float maxRotation = (turnSpeed+turnCannonSpeed);
+
+        float porcent = Mathf.InverseLerp(0,maxRotation, Mathf.Abs(totalRotation));
+        float pitch = Mathf.Lerp(turretDefaultPitch, turretMaxPitch, porcent);
+
+        turretRotationSoundSource.pitch = pitch;
+        turretRotationSoundSource.volume = (porcent > Mathf.Epsilon) ? turretDefaultVolume : 0;
     }
 
 
