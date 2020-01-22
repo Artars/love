@@ -102,6 +102,8 @@ public class GameMode : NetworkBehaviour
         }
     }
 
+    #region InformPlayers
+
     public void BroadcastMessageToAllConnected(string message, float duration, Color color, float fadeIn = 0.5f, float fadeOut = 1f)
     {
         foreach(Player p in players)
@@ -138,6 +140,24 @@ public class GameMode : NetworkBehaviour
         }
     }
 
+    public void PlayClipToAllPlayers(AudioManager.SoundClips clip)
+    {
+        AudioManager.instance.RpcPlayClip(clip);
+    }
+
+    public void PlayClipToTeam(int team, AudioManager.SoundClips clip)
+    {
+        foreach (var player in teamPlayers[team])
+        {
+            if(player.connectionToClient != null)
+            {
+                AudioManager.instance.TargetPlayClip(player.connectionToClient, clip);
+            }
+        }
+    }
+
+    #endregion
+
     public void TryToJoinAsSpectator(Player player)
     {
         if(gameStage != GameStage.Lobby)
@@ -156,8 +176,8 @@ public class GameMode : NetworkBehaviour
         SetupPlayers();
         StartCoroutine(WaitMatchPresentation());
 
-        if(MusicSelector.instance != null)
-            MusicSelector.instance.RpcReduceVolume(volumeInMatch, matchSettings.timeToSetup * 0.5f);
+        if(AudioManager.instance != null)
+            AudioManager.instance.RpcReduceVolume(volumeInMatch, matchSettings.timeToSetup * 0.5f);
 
     }
 
@@ -430,9 +450,13 @@ public class GameMode : NetworkBehaviour
         GameStatus.instance.killHistory.Add(newKill);
 
         if(!hasSuicided)
+        {
             BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f,defaultMessageColor);
+        }
         else
+        {
             BroadcastMessageToAllConnected("Tank " + ownerId + " killed itself!", 2f,defaultMessageColor);
+        }
 
         ResetTank(ownerId);
         
@@ -448,6 +472,14 @@ public class GameMode : NetworkBehaviour
                 int team = MatchConfiguration.instance.infoTanks[j].team;
                 if(team == i)
                     count+=kills[j];
+            }
+            if(count > score[i])
+            {
+                PlayClipToTeam(i, AudioManager.SoundClips.IncrementPoint);
+            }
+            else if(count < score[i])
+            {
+                PlayClipToTeam(i, AudioManager.SoundClips.DecrementPoint);
             }
             score[i] = count;
             GameStatus.instance.score[i] = count;
@@ -578,7 +610,8 @@ public class GameMode : NetworkBehaviour
                 foreach(Player p in teamPlayers[i])
                 {
                     // Play end music
-                    p.RpcPlayVictoryMusic();
+                    // p.RpcPlayVictoryMusic();
+                    PlayClipToAllPlayers(AudioManager.SoundClips.Victory);
 
                     if(!hasDraw)
                     {
