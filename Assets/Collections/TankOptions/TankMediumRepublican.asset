@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: TankMediumRepublican
   m_EditorClassIdentifier: 
   tankName: Republican Medium
-  tankSprite: {fileID: 21300000, guid: 77055851d3ebb5c40bf30a18a332e138, type: 3}
+  tankSprites:
+  - {fileID: 21300000, guid: 77055851d3ebb5c40bf30a18a332e138, type: 3}
+  - {fileID: 21300000, guid: 6353ac08b5b4d594e83be8faca10d8fb, type: 3}
   tankRoles: 0100000002000000
   prefabID: 1
   tankPrefab: {fileID: 5378618044361311542, guid: 0d0933c68f8aae746b39d8424e9f35af,
     type: 3}
+  defaultNames:
+  - Babuska
+  - Borcsh

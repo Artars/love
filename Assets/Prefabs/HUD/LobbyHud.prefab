@@ -1209,6 +1209,8 @@ MonoBehaviour:
     prefabID: 0
     id: 0
     team: 0
+    name: 
+    skin: 0
     assigments: []
   textTank: {fileID: 3974535916976697672}
   rolesImages:
@@ -8726,7 +8728,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00001277687, y: -0.000027417971}
+  m_AnchoredPosition: {x: 0.00001277687, y: -0.000014564158}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6309083144862896212
@@ -8881,7 +8883,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5060792128936310593}
   m_HandleRect: {fileID: 7662210504833950015}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:

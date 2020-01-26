@@ -23,6 +23,10 @@ public class Cannon : NetworkBehaviour
     public Transform bulletSpawnPosition;
     public Transform cameraPositionGunner;
 
+    [Header("Skin")]
+    public List<MeshRenderer> meshRenderers = new List<MeshRenderer>();
+    public List<TMPro.TextMeshPro> texts = new List<TMPro.TextMeshPro>();
+
     public void Start()
     {
         SetTankReference(tankIdentity);
@@ -51,6 +55,19 @@ public class Cannon : NetworkBehaviour
         transformOriginal = transform;
         transformToFollow = tankReference.cannonAttachmentPoint;
         isFollowing = true;
+
+        //Set mesh renderers references
+        for (int i = 0; i < meshRenderers.Count; i++)
+        {
+            if(!tankReference.meshRendereres.Contains(meshRenderers[i]))
+                tankReference.meshRendereres.Add(meshRenderers[i]);
+        }
+
+        for (int i = 0; i < texts.Count; i++)
+            if(!tankReference.tankTexts.Contains(texts[i]))
+                tankReference.tankTexts.Add(texts[i]);
+        
+        tankReference.ForceSkinAndNameUpdate();
     }
 
     public void Update()

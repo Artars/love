@@ -239,6 +239,71 @@ public class LobbyManager : NetworkBehaviour
     }
 
     /// <summary>
+    /// Change the skin of a given tank
+    /// </summary>
+    /// <param name="tankID">The ID of the tank selected</param>
+    /// <param name="player">The reference to the player that made the selection</param>
+    /// <param name="skin">The ID of the skin selected to the tank</param>
+    public void SelectTankSkin(int tankID, LobbyPlayer player, int skin){
+        if(isGameStarting) return; // Won't change if game is starting
+
+        InfoTank tankInfo = infoTanks[tankID];
+        int playerConnectionId = player.connectionToClient.connectionId;
+        
+        bool isCorrect = false;
+        //Verify if player has autority
+        for (int i = 0; i < tankInfo.assigments.Length; i++)
+        {
+            if(tankInfo.assigments[i].playerAssigned == playerConnectionId)
+            {
+                isCorrect = true;
+                break;
+            }
+        }
+
+        //Avoid changing skin if the player doesn't have permission
+        if(!isCorrect) return;
+
+        //Update the new tank
+        //Verify range
+        tankInfo.skin = Mathf.Clamp(skin,0,tankCollection.tankOptions[tankInfo.prefabID].tankSprites.Length-1);
+
+        UpdateTankInfo(tankID, tankInfo);
+    }
+
+    /// <summary>
+    /// Change the name of a given tank
+    /// </summary>
+    /// <param name="tankID">The ID of the tank selected</param>
+    /// <param name="player">The reference to the player that made the selection</param>
+    /// <param name="newName">The new name of the tank</param>
+    public void SelectTankName(int tankID, LobbyPlayer player, string newName){
+        if(isGameStarting) return; // Won't change if game is starting
+
+        InfoTank tankInfo = infoTanks[tankID];
+        int playerConnectionId = player.connectionToClient.connectionId;
+        
+        bool isCorrect = false;
+        //Verify if player has autority
+        for (int i = 0; i < tankInfo.assigments.Length; i++)
+        {
+            if(tankInfo.assigments[i].playerAssigned == playerConnectionId)
+            {
+                isCorrect = true;
+                break;
+            }
+        }
+
+        //Avoid changing skin if the player doesn't have permission
+        if(!isCorrect) return;
+
+        //Update the new tank
+        tankInfo.name = newName;
+
+        UpdateTankInfo(tankID, tankInfo);
+    }
+
+    /// <summary>
     /// Remove a selection for that given player
     /// </summary>
     /// <param name="player"></param>

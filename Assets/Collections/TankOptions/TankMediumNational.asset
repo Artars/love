@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: TankMediumNational
   m_EditorClassIdentifier: 
   tankName: National Medium
-  tankSprite: {fileID: 21300000, guid: fc466bf9bf3deec4c8d9f0a5fae4fc65, type: 3}
+  tankSprites:
+  - {fileID: 21300000, guid: fc466bf9bf3deec4c8d9f0a5fae4fc65, type: 3}
+  - {fileID: 21300000, guid: 11b05c950d323504a96f1d73fa41d394, type: 3}
   tankRoles: 0100000002000000
   prefabID: 0
   tankPrefab: {fileID: 5378618044361311542, guid: 8f247f44c8780e247bb5fd169f0fbd11,
     type: 3}
+  defaultNames:
+  - Franz
+  - Mutter

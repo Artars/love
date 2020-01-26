@@ -72,6 +72,10 @@ MonoBehaviour:
   nivelTransform: {fileID: 1213213851985666416}
   bulletSpawnPosition: {fileID: 1213213851985666099}
   cameraPositionGunner: {fileID: 1213213851985666233}
+  meshRenderers:
+  - {fileID: 1213213851985666306}
+  - {fileID: 1213213851985666307}
+  texts: []
 --- !u!114 &7990679324641981981
 MonoBehaviour:
   m_ObjectHideFlags: 0

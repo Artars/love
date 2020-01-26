@@ -265,6 +265,7 @@ public class GameMode : NetworkBehaviour
         Tank tankRef = tank.GetComponent<Tank>();
         tankRef.team = tankInfo.team;
         tankRef.tankId = tankInfo.id;
+        tankRef.SetTankNameAndSkin(tankInfo.name,tankInfo.skin);
         
         // Set tank forced parametters
         if(forceTankParameters != null)
@@ -451,7 +452,7 @@ public class GameMode : NetworkBehaviour
 
         if(!hasSuicided)
         {
-            BroadcastMessageToAllConnected("Tank " + ownerId + " was killed by Tank " + enemyId, 2f,defaultMessageColor);
+            BroadcastMessageToAllConnected("Tank " + tanks[ownerId].tankName + " was killed by Tank " + tanks[enemyId].tankName, 2f,defaultMessageColor);
         }
         else
         {

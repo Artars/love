@@ -6,10 +6,12 @@ using UnityEngine;
 public class TankOption : ScriptableObject
 {
     public string tankName;
-    public Sprite tankSprite;
+    public Sprite[] tankSprites;
     public Role[] tankRoles;
     public int prefabID;
     public GameObject tankPrefab;
+
+    public string[] defaultNames;
 }
 
 

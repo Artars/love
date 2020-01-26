@@ -180,6 +180,14 @@ public class Tank : NetworkBehaviour
     [SyncVar]
     protected bool leftThreadOnGround = true;
 
+    [Header("Skins")]
+    public Material[] skins;
+    [SyncVar(hook="UpdateName")]
+    public string tankName = "";
+    [SyncVar(hook="UpdateSkin")]
+    public int tankSkin = 0;
+    public List<MeshRenderer> meshRendereres = new List<MeshRenderer>();
+    public List<TMPro.TextMeshPro> tankTexts =  new List<TMPro.TextMeshPro>();
 
     //Components references
     protected Rigidbody rgbd;
@@ -272,6 +280,20 @@ public class Tank : NetworkBehaviour
         turretRotationSoundSource.volume = 0;
         turretRotationSoundSource.Play();
         
+        //Skin - Problem with Text
+        // MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+        // for (int i = 0; i < renderers.Length; i++)
+        //     meshRendereres.Add(renderers[i]);
+        
+        TMPro.TextMeshPro[] texts = GetComponentsInChildren<TMPro.TextMeshPro>();
+        for (int i = 0; i < texts.Length; i++)
+            tankTexts.Add(texts[i]);
+            
+        if(isClient)
+        {
+            UpdateName(tankName);
+            UpdateSkin(tankSkin);
+        }
     }
 
     protected void UpdateTankParameters(TankParameters tankParameters)
@@ -989,6 +1011,55 @@ public class Tank : NetworkBehaviour
 
     #endregion
 
+    #region Skin
+
+    [Server]
+    public void SetTankNameAndSkin(string name, int skin)
+    {
+        tankName = name;
+        tankSkin = skin;
+
+        UpdateSkin(tankSkin);
+        UpdateName(tankName);
+    }
+
+    protected void UpdateSkin(int newSkin)
+    {
+        //Update skin material
+        foreach (var mesh in meshRendereres)
+        {
+            if(mesh != null)
+            {
+                Material[] newMaterials = new Material[mesh.materials.Length];
+                for (int i = 0; i < newMaterials.Length; i++)
+                {
+                    newMaterials[i] = skins[newSkin];
+                }
+                mesh.materials = newMaterials;
+            }
+        }
+    }
+
+    protected void UpdateName(string newName)
+    {
+        //Update text
+        foreach (var text in tankTexts)
+        {
+            if(text != null)
+            {
+                text.text = newName;
+            }
+        }
+    }
+
+    public void ForceSkinAndNameUpdate()
+    {
+        UpdateSkin(tankSkin);
+        UpdateName(tankName);
+    }
+
+    #endregion
+
     
     protected void OnDrawGizmos() {
         Gizmos.color = Color.red;
@@ -1007,6 +1078,16 @@ public class Tank : NetworkBehaviour
         if(backCollisionCheck != null)
         {
             Gizmos.DrawRay(backCollisionCheck.position, backCollisionCheck.forward * distanceCollisionCheck);
+        }
+    }
+
+    [UnityEditor.MenuItem("Debug/Update skin")]
+    public static void UpdateSkinAndText()
+    {
+        Tank[] tanks = FindObjectsOfType<Tank>();
+        foreach (var tank in tanks)
+        {
+            tank.ForceSkinAndNameUpdate();
         }
     }
 }
