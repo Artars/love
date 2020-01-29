@@ -8,14 +8,23 @@ public class GoalSpawner : NetworkBehaviour{
     public Vector3 center;
     public GameObject prefab;
     public GameObject instance;
+    [SyncVar]
+    private Vector3 pos;
 
+    
     public void SpawnGameObject(){
-        Vector3 pos = center+ new Vector3(Random.Range(-size.x/2, size.x/2),Random.Range(-size.y/2, size.y/2),Random.Range(-size.z/2, size.z/2));
+        
+        pos = center+ new Vector3(Random.Range(-size.x/2, size.x/2),Random.Range(-size.y/2, size.y/2),Random.Range(-size.z/2, size.z/2));
         pos += this.transform.position;
         pos.y = -10;
-        
-       instance =  Instantiate(prefab, pos, Quaternion.identity);
+        instance = Instantiate(prefab, pos, Quaternion.identity);
+        NetworkServer.Spawn(instance);
+        instance.GetComponent<FixPos>().pos = pos;
+        Debug.Log(instance.GetComponent<FixPos>().pos);
+
     }
+  
+
     public  void OnDrawGizmosSelected() {
         Gizmos.color = new Color(1,0,0,0.5f);
         Gizmos.DrawCube(transform.localPosition + center,size);

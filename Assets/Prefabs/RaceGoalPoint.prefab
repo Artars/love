@@ -195,6 +195,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 444363428307094187}
+  - component: {fileID: 4161474760177194201}
+  - component: {fileID: 6109102797838044305}
   m_Layer: 12
   m_Name: RaceGoalPoint
   m_TagString: Untagged
@@ -218,6 +220,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4161474760177194201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488706551885738692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 56d2e54102761534ba5f0c18621c0604
+  m_SceneId: 0
+--- !u!114 &6109102797838044305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488706551885738692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39583b1d3c6bc474f96e6e2646b45b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncInterval: 0.1
+  pos: {x: 0, y: 0, z: 0}
 --- !u!1 &6750237425942702434
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,7 +310,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   scoreIncresedTeam: -999
-  This: {fileID: 2488706551885738692}
 --- !u!114 &1855144441407703433
 MonoBehaviour:
   m_ObjectHideFlags: 0

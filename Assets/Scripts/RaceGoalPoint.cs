@@ -5,19 +5,16 @@ using Mirror;
 
 public class RaceGoalPoint : NetworkBehaviour
 {
-    public int scoreIncresedTeam = -999;
-    public int securitValue = -1;
-
+    [SyncVar]
+    public int scoreIncresedTeam = -999; 
 
     protected void OnTriggerEnter(Collider col){
         
         GameObject colliding = col.gameObject;
-        
         Tank collidingTank = colliding.GetComponentInParent<Tank>();
         
-        if (collidingTank  != null && securitValue == -1)
+        if (collidingTank  != null && scoreIncresedTeam == -999)
         {
-            securitValue = 0;
             scoreIncresedTeam = collidingTank.team;
             GameMode.instance.UpdateScore();
         }

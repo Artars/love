@@ -8,7 +8,9 @@ public class RaceGMode : GameMode
     [Header("Race Info")]
     public GameObject actualRaceGoal;
     public List<GoalSpawner> goalSpawners;
+    [SyncVar]
     public int actualGoalSpawner =-1;
+    [SyncVar]
     public int scoreByGoal = 1;
 
 
@@ -38,16 +40,18 @@ public class RaceGMode : GameMode
 
     public void SpawnNewGoal(){
         //first Spawn
+        
         if(actualGoalSpawner == -1 || goalSpawners.Count == 1){
         
             actualGoalSpawner = 0;
             goalSpawners[0].SpawnGameObject();
             actualRaceGoal = goalSpawners[actualGoalSpawner].instance;
+
         }else{
                         
             actualGoalSpawner++;
             actualGoalSpawner = actualGoalSpawner%goalSpawners.Count;
-            
+
             goalSpawners[actualGoalSpawner].SpawnGameObject();
             actualRaceGoal = goalSpawners[actualGoalSpawner].instance;
         }
