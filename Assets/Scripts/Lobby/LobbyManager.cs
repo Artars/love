@@ -277,7 +277,7 @@ public class LobbyManager : NetworkBehaviour
     /// <param name="tankID">The ID of the tank selected</param>
     /// <param name="player">The reference to the player that made the selection</param>
     /// <param name="newName">The new name of the tank</param>
-    public void SelectTankName(int tankID, LobbyPlayer player, string newName){
+    public void SelectTankName(int tankID, LobbyPlayer player, string newName, bool showName){
         if(isGameStarting) return; // Won't change if game is starting
 
         InfoTank tankInfo = infoTanks[tankID];
@@ -299,6 +299,7 @@ public class LobbyManager : NetworkBehaviour
 
         //Update the new tank
         tankInfo.name = newName;
+        tankInfo.showName = showName;
 
         UpdateTankInfo(tankID, tankInfo);
     }

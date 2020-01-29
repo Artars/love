@@ -53,6 +53,7 @@ public class LobbyPlayer : NetworkBehaviour
     public Button decrementSkinButton;
     public GameObject renameWindow;
     public TMPro.TMP_InputField nameField;
+    public Toggle showNameToggle;
 
 
     protected int currentlySelectedTank = -1;
@@ -183,14 +184,16 @@ public class LobbyPlayer : NetworkBehaviour
         LobbyManager.instance.PlayerDeselect(this);
     }
 
+    [Command]
     public void CmdSetTankSkin(int tankId, int skin)
     {
         LobbyManager.instance.SelectTankSkin(tankId,this,skin);
     }
 
-    public void CmdSetTankName(int tankId, string newName)
+    [Command]
+    public void CmdSetTankName(int tankId, string newName, bool showName)
     {
-        LobbyManager.instance.SelectTankName(tankId,this,newName);
+        LobbyManager.instance.SelectTankName(tankId,this,newName, showName);
     }
 
     [Command]
@@ -262,6 +265,8 @@ public class LobbyPlayer : NetworkBehaviour
             nameChangeButton.interactable = hasTankAutority;
             incrementSkinButton.interactable = hasTankAutority;
             decrementSkinButton.interactable = hasTankAutority;
+
+            showNameToggle.isOn = tanksInfo[currentlySelectedTank].showName;
             if(renameWindow.activeInHierarchy)
             {
                 renameWindow.SetActive(hasTankAutority);
@@ -360,6 +365,7 @@ public class LobbyPlayer : NetworkBehaviour
         if(currentlySelectedTank == -1) return;
         renameWindow.SetActive(true);
         nameField.text = tanksInfo[currentlySelectedTank].name;
+        showNameToggle.isOn = tanksInfo[currentlySelectedTank].showName;
     }
 
     public void ClickNameCancel()
@@ -369,7 +375,7 @@ public class LobbyPlayer : NetworkBehaviour
 
     public void ClickNameSubmit()
     {
-        CmdSetTankName(currentlySelectedTank, nameField.text);
+        CmdSetTankName(currentlySelectedTank, nameField.text, showNameToggle.isOn);
         renameWindow.SetActive(false);
     }
 

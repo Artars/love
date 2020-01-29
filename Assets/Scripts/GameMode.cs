@@ -265,7 +265,7 @@ public class GameMode : NetworkBehaviour
         Tank tankRef = tank.GetComponent<Tank>();
         tankRef.team = tankInfo.team;
         tankRef.tankId = tankInfo.id;
-        tankRef.SetTankNameAndSkin(tankInfo.name,tankInfo.skin);
+        tankRef.SetTankNameAndSkin(tankInfo.name, tankInfo.showName, tankInfo.skin);
         
         // Set tank forced parametters
         if(forceTankParameters != null)
@@ -456,7 +456,7 @@ public class GameMode : NetworkBehaviour
         }
         else
         {
-            BroadcastMessageToAllConnected("Tank " + ownerId + " killed itself!", 2f,defaultMessageColor);
+            BroadcastMessageToAllConnected("Tank " + tanks[ownerId].tankName + " killed itself!", 2f,defaultMessageColor);
         }
 
         ResetTank(ownerId);

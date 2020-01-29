@@ -186,6 +186,8 @@ public class Tank : NetworkBehaviour
     public string tankName = "";
     [SyncVar(hook="UpdateSkin")]
     public int tankSkin = 0;
+    [SyncVar]
+    public bool showName = true;
     public List<MeshRenderer> meshRendereres = new List<MeshRenderer>();
     public List<TMPro.TextMeshPro> tankTexts =  new List<TMPro.TextMeshPro>();
 
@@ -974,6 +976,7 @@ public class Tank : NetworkBehaviour
         GameObject mock = GameObject.Instantiate(mockPrefab, position, rotation);
         TankMock mockScript = mock.GetComponent<TankMock>();
         mockScript.ApplyPosition(position, rotation, turretRotation, Quaternion.Euler(cannonRotation,0,0));
+        mockScript.SetTankNameAndSkin(tankName,showName,tankSkin);
         mockScript.Explode();
     }
 
@@ -1014,10 +1017,11 @@ public class Tank : NetworkBehaviour
     #region Skin
 
     [Server]
-    public void SetTankNameAndSkin(string name, int skin)
+    public void SetTankNameAndSkin(string name, bool showName, int skin)
     {
         tankName = name;
         tankSkin = skin;
+        this.showName = showName;
 
         UpdateSkin(tankSkin);
         UpdateName(tankName);
@@ -1047,7 +1051,10 @@ public class Tank : NetworkBehaviour
         {
             if(text != null)
             {
-                text.text = newName;
+                if(showName)
+                    text.text = newName;
+                else
+                    text.text = "";
             }
         }
     }
@@ -1081,6 +1088,8 @@ public class Tank : NetworkBehaviour
         }
     }
 
+    #if UNITY_EDITOR
+
     [UnityEditor.MenuItem("Debug/Update skin")]
     public static void UpdateSkinAndText()
     {
@@ -1090,4 +1099,6 @@ public class Tank : NetworkBehaviour
             tank.ForceSkinAndNameUpdate();
         }
     }
+
+    #endif
 }
