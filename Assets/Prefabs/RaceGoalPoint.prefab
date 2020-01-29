@@ -278,6 +278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncInterval: 0.1
   scoreIncresedTeam: -999
+  This: {fileID: 2488706551885738692}
 --- !u!114 &1855144441407703433
 MonoBehaviour:
   m_ObjectHideFlags: 0

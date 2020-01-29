@@ -21,6 +21,7 @@ public class RaceGMode : GameMode
             Destroy(gameObject);
             return;
         }
+        SpawnNewGoal();
     }
 
     void Update()
@@ -41,32 +42,37 @@ public class RaceGMode : GameMode
         
             actualGoalSpawner = 0;
             goalSpawners[0].SpawnGameObject();
+            actualRaceGoal = goalSpawners[actualGoalSpawner].instance;
         }else{
-            int lastSpawn = actualGoalSpawner;
+                        
+            actualGoalSpawner++;
+            actualGoalSpawner = actualGoalSpawner%goalSpawners.Count;
             
-            while(lastSpawn == actualGoalSpawner){
-                actualGoalSpawner = Random.Range(0,goalSpawners.Count - 1);
-            }
             goalSpawners[actualGoalSpawner].SpawnGameObject();
             actualRaceGoal = goalSpawners[actualGoalSpawner].instance;
         }
     }
+
     public override void UpdateScore(){
+        
         if(gameStage != GameStage.Match) return;
+
         for(int i = 0; i < matchSettings.numTeams; i++){
-            if (i == actualRaceGoal.GetComponent<RaceGoalPoint>().scoreIncresedTeam)
+            if (i == actualRaceGoal.GetComponentInChildren<RaceGoalPoint>().scoreIncresedTeam)
             {
+                Debug.Log("if");
                 if (score[i] < matchSettings.maxPoints)
                     score[i]+= scoreByGoal;
             }
             Debug.Log("o score do time" + i + "é " + score[i]);
 
             GameStatus.instance.score[i] = (int)score[i];
+            
         }
 
-
-
         CheckWinCondition();
+        Destroy(actualRaceGoal);
+        SpawnNewGoal();
     }
 
     #region goal

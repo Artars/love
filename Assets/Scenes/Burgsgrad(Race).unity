@@ -1790,8 +1790,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: d7560f62759ab2441b3e640fb04eb717
-  m_SceneId: 0
+  m_AssetId: 
+  m_SceneId: 4192786499
 --- !u!4 &945107388
 Transform:
   m_ObjectHideFlags: 0
@@ -2040,8 +2040,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 1
   localPlayerAuthority: 0
-  m_AssetId: d7560f62759ab2441b3e640fb04eb717
-  m_SceneId: 0
+  m_AssetId: 
+  m_SceneId: 3569090356
 --- !u!1 &1038280194
 GameObject:
   m_ObjectHideFlags: 0
@@ -3797,7 +3797,7 @@ PrefabInstance:
     - target: {fileID: 5146735535516976687, guid: baece58659e1f51418d630701971bc8e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.7
+      value: -0.28
       objectReference: {fileID: 0}
     - target: {fileID: 5146735535516976687, guid: baece58659e1f51418d630701971bc8e,
         type: 3}
