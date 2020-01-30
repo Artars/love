@@ -768,7 +768,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 37
+  m_fontSize: 36.95
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6031,7 +6031,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Message
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d076869f4cc42ae40aa7f2e1197c82f0, type: 2}
   m_sharedMaterial: {fileID: 21433054700377420, guid: d076869f4cc42ae40aa7f2e1197c82f0,
@@ -6109,11 +6109,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -9082,12 +9082,12 @@ PrefabInstance:
     - target: {fileID: 6297930802900580632, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
       propertyPath: m_Value
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6297930802900580632, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}
       propertyPath: m_Size
-      value: 0.9999998
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 492329800650117873, guid: 6a4a546599c5a44478d063d2be864adc,
         type: 3}

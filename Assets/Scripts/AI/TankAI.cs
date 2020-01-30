@@ -11,8 +11,10 @@ public class TankAI : MonoBehaviour
     public float turnTankThreshold = 0.1f;
     public float cannonTurnThreshold = 0.1f;
     public float turretInclinationThreshold = 0.5f;
+    public float stopPilotStunTime = 1f;
 
     [Header("References")]
+    public AIControler controller;
     public TankVision[] visions;
 
     protected Tank tank;
@@ -31,6 +33,7 @@ public class TankAI : MonoBehaviour
     protected Vector3 cannonTargetPosition;
 
     // Movement
+    protected bool isPilotStunned = false;
     protected bool hasSetPath = false;
     protected NavMeshPath path;
     protected Vector3 waypointDestination;
@@ -44,7 +47,7 @@ public class TankAI : MonoBehaviour
         Reset();
     }
 
-    public void SetTank(Tank tank)
+    public void SetTank(Tank tank, AIControler control)
     {
         if(tank == null)
         {
@@ -55,6 +58,7 @@ public class TankAI : MonoBehaviour
         Reset();
 
         this.tank = tank;
+        this.controller = control;
 
         visions[0].SetToFollow(tank.cameraPositionDriver, tank);
         visions[1].SetToFollow(tank.rotationPivot, tank);
@@ -68,6 +72,18 @@ public class TankAI : MonoBehaviour
             vision.StopFollowing();
         }
         Reset();
+    }
+
+    public void StunPilot()
+    {
+        isPilotStunned = true;
+        StartCoroutine(WaitPilotStun());
+    }
+    
+    protected IEnumerator WaitPilotStun()
+    {
+        yield return new WaitForSeconds(stopPilotStunTime);
+        isPilotStunned = false;
     }
 
     public void Reset()
@@ -193,6 +209,9 @@ public class TankAI : MonoBehaviour
     //Should face destination and then moving to it
     protected void MoveTank()
     {
+        //Avoid movement if pilot is stunned
+        if(isPilotStunned) return;
+
         //Find direction
         Vector3 targetDestination = waypointDestination - tank.transform.position;
 
@@ -262,6 +281,38 @@ public class TankAI : MonoBehaviour
     {
         Vector3 sourcePosition = AIHelper.instance.GetRandomPosition(); //PLACEHOLDER
         SetTargetPosition(sourcePosition);
+    }
+
+    [Task]
+    bool HasObjective()
+    {
+        return (controller != null) && (controller.goals.Count > 0);
+    }
+
+    [Task]
+    void SetNearestObjectivePosition()
+    {
+        if(controller != null && controller.goals.Count > 0)
+        {
+            float smallestDistance = Mathf.Infinity;
+            int smallestIndex = -1;
+
+            for (int i = 0; i < controller.goals.Count; i++)
+            {
+                float distance = (controller.goals[i].transform.position - tank.transform.position).sqrMagnitude;
+                if(distance < smallestDistance)
+                {
+                    smallestDistance = distance;
+                    smallestIndex = i;
+                }
+
+                SetTargetPosition(controller.goals[smallestIndex].transform.position);
+            }
+        }
+        else
+        {
+            Task.current.Fail();
+        }
     }
 
     [Task]

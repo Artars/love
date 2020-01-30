@@ -149,7 +149,7 @@ public class GameMode : NetworkBehaviour
     {
         foreach (var player in teamPlayers[team])
         {
-            if(player.connectionToClient != null)
+            if(!player.isAI)
             {
                 AudioManager.instance.TargetPlayClip(player.connectionToClient, clip);
             }
@@ -356,6 +356,7 @@ public class GameMode : NetworkBehaviour
                     playerRef.team = playerInfo.team;
                     playerRef.role = playerInfo.role;
                     playerRef.playerInfo = playerInfo;
+                    playerRef.isAI = true;
 
 
                     if(teamPlayers[playerInfo.team] == null) teamPlayers[playerInfo.team] = new List<Player>();
