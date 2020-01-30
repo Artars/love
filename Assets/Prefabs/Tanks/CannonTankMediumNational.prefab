@@ -361,12 +361,13 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5335629701516314112}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -378,6 +379,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -438,12 +440,13 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5335629701516314118}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -455,6 +458,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -548,7 +552,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 0
-  m_AssetId: 364caccd376c45f439b5faf59a56c6c9
+  m_AssetId: 
   m_SceneId: 0
 --- !u!114 &6095294618835306964
 MonoBehaviour:
@@ -639,6 +643,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5434231603670659305}
     m_Modifications:
+    - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
+        type: 3}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2376525488028269151, guid: f8814ec6b3b3878418e8789b65092c69,
         type: 3}
       propertyPath: m_Name
@@ -653,11 +662,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1494775778699773612, guid: f8814ec6b3b3878418e8789b65092c69,
-        type: 3}
-      propertyPath: looping
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2855305167267900382, guid: f8814ec6b3b3878418e8789b65092c69,
         type: 3}
