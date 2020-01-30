@@ -13,10 +13,11 @@ public class GoalSpawner : NetworkBehaviour{
 
     
     public void SpawnGameObject(){
-        
+        //spawn at random position in the area
         pos = center+ new Vector3(Random.Range(-size.x/2, size.x/2),Random.Range(-size.y/2, size.y/2),Random.Range(-size.z/2, size.z/2));
-        pos += this.transform.position;
-        pos.y = -10;
+        pos += this.gameObject.transform.position * -1;
+        pos.y += (10.15f - 7.48f);
+
         instance = Instantiate(prefab, pos, Quaternion.identity);
         NetworkServer.Spawn(instance);
         instance.GetComponent<FixPos>().pos = pos;

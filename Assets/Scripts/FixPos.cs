@@ -11,6 +11,7 @@ public class FixPos : NetworkBehaviour
     void Start()
     {
         pos = transform.position;
+        pos *= -1;
     }
 
     void Update() {

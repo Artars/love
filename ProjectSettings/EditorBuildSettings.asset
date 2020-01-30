@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Burgsgrad(Race).unity
     guid: 01178ed980366794bbcb98986036f99e
+  - enabled: 1
+    path: Assets/Scenes/GameMaps/IronHarvest (RACE).unity
+    guid: 91eac9ee335bba0419b3db4b758faaed
   m_configObjects: {}
