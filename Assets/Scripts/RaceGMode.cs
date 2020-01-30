@@ -23,12 +23,17 @@ public class RaceGMode : GameMode
             Destroy(gameObject);
             return;
         }
+    }
+
+    public override void PrepareGoal()
+    {
         SpawnNewGoal();
     }
 
+
     void Update()
     {
-        if(gameStage == GameStage.Match)
+        if(gameStage == GameStage.Match && actualRaceGoal != null)
         {
             matchTime += Time.deltaTime;
             if(matchTime > matchSettings.maxTime)
@@ -47,6 +52,7 @@ public class RaceGMode : GameMode
             goalSpawners[0].SpawnGameObject();
             actualRaceGoal = goalSpawners[actualGoalSpawner].instance;
 
+            addAllTeamGoal(actualRaceGoal.transform.position);
         }else{
                         
             actualGoalSpawner++;
@@ -54,6 +60,9 @@ public class RaceGMode : GameMode
 
             goalSpawners[actualGoalSpawner].SpawnGameObject();
             actualRaceGoal = goalSpawners[actualGoalSpawner].instance;
+
+            setAllTeamGoal(actualRaceGoal.transform.position);
+
         }
     }
 
