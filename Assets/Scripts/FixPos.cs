@@ -11,12 +11,11 @@ public class FixPos : NetworkBehaviour
     void Start()
     {
         pos = transform.position;
-        pos *= -1;
     }
 
     void Update() {
         
-        transform.position = pos;
+        transform.position = pos;// link the position
         
     }
 

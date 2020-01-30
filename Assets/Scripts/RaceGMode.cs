@@ -40,7 +40,6 @@ public class RaceGMode : GameMode
 
     public void SpawnNewGoal(){
         //first Spawn
-        
         if(actualGoalSpawner == -1 || goalSpawners.Count == 1){
         
             actualGoalSpawner = 0;
@@ -73,9 +72,9 @@ public class RaceGMode : GameMode
             GameStatus.instance.score[i] = (int)score[i];
             
         }
-
-        CheckWinCondition();
+        
         Destroy(actualRaceGoal);
+        CheckWinCondition();
         SpawnNewGoal();
     }
 
