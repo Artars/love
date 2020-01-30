@@ -257,12 +257,9 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcForcePilotStop()
     {
-        if(isLocalPlayer)
+        if(playerController != null)
         {
-            if(playerController != null)
-            {
-                playerController.ForcePilotStop();
-            }
+            playerController.ForcePilotStop();
         }
     }
 

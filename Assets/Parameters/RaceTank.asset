@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a5901483f669c40aafab629fcf537b, type: 3}
+  m_Name: RaceTank
+  m_EditorClassIdentifier: 
+  tankParameters:
+    forwardSpeed: 8
+    backwardSpeed: 4
+    turnSpeed: 50
+    gearSystem:
+      lowestGear: -2
+      highestGear: 3
+      values:
+      - -1
+      - -0.5
+      - 0
+      - 0.33
+      - 0.66
+      - 1
+    shootMode: 1
+    turnCannonSpeed: 80
+    nivelCannonSpeed: 20
+    minCannonNivel: -10
+    maxCannonNivel: 40
+    shootCooldown: 2
+    bulletSpeed: 100
+    bulletDamage: 40
+    maxHeath: 100

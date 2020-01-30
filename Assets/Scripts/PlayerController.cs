@@ -298,10 +298,13 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
 
     public void ForcePilotStop()
     {
-        leftGear = old_leftGear = 0;
-        rightGear = old_rightGear = 0;
+        if(isLocalPlayer)
+        {
+            leftGear = old_leftGear = 0;
+            rightGear = old_rightGear = 0;
 
-        SetPilotValue(leftGear,rightGear);
+            SetPilotValue(leftGear,rightGear);
+        }
     }
 
     public void ShowHitmark(Vector3 position)
