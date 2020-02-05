@@ -59,7 +59,7 @@ public class Tank : NetworkBehaviour
     [Header("Parameters")]
     
     public TankParametersObject tankParametersObject;
-    [SyncVar(hook="UpdateTankParameters")]
+    [SyncVar(hook=nameof(UpdateTankParameters))]
     public TankParameters tankParameters = null;
 
     [Header("Cannon")]
@@ -83,6 +83,8 @@ public class Tank : NetworkBehaviour
     public float ShootCooldown {
         get{return shootCooldown;}
     }
+    [SyncVar]
+    public bool canShootCannon = true;
     protected float bulletSpeed = 30;
     protected float bulletDamage = 20;
     protected float cannonShootCounter;
@@ -182,9 +184,9 @@ public class Tank : NetworkBehaviour
 
     [Header("Skins")]
     public Material[] skins;
-    [SyncVar(hook="UpdateName")]
+    [SyncVar(hook=nameof(UpdateName))]
     public string tankName = "";
-    [SyncVar(hook="UpdateSkin")]
+    [SyncVar(hook=nameof(UpdateSkin))]
     public int tankSkin = 0;
     [SyncVar]
     public bool showName = true;
@@ -247,7 +249,7 @@ public class Tank : NetworkBehaviour
         }
         if(!isClient)
             tankParameters = tankParametersObject.tankParameters;
-        UpdateTankParameters(tankParameters);
+        UpdateTankParameters(null,tankParameters);
         rgbd = GetComponent<Rigidbody>();
         myTransform = transform;
         if (isServer) {
@@ -293,27 +295,27 @@ public class Tank : NetworkBehaviour
             
         if(isClient)
         {
-            UpdateName(tankName);
-            UpdateSkin(tankSkin);
+            UpdateName("",tankName);
+            UpdateSkin(0,tankSkin);
         }
     }
 
-    protected void UpdateTankParameters(TankParameters tankParameters)
+    protected void UpdateTankParameters(TankParameters oldTankParameters,TankParameters newTankParameters)
     {
-        if (tankParameters == null) return;
-        this.forwardSpeed = tankParameters.forwardSpeed;
-        this.backwardSpeed = tankParameters.backwardSpeed;
-        this.m_gearSystem = tankParameters.gearSystem;
-        this.turnSpeed = tankParameters.turnSpeed;
-        this.turnCannonSpeed = tankParameters.turnCannonSpeed;
-        this.nivelCannonSpeed = tankParameters.nivelCannonSpeed;
-        this.minCannonNivel = tankParameters.minCannonNivel;
-        this.maxCannonNivel = tankParameters.maxCannonNivel;
-        this.shootCooldown = tankParameters.shootCooldown;
-        this.bulletSpeed = tankParameters.bulletSpeed;
-        this.bulletDamage = tankParameters.bulletDamage;
-        this.maxHeath = tankParameters.maxHeath;
-        this.shootMode = tankParameters.shootMode;
+        if (newTankParameters == null) return;
+        this.forwardSpeed = newTankParameters.forwardSpeed;
+        this.backwardSpeed = newTankParameters.backwardSpeed;
+        this.m_gearSystem = newTankParameters.gearSystem;
+        this.turnSpeed = newTankParameters.turnSpeed;
+        this.turnCannonSpeed = newTankParameters.turnCannonSpeed;
+        this.nivelCannonSpeed = newTankParameters.nivelCannonSpeed;
+        this.minCannonNivel = newTankParameters.minCannonNivel;
+        this.maxCannonNivel = newTankParameters.maxCannonNivel;
+        this.shootCooldown = newTankParameters.shootCooldown;
+        this.bulletSpeed = newTankParameters.bulletSpeed;
+        this.bulletDamage = newTankParameters.bulletDamage;
+        this.maxHeath = newTankParameters.maxHeath;
+        this.shootMode = newTankParameters.shootMode;
 
         if(navMeshAgent != null)
         {
@@ -326,7 +328,7 @@ public class Tank : NetworkBehaviour
     public void SetTankParameters(TankParameters tankParam)
     {
         tankParameters = tankParam;
-        UpdateTankParameters(tankParameters);
+        UpdateTankParameters(null,tankParameters);
     }
 
     public void SetCanMove(bool canMove)
@@ -355,7 +357,7 @@ public class Tank : NetworkBehaviour
             cannonIdentity = cannonInstance.GetComponent<NetworkIdentity>();
             cannonReference = cannonInstance.GetComponent<Cannon>();
             cannonReference.tankIdentity = GetComponent<NetworkIdentity>();
-            cannonReference.SetTankReference(cannonReference.tankIdentity);
+            cannonReference.SetTankReference(null,cannonReference.tankIdentity);
 
             rotationPivot.rotation = cannonAttachmentPoint.rotation;
 
@@ -526,6 +528,7 @@ public class Tank : NetworkBehaviour
         }
     }
 
+    [Server]
     public bool CanShootCannon()
     {
         return cannonShootCounter < 0 && canMoveCannon;
@@ -545,6 +548,7 @@ public class Tank : NetworkBehaviour
         if(isServer)
         {
             cannonShootCounter -= Time.deltaTime;
+            canShootCannon = CanShootCannon();
         }
         //Only client
         else
@@ -904,9 +908,12 @@ public class Tank : NetworkBehaviour
 
     public void DealWithCollision(Collider otherCollider, Collider selfCollider) {
         if(isServer){
+            //Avoid bullet that is being destroyed
+            if(otherCollider.gameObject == null) return;
+
             Bullet bullet = otherCollider.GetComponent<Bullet>();
             if(bullet != null) {
-                Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
+                Debug.Log("Bullet " + bullet.netId + " of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
 
                     // Reaction to different shoot modes
@@ -929,6 +936,9 @@ public class Tank : NetworkBehaviour
                     // Make callback to shooter
                     if(bullet.tankWhoShot != null)
                         bullet.tankWhoShot.NotifyHitToGunner(otherCollider.transform.position);
+
+                    // Avoid more collisions
+                    bullet.canColide = false;
                     // Destroy bullet
                     NetworkServer.Destroy(otherCollider.gameObject);
                 }
@@ -1023,11 +1033,11 @@ public class Tank : NetworkBehaviour
         tankSkin = skin;
         this.showName = showName;
 
-        UpdateSkin(tankSkin);
-        UpdateName(tankName);
+        UpdateSkin(0,tankSkin);
+        UpdateName("",tankName);
     }
 
-    protected void UpdateSkin(int newSkin)
+    protected void UpdateSkin(int oldSkin, int newSkin)
     {
         //Update skin material
         foreach (var mesh in meshRendereres)
@@ -1044,7 +1054,7 @@ public class Tank : NetworkBehaviour
         }
     }
 
-    protected void UpdateName(string newName)
+    protected void UpdateName(string oldName,string newName)
     {
         //Update text
         foreach (var text in tankTexts)
@@ -1061,8 +1071,8 @@ public class Tank : NetworkBehaviour
 
     public void ForceSkinAndNameUpdate()
     {
-        UpdateSkin(tankSkin);
-        UpdateName(tankName);
+        UpdateSkin(0,tankSkin);
+        UpdateName("",tankName);
     }
 
     #endregion

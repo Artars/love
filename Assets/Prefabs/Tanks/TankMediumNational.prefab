@@ -1756,6 +1756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf48b6532cda55441908bb73763d06bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
   syncInterval: 0
   tankOption: {fileID: 11400000, guid: 61e6b19171e191445a8fd10e68e1f155, type: 2}
   mockPrefab: {fileID: 4143482589768500550, guid: 239b5e9d5b975cb46b4a26a1488b88d6,
@@ -1798,6 +1799,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
   shootParticles: {fileID: 4318217866929469304}
+  canShootCannon: 1
   cannonAttachmentPoint: {fileID: 5378618044769985994}
   rotationPivot: {fileID: 5378618044769985994}
   tankTransform: {fileID: 5378618044168448177}
@@ -1883,10 +1885,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneId: 0
   serverOnly: 0
-  localPlayerAuthority: 0
   m_AssetId: 8f247f44c8780e247bb5fd169f0fbd11
-  m_SceneId: 0
 --- !u!114 &2274091356584265944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1899,8 +1900,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
   syncInterval: 0.1
-  compressRotation: 1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  compressRotation: 0
 --- !u!1 &5378618044769985989
 GameObject:
   m_ObjectHideFlags: 0
@@ -1992,7 +1998,7 @@ GameObject:
   - component: {fileID: 591358950520250503}
   m_Layer: 10
   m_Name: LeftThread
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3042,7 +3048,7 @@ GameObject:
   - component: {fileID: 5627341384153588883}
   m_Layer: 10
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

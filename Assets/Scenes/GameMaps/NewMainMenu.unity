@@ -378,7 +378,7 @@ PrefabInstance:
     - target: {fileID: 2873196644409482955, guid: f6560bd5bc0c0e64fa2a197febf34b1b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2873196644409482955, guid: f6560bd5bc0c0e64fa2a197febf34b1b,
         type: 3}
@@ -2970,7 +2970,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 19
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &291038519
 GameObject:
@@ -4199,7 +4199,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh84178
+  m_Name: pb_Mesh329090
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -5139,6 +5139,7 @@ MonoBehaviour:
   buttonPrefab: {fileID: 530590219}
   buttonText: {fileID: 53309767}
   discoveryInterval: 1
+  networkDiscovery: {fileID: 0}
 --- !u!1001 &503858037
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5468,7 +5469,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22451668, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_RootOrder
-      value: 22
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 22451668, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6326,7 +6327,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh86602
+  m_Name: pb_Mesh331514
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -7396,7 +7397,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &654080052
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7412,10 +7413,10 @@ RectTransform:
   m_Father: {fileID: 292905026}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 500, y: -25}
-  m_SizeDelta: {x: 150, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 150, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &654080053
 MonoBehaviour:
@@ -11594,7 +11595,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh86650
+  m_Name: pb_Mesh331562
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -16335,112 +16336,6 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 61049e0afe2909a4e9a158b0570d866e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a46171e899852a348839bd9bce26edc4, type: 3}
---- !u!1001 &1545212890
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 6999486683127804352, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_Name
-      value: NetworkingManagerLiteNetLib
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804352, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 4.525776
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.0491889
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 11.907053
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6999486683127804354, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.size
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: onlineScene
-      value: DuelAtTheChurch
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: showDebugMessages
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: maxConnections
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[7]
-      value: 
-      objectReference: {fileID: 4007267603957463762, guid: 5f8273cd295dfa74d8fff1a48db96e13,
-        type: 3}
-    - target: {fileID: 2324505938531140778, guid: 85d693d748bc0ac48b897612da440c31,
-        type: 3}
-      propertyPath: spawnPrefabs.Array.data[8]
-      value: 
-      objectReference: {fileID: 2488706551885738692, guid: 56d2e54102761534ba5f0c18621c0604,
-        type: 3}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 85d693d748bc0ac48b897612da440c31, type: 3}
 --- !u!1 &1629650941
 GameObject:
   m_ObjectHideFlags: 0
@@ -19630,6 +19525,203 @@ Transform:
   m_Father: {fileID: 253500804}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1954456112
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3380199501274041192, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_Name
+      value: NetworkingManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380199501274041194, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4084830017461352851, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: spawnPrefabs.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4084830017461352851, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: maxConnections
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 4084830017461352851, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: spawnPrefabs.Array.data[8]
+      value: 
+      objectReference: {fileID: 4007267603957463762, guid: 5f8273cd295dfa74d8fff1a48db96e13,
+        type: 3}
+    - target: {fileID: 4084830017461352851, guid: b3703622212e9a4499168340844ad9a7,
+        type: 3}
+      propertyPath: transport
+      value: 
+      objectReference: {fileID: 1954456115}
+    m_RemovedComponents:
+    - {fileID: 11400000, guid: b3703622212e9a4499168340844ad9a7, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: b3703622212e9a4499168340844ad9a7, type: 3}
+--- !u!1 &1954456113 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3380199501274041192, guid: b3703622212e9a4499168340844ad9a7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1954456112}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1954456114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954456113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c761308e733c51245b2e8bb4201f46dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  secretHandshake: 5192107342490144024
+  serverBroadcastListenPort: 47777
+  ActiveDiscoveryInterval: 3
+  transport: {fileID: 1954456115}
+  OnServerFound:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.Discovery.ServerFoundUnityEvent, Mirror.Components, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &1954456115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954456113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5671dcb80f9d69240b71f5612676a3fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnClientConnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnClientDataReceived:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.ClientDataReceivedEvent, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnClientError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventException, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnClientDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnServerConnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnServerDataReceived:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.ServerDataReceivedEvent, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnServerError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventIntException, Mirror, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnServerDisconnected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  clientAddress: 127.0.0.1
+  serverIPv4BindAddress: 0.0.0.0
+  serverIPv6BindAddress: '::'
+  port: 7777
+  useUpnP: 1
+  maxConnections: 20
+  ipv6Enabled: 1
+  channels: 0204010300
+  authCode: 
+  updateTime: 15
+  pingInterval: 1000
+  disconnectTimeout: 5000
+  reconnectDelay: 500
+  maxConnectAttempts: 10
+  simulatePacketLoss: 0
+  simulationPacketLossChance: 10
+  simulateLatency: 0
+  simulationMinLatency: 30
+  simulationMaxLatency: 100
+  onClientSocketError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.LiteNetLib4Mirror.UnityEventError, Mirror, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  onServerSocketError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Mirror.LiteNetLib4Mirror.UnityEventIntError, Mirror, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1 &1955100969
 GameObject:
   m_ObjectHideFlags: 0
@@ -20583,30 +20675,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &2052110926 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6999486683127804352, guid: 85d693d748bc0ac48b897612da440c31,
-    type: 3}
-  m_PrefabInstance: {fileID: 1545212890}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2052110932
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2052110926}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93372bc1dacdbf74185a7f5093672cdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onDiscoveryResponse:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.LiteNetLib4Mirror.UnityEventIpEndpointString, Mirror, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  ports: 611e
 --- !u!1001 &2056825468
 PrefabInstance:
   m_ObjectHideFlags: 0

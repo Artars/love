@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using LiteNetLib;
+using LiteNetLib.Utils;
 using LiteNetLib4Mirror.Open.Nat;
 using UnityEngine;
 
@@ -113,13 +115,14 @@ namespace Mirror.LiteNetLib4Mirror
 		public UnityEventIntError onServerSocketError;
 
 		internal static bool Polling;
+		private static readonly NetDataWriter ConnectWriter = new NetDataWriter();
 		#region Overridable methods
-		protected internal virtual string GenerateCode()
+		protected internal virtual void GetConnectData(NetDataWriter writer)
 		{
-			return LiteNetLib4MirrorUtils.ToBase64(Application.productName + Application.companyName + Application.unityVersion + LiteNetLib4MirrorCore.TransportVersion + Singleton.authCode);
+			writer.Put(GetConnectKey());
 		}
 
-		protected internal virtual void ProcessConnectionRequest(ConnectionRequest request, string code)
+		protected internal virtual void ProcessConnectionRequest(ConnectionRequest request)
 		{
 			if (LiteNetLib4MirrorCore.Host.PeersCount >= maxConnections)
 			{
@@ -130,6 +133,11 @@ namespace Mirror.LiteNetLib4Mirror
 				Debug.LogWarning("Client tried to join with an invalid auth code! Current code:" + LiteNetLib4MirrorServer.Code);
 			}
 		}
+
+		protected internal virtual void OnConncetionRefused(DisconnectInfo disconnectinfo)
+		{
+
+		}
 		#endregion
 
 		internal void InitializeTransport()
@@ -139,6 +147,11 @@ namespace Mirror.LiteNetLib4Mirror
 				Singleton = this;
 				LiteNetLib4MirrorCore.State = LiteNetLib4MirrorCore.States.Idle;
 			}
+		}
+
+		private static string GetConnectKey()
+		{
+			return LiteNetLib4MirrorUtils.ToBase64(Application.productName + Application.companyName + Application.unityVersion + LiteNetLib4MirrorCore.TransportVersion + Singleton.authCode);
 		}
 
 		#region Unity Functions
@@ -167,6 +180,11 @@ namespace Mirror.LiteNetLib4Mirror
 		#endregion
 
 		#region Transport Overrides
+		public override bool Available()
+		{
+			return Application.platform != RuntimePlatform.WebGLPlayer;
+		}
+
 		public override bool ClientConnected()
 		{
 			return LiteNetLib4MirrorClient.IsConnected();
@@ -175,39 +193,17 @@ namespace Mirror.LiteNetLib4Mirror
 		public override void ClientConnect(string address)
 		{
 			clientAddress = address;
-			LiteNetLib4MirrorClient.ConnectClient(GenerateCode());
+			ConnectWriter.Reset();
+			GetConnectData(ConnectWriter);
+			LiteNetLib4MirrorClient.ConnectClient(ConnectWriter);
 		}
 
-		public override bool ClientSend(int channelId, byte[] data)
+		public override bool ClientSend(int channelId, ArraySegment<byte> data)
 		{
-			// ReSharper disable once ConvertIfStatementToReturnStatement
-			if (channelId < channels.Length)
-			{
-				return LiteNetLib4MirrorClient.Send(channels[channelId], data, 0, data.Length, (byte)channelId);
-			}
-
-			return LiteNetLib4MirrorClient.Send(channels[0], data, 0, data.Length, 0);
+			byte channel = (byte)(channelId < channels.Length ? channelId : 0);
+			return LiteNetLib4MirrorClient.Send(channels[0], data.Array, data.Offset, data.Count, channel);
 		}
-#if MIRROR_WRITERSEND
-		public override bool ClientSend(int channelId, NetworkWriter data)
-		{
-			try
-			{
-				ArraySegment<byte> bytes = data.ToArraySegment();
-				// ReSharper disable once ConvertIfStatementToReturnStatement
-				if (channelId < channels.Length)
-				{
-					return LiteNetLib4MirrorClient.Send(channels[channelId], bytes.Array, bytes.Offset, bytes.Count, (byte)channelId);
-				}
 
-				return LiteNetLib4MirrorClient.Send(channels[0], bytes.Array, bytes.Offset, bytes.Count, 0);
-			}
-			finally
-			{
-				NetworkWriterPool.Recycle(data);
-			}
-		}
-#endif
 		public override void ClientDisconnect()
 		{
 			if (!LiteNetLib4MirrorServer.IsActive())
@@ -223,37 +219,26 @@ namespace Mirror.LiteNetLib4Mirror
 
 		public override void ServerStart()
 		{
-			LiteNetLib4MirrorServer.StartServer(GenerateCode());
+			LiteNetLib4MirrorServer.StartServer(GetConnectKey());
 		}
 
-		public override bool ServerSend(int connectionId, int channelId, byte[] data)
+		public override bool ServerSend(List<int> connectionIds, int channelId, ArraySegment<byte> data)
 		{
-			// ReSharper disable once ConvertIfStatementToReturnStatement
-			if (channelId < channels.Length)
+			byte channel = (byte)(channelId < channels.Length ? channelId : 0);
+			bool success = true;
+			foreach (int id in connectionIds)
 			{
-				return LiteNetLib4MirrorServer.Send(connectionId, channels[channelId], data, 0, data.Length, (byte)channelId);
+				success &= LiteNetLib4MirrorServer.Send(id, channels[0], data.Array, data.Offset, data.Count, channel);
 			}
-			return LiteNetLib4MirrorServer.Send(connectionId, channels[0], data, 0, data.Length, 0);
+			return success;
 		}
-#if MIRROR_WRITERSEND
-		public override bool ServerSend(int connectionId, int channelId, NetworkWriter data)
+
+		public bool ServerSend(int connectionId, int channelId, ArraySegment<byte> data)
 		{
-			try
-			{
-				ArraySegment<byte> bytes = data.ToArraySegment();
-				// ReSharper disable once ConvertIfStatementToReturnStatement
-				if (channelId < channels.Length)
-				{
-					return LiteNetLib4MirrorServer.Send(connectionId, channels[channelId], bytes.Array, bytes.Offset, bytes.Count, (byte)channelId);
-				}
-				return LiteNetLib4MirrorServer.Send(connectionId, channels[0], bytes.Array, bytes.Offset, bytes.Count, 0);
-			}
-			finally
-			{
-				NetworkWriterPool.Recycle(data);
-			}
+			byte channel = (byte)(channelId < channels.Length ? channelId : 0);
+			return LiteNetLib4MirrorServer.Send(connectionId, channels[0], data.Array, data.Offset, data.Count, channel);
 		}
-#endif
+
 		public override bool ServerDisconnect(int connectionId)
 		{
 			return connectionId == 0 || LiteNetLib4MirrorServer.Disconnect(connectionId);
@@ -283,28 +268,15 @@ namespace Mirror.LiteNetLib4Mirror
 		{
 			return LiteNetLib4MirrorCore.GetState();
 		}
-		#endregion
 
-		#region ISegmentTransport
-		public bool ClientSend(int channelId, ArraySegment<byte> data)
-		{
-			// ReSharper disable once ConvertIfStatementToReturnStatement
-			if (channelId < channels.Length)
-			{
-				return LiteNetLib4MirrorClient.Send(channels[channelId], data.Array, data.Offset, data.Count, (byte)channelId);
-			}
-			return LiteNetLib4MirrorClient.Send(channels[0], data.Array, data.Offset, data.Count, 0);
-		}
-
-		public bool ServerSend(int connectionId, int channelId, ArraySegment<byte> data)
-		{
-			// ReSharper disable once ConvertIfStatementToReturnStatement
-			if (channelId < channels.Length)
-			{
-				return LiteNetLib4MirrorServer.Send(connectionId, channels[channelId], data.Array, data.Offset, data.Count, (byte)channelId);
-			}
-			return LiteNetLib4MirrorServer.Send(connectionId, channels[0], data.Array, data.Offset, data.Count, 0);
-		}
-		#endregion
-	}
+        public override Uri ServerUri()
+        {
+			UriBuilder builder = new UriBuilder();
+			builder.Scheme = "udp";
+			builder.Host = System.Net.Dns.GetHostName();
+            builder.Port = port;
+            return builder.Uri;
+        }
+        #endregion
+    }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using Mirror.Discovery;
 
 public class NetworkHud : MonoBehaviour
 {
@@ -94,9 +95,14 @@ public class NetworkHud : MonoBehaviour
 
         //Change port of the server
         TelepathyTransport transport = NetworkManager.singleton.gameObject.GetComponent<TelepathyTransport>();
+        Mirror.Websocket.WebsocketTransport websocketTransport = NetworkManager.singleton.gameObject.GetComponent<Mirror.Websocket.WebsocketTransport>();
         if(transport != null)
         {
             transport.port = matchSetting.serverPort;
+        }
+        else if (websocketTransport != null)
+        {
+            websocketTransport.port = matchSetting.serverPort;
         }
         else
         {
@@ -111,9 +117,18 @@ public class NetworkHud : MonoBehaviour
 
         MatchConfiguration.instance.infoTanks = tankInfo;
 
-        // NetworkDiscovery.instance.ServerPassiveBroadcastGame(CreateServerInformation());
+        Mirror.Discovery.NetworkDiscovery discovery = NetworkManager.singleton.GetComponent<Mirror.Discovery.NetworkDiscovery>();
+        if(discovery != null)
+            discovery.StopDiscovery();
 
+        if(NetworkClient.active)
+            NetworkManager.singleton.StopClient();
         NetworkManager.singleton.StartHost();
+
+        // NetworkDiscovery.instance.ServerPassiveBroadcastGame(CreateServerInformation());
+        NetworkDiscovery networkDiscovery = NetworkManager.singleton.GetComponent<NetworkDiscovery>();
+        if(networkDiscovery != null)
+            networkDiscovery.AdvertiseServer();
     }
 
     public void OnServerStart(){

@@ -29,12 +29,12 @@ public class Cannon : NetworkBehaviour
 
     public void Start()
     {
-        SetTankReference(tankIdentity);
+        SetTankReference(null,tankIdentity);
     }
 
-    public void SetTankReference(NetworkIdentity networkID)
+    public void SetTankReference(NetworkIdentity oldNetworkID ,NetworkIdentity newNetworkID)
     {
-        tankIdentity = networkID;
+        tankIdentity = newNetworkID;
         if(tankIdentity == null)
         {
             Debug.LogWarning("Missing tank reference");

@@ -62,7 +62,7 @@ public class AIControler : NetworkBehaviour, IPlayerControler
         }
     }
 
-    protected void GoalCallBack(GameStatus.SyncListGoal.Operation operation, int index, NetworkIdentity item) {
+    protected void GoalCallBack(GameStatus.SyncListGoal.Operation operation, int index, NetworkIdentity oldItem, NetworkIdentity newItem) {
         // Get team
         if(team == -1) return;
         GameStatus.SyncListGoal goalList = (team == 1) ? GameStatus.instance.goalIdentitiesTeam1 : GameStatus.instance.goalIdentitiesTeam0;
@@ -70,16 +70,16 @@ public class AIControler : NetworkBehaviour, IPlayerControler
         switch(operation)
         {
             case GameStatus.SyncListGoal.Operation.OP_ADD:
-                goals.Add(item.GetComponent<GoalPoint>() );
+                goals.Add(newItem.GetComponent<GoalPoint>() );
                 break;
             case GameStatus.SyncListGoal.Operation.OP_REMOVE:
-                goals.Remove(item.GetComponent<GoalPoint>());
+                goals.Remove(newItem.GetComponent<GoalPoint>());
                 break;
             case GameStatus.SyncListGoal.Operation.OP_REMOVEAT:
                 goals.RemoveAt(index);
                 break;
             case GameStatus.SyncListGoal.Operation.OP_INSERT:
-                goals.Insert(index, item.GetComponent<GoalPoint>());
+                goals.Insert(index, newItem.GetComponent<GoalPoint>());
                 break;
             case GameStatus.SyncListGoal.Operation.OP_CLEAR:
                 goals.Clear();

@@ -661,7 +661,7 @@ GameObject:
   - component: {fileID: 6428027755961105302}
   m_Layer: 10
   m_Name: RightThread
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1544,6 +1544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf48b6532cda55441908bb73763d06bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
   syncInterval: 0
   tankOption: {fileID: 11400000, guid: 19aca3fec20c05e4cbee5a4b9b703cc5, type: 2}
   mockPrefab: {fileID: 1784536855500820435, guid: 55ee4f6b6036c08498dc3498b4ef6fef,
@@ -1585,6 +1586,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 998014477034441962, guid: 74ca6805f1c7dc6499e9c704dc38114b,
     type: 3}
   shootParticles: {fileID: 2979413376386359534}
+  canShootCannon: 1
   cannonAttachmentPoint: {fileID: 5378618044769985994}
   rotationPivot: {fileID: 5378618044769985994}
   tankTransform: {fileID: 5378618044168448177}
@@ -1635,6 +1637,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: a14e15cc8eb6cb8439d99c7187c11373, type: 2}
   tankName: 
   tankSkin: 0
+  showName: 1
   meshRendereres:
   - {fileID: 6396842653028894079}
   tankTexts:
@@ -1669,10 +1672,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneId: 0
   serverOnly: 0
-  localPlayerAuthority: 0
   m_AssetId: 0d0933c68f8aae746b39d8424e9f35af
-  m_SceneId: 0
 --- !u!114 &7098913159966096791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1685,8 +1687,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
   syncInterval: 0.1
-  compressRotation: 1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  compressRotation: 0
 --- !u!1 &5378618044769985989
 GameObject:
   m_ObjectHideFlags: 0
@@ -2610,7 +2617,7 @@ GameObject:
   - component: {fileID: 8658101404658716844}
   m_Layer: 10
   m_Name: LeftThread
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2688,7 +2695,7 @@ GameObject:
   - component: {fileID: 4988339172350357743}
   m_Layer: 10
   m_Name: Center
-  m_TagString: Untagged
+  m_TagString: Tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

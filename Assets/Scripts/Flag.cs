@@ -15,16 +15,16 @@ public class Flag : NetworkBehaviour
     public Transform flagBottomPosition;
 
     [Header("CurrentState")]
-    [SyncVar(hook="SetFlagTeam")]
+    [SyncVar(hook=nameof(SetFlagTeam))]
     public int currentTeam = -1;
 
-    [SyncVar(hook="SetFlagVisibility")]
+    [SyncVar(hook=nameof(SetFlagVisibility))]
     public bool  isFlagVisible = false;
 
     public void Start()
     {
-        SetFlagTeam(currentTeam);
-        SetFlagVisibility(isFlagVisible);
+        SetFlagTeam(-1,currentTeam);
+        SetFlagVisibility(false,isFlagVisible);
     }
 
     [Server]
@@ -37,24 +37,24 @@ public class Flag : NetworkBehaviour
     /// <summary>
     /// Use 0 for team 0, 1 for team 1 and -1 for no team
     /// </summary>
-    /// <param name="team"></param>
-    public void SetFlagTeam(int team)
+    /// <param name="newTeam"></param>
+    public void SetFlagTeam(int oldTeam, int newTeam)
     {
         if(flagMesh == null) return;
         if(isServer)
-            this.currentTeam = team;
-        Material toUse = (team > -1) ? (team == 0) ? flagMaterialTeam0 : flagMaterialTeam1 : flagMaterialTeamNeutral;
+            this.currentTeam = newTeam;
+        Material toUse = (newTeam > -1) ? (newTeam == 0) ? flagMaterialTeam0 : flagMaterialTeam1 : flagMaterialTeamNeutral;
         flagMesh.material = toUse;
     }
 
-    public void SetFlagVisibility(bool hide)
+    public void SetFlagVisibility(bool oldHide, bool newHide)
     {
         if(isServer)
         {
-            isFlagVisible = hide;
+            isFlagVisible = newHide;
         }
 
-        flagTransform.gameObject.SetActive(hide);
+        flagTransform.gameObject.SetActive(newHide);
     }
 
 }

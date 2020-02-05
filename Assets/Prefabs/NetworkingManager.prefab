@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3380199501274041194}
   - component: {fileID: 4084830017461352851}
-  - component: {fileID: 4173280443371509835}
   m_Layer: 0
   m_Name: NetworkingManager
   m_TagString: Untagged
@@ -51,9 +50,10 @@ MonoBehaviour:
   showDebugMessages: 0
   offlineScene: NewMainMenu
   onlineScene: 
-  transport: {fileID: 4173280443371509835}
+  transport: {fileID: 0}
   networkAddress: localhost
   maxConnections: 4
+  authenticator: {fileID: 0}
   playerPrefab: {fileID: 945030072491325362, guid: c29bbf87b1265a84893bc71b470548d2,
     type: 3}
   autoCreatePlayer: 1
@@ -67,57 +67,3 @@ MonoBehaviour:
   - {fileID: 460630904971607289, guid: aa736e3a10cafc24c9be327c0d01cf16, type: 3}
   - {fileID: 945030072491325362, guid: c29bbf87b1265a84893bc71b470548d2, type: 3}
   - {fileID: 2488706551885738692, guid: 56d2e54102761534ba5f0c18621c0604, type: 3}
---- !u!114 &4173280443371509835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3380199501274041192}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7424c1070fad4ba2a7a96b02fbeb4bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnClientConnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnClientDataReceived:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventArraySegment, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnClientError:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventException, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnClientDisconnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  OnServerConnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnServerDataReceived:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventIntArraySegment, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnServerError:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventIntException, Mirror, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnServerDisconnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Mirror.UnityEventInt, Mirror, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  port: 7777
-  NoDelay: 1
-  serverMaxMessageSize: 16384
-  clientMaxMessageSize: 16384

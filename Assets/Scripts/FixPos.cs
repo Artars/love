@@ -19,7 +19,7 @@ public class FixPos : NetworkBehaviour
         
     }
 
-    public void SetPos(Vector3 newPos){
+    public void SetPos(Vector3 oldPos,Vector3 newPos){
         pos = newPos;
     }
 }

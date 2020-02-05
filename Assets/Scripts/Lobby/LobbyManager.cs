@@ -179,6 +179,10 @@ public class LobbyManager : NetworkBehaviour
     /// <param name="removedPlayer">The reference of the player that must me removed</param>
     public void RemovePlayer(LobbyPlayer removedPlayer)
     {
+        //Avoid double removal
+        if(!playersInfo.ContainsKey(removedPlayer.connectionID)) return;
+
+        
         //Deselect if selefted before
         PlayerDeselect(removedPlayer);
 
@@ -312,6 +316,9 @@ public class LobbyManager : NetworkBehaviour
         if(isGameStarting) return; // Won't change if game is starting
 
         int playerConnectionId = player.connectionToClient.connectionId;
+
+        //Avoid null
+        if(!playersInfo.ContainsKey(playerConnectionId)) return;
         
         PlayerInfo playerInfo = playersInfo[playerConnectionId];
 

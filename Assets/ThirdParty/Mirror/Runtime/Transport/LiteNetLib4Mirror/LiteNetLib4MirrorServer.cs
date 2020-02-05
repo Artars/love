@@ -79,7 +79,7 @@ namespace Mirror.LiteNetLib4Mirror
 
 		private static void OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliverymethod)
 		{
-			LiteNetLib4MirrorTransport.Singleton.OnServerDataReceived.Invoke(peer.Id + 1, reader.GetRemainingBytesSegment());
+			LiteNetLib4MirrorTransport.Singleton.OnServerDataReceived.Invoke(peer.Id + 1, reader.GetRemainingBytesSegment(), -1);
 			reader.Recycle();
 		}
 
@@ -109,7 +109,7 @@ namespace Mirror.LiteNetLib4Mirror
 		{
 			try
 			{
-				LiteNetLib4MirrorTransport.Singleton.ProcessConnectionRequest(request, request.Data.PeekString());
+				LiteNetLib4MirrorTransport.Singleton.ProcessConnectionRequest(request);
 			}
 			catch (Exception ex)
 			{

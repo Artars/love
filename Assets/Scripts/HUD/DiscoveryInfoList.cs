@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using Mirror.Discovery;
 using Mirror.LiteNetLib4Mirror;
 
 public class DiscoveryInfoList : MonoBehaviour
@@ -12,53 +13,93 @@ public class DiscoveryInfoList : MonoBehaviour
     public TMPro.TMP_Text buttonText;
 
     [SerializeField] public float discoveryInterval = 1f;
-    private NetworkManagerHUD _managerHud;
     private bool _noDiscovering = true;
-
     
+    public NetworkDiscovery networkDiscovery;
+    protected bool isSearching = false;
+
+    public void Start()
+    {
+        if(networkDiscovery == null)
+            networkDiscovery = NetworkManager.singleton.GetComponent<NetworkDiscovery>();
+        
+        if(networkDiscovery != null)
+        {
+            networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
+            Debug.Log("Added event");
+        }
+    }
+
+    public void OnDisable()
+    {
+        if(networkDiscovery != null)
+        {
+            networkDiscovery.OnServerFound.RemoveListener(OnDiscoveredServer);
+        }
+    }
+
     public void OnClickStartDiscovery()
     {
-        if(_noDiscovering)
+        if(networkDiscovery == null)
+            networkDiscovery = NetworkManager.singleton.GetComponent<NetworkDiscovery>();
+        
+        if(networkDiscovery != null)
         {
-            StartCoroutine(StartDiscovery());
-            buttonText.text = "Cancel discovery";
+            networkDiscovery.StartDiscovery();
+            buttonText.text = "Searching";
+            Button button = buttonText.GetComponentInParent<Button>();
+            if(button != null)
+                button.interactable = false;
         }
-        else
-        {
-            _noDiscovering = true;
-            buttonText.text = "Auto join";
-        }
+        // if(_noDiscovering)
+        // {
+        //     StartCoroutine(StartDiscovery());
+        //     buttonText.text = "Cancel discovery";
+        // }
+        // else
+        // {
+        //     _noDiscovering = true;
+        //     buttonText.text = "Auto join";
+        // }
     }
 
-    private IEnumerator StartDiscovery()
+    // private IEnumerator StartDiscovery()
+    // {
+    //     _noDiscovering = false;
+
+    //     LiteNetLib4MirrorDiscovery.InitializeFinder();
+    //     LiteNetLib4MirrorDiscovery.Singleton.onDiscoveryResponse.AddListener(OnClientDiscoveryResponse);
+    //     while (!_noDiscovering)
+    //     {
+    //         LiteNetLib4MirrorDiscovery.SendDiscoveryRequest("NetworkManagerHUD");
+    //         yield return new WaitForSeconds(discoveryInterval);
+    //     }
+
+    //     LiteNetLib4MirrorDiscovery.Singleton.onDiscoveryResponse.RemoveListener(OnClientDiscoveryResponse);
+    //     LiteNetLib4MirrorDiscovery.StopDiscovery();
+    // }
+
+    public void OnDiscoveredServer(ServerResponse info)
     {
-        _noDiscovering = false;
-
-        LiteNetLib4MirrorDiscovery.InitializeFinder();
-        LiteNetLib4MirrorDiscovery.Singleton.onDiscoveryResponse.AddListener(OnClientDiscoveryResponse);
-        while (!_noDiscovering)
+        if(!NetworkClient.isConnected && !NetworkClient.active)
         {
-            LiteNetLib4MirrorDiscovery.SendDiscoveryRequest("NetworkManagerHUD");
-            yield return new WaitForSeconds(discoveryInterval);
+            NetworkManager.singleton.StartClient(info.uri);
         }
-
-        LiteNetLib4MirrorDiscovery.Singleton.onDiscoveryResponse.RemoveListener(OnClientDiscoveryResponse);
-        LiteNetLib4MirrorDiscovery.StopDiscovery();
     }
 
-    private void OnClientDiscoveryResponse(System.Net.IPEndPoint endpoint, string text)
-    {
-        Debug.Log("Discovery: " + text);
-        string ip = endpoint.Address.ToString();
+    // private void OnClientDiscoveryResponse(System.Net.IPEndPoint endpoint, string text)
+    // {
+    //     Debug.Log("Discovery: " + text);
+    //     string ip = endpoint.Address.ToString();
 
-        NetworkManager.singleton.networkAddress = ip;
-        NetworkManager.singleton.maxConnections = 2;
-        LiteNetLib4MirrorTransport.Singleton.clientAddress = ip;
-        LiteNetLib4MirrorTransport.Singleton.port = (ushort)endpoint.Port;
-        LiteNetLib4MirrorTransport.Singleton.maxConnections = 2;
-        NetworkManager.singleton.StartClient();
-        _noDiscovering = true;
-    }
+    //     NetworkManager.singleton.networkAddress = ip;
+    //     NetworkManager.singleton.maxConnections = 2;
+    //     LiteNetLib4MirrorTransport.Singleton.clientAddress = ip;
+    //     LiteNetLib4MirrorTransport.Singleton.port = (ushort)endpoint.Port;
+    //     LiteNetLib4MirrorTransport.Singleton.maxConnections = 2;
+    //     NetworkManager.singleton.StartClient();
+    //     _noDiscovering = true;
+    // }
 
     // protected void OnReceivedServerResponse(DiscoveryInfo info)
     // {

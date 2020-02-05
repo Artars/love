@@ -661,7 +661,12 @@ public class GameMode : NetworkBehaviour
         if(returnToLobby)
             NetworkManager.singleton.ServerChangeScene(MatchConfiguration.instance.mapOption.scene);
         else
+        {
+            Mirror.Discovery.NetworkDiscovery discovery = NetworkManager.singleton.GetComponent<Mirror.Discovery.NetworkDiscovery>();
+            if(discovery != null)
+                discovery.StopDiscovery();
             NetworkManager.singleton.StopHost();
+        }
     }
 
 

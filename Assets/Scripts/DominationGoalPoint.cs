@@ -159,7 +159,7 @@ public class DominationGoalPoint : NetworkBehaviour
     {
         foreach (var flag in flags)
         {
-            flag.SetFlagVisibility(visibility);
+            flag.SetFlagVisibility(false, visibility);
         }
     }
 
@@ -175,7 +175,7 @@ public class DominationGoalPoint : NetworkBehaviour
     {
         foreach (var flag in flags)
         {
-            flag.SetFlagTeam(team);
+            flag.SetFlagTeam(-1,team);
         }
     }
 }

@@ -34,19 +34,17 @@ namespace Telepathy
                 this.client = client;
             }
         }
+
         // clients with <connectionId, ClientData>
-        ConcurrentDictionary<int, ClientToken> clients = new ConcurrentDictionary<int, ClientToken>();
+        readonly ConcurrentDictionary<int, ClientToken> clients = new ConcurrentDictionary<int, ClientToken>();
 
         // connectionId counter
-        // (right now we only use it from one listener thread, but we might have
-        //  multiple threads later in case of WebSockets etc.)
-        // -> static so that another server instance doesn't start at 0 again.
-        static int counter = 0;
+        int counter;
 
         // public next id function in case someone needs to reserve an id
         // (e.g. if hostMode should always have 0 connection and external
         //  connections should start at 1, etc.)
-        public static int NextConnectionId()
+        public int NextConnectionId()
         {
             int id = Interlocked.Increment(ref counter);
 
@@ -91,6 +89,10 @@ namespace Telepathy
                     // dispose after thread was started but we still need it
                     // in the thread
                     TcpClient client = listener.AcceptTcpClient();
+
+                    // set socket options
+                    client.NoDelay = NoDelay;
+                    client.SendTimeout = SendTimeout;
 
                     // generate the next connection id (thread safely)
                     int connectionId = NextConnectionId();
@@ -228,6 +230,10 @@ namespace Telepathy
 
             // clear clients list
             clients.Clear();
+
+            // reset the counter in case we start up again so
+            // clients get connection ID's starting from 1
+            counter = 0;
         }
 
         // send message to client using socket connection.
@@ -247,7 +253,12 @@ namespace Telepathy
                     token.sendPending.Set(); // interrupt SendThread WaitOne()
                     return true;
                 }
-                Logger.Log("Server.Send: invalid connectionId: " + connectionId);
+                // sending to an invalid connectionId is expected sometimes.
+                // for example, if a client disconnects, the server might still
+                // try to send for one frame before it calls GetNextMessages
+                // again and realizes that a disconnect happened.
+                // so let's not spam the console with log messages.
+                //Logger.Log("Server.Send: invalid connectionId: " + connectionId);
                 return false;
             }
             Logger.LogError("Client.Send: message too big: " + data.Length + ". Limit: " + MaxMessageSize);

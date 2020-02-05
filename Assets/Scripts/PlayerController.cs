@@ -353,7 +353,7 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
     protected void gunnerUpdate(float deltaTime) {
         bool isPressing = Input.GetButton("Fire") || buttonState;
 
-        if(fireCounter <= 0 && isPressing){
+        if(fireCounter <= 0 && tankRef.canShootCannon && isPressing){
             Debug.Log("Tried to shoot from " + tankRef.bulletSpawnPosition.position);
             CmdShootCannon();
             fireCounter = tankRef.ShootCooldown;
@@ -549,11 +549,11 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
         }
         if(assignedCallback)
         {
-            ScoreCallBack(SyncListInt.Operation.OP_DIRTY,0,0);
+            ScoreCallBack(SyncListInt.Operation.OP_DIRTY,0,0,0);
         }
     }
 
-    public void ScoreCallBack(SyncListInt.Operation operation, int index, int item) {
+    public void ScoreCallBack(SyncListInt.Operation operation, int index, int oldItem, int newItem) {
         int useTeam = (team != -1) ? team : 0;
         if(scoreText != null && useTeam != -1){
             scoreText.text = GameStatus.instance.GetCurrentScore(useTeam);
@@ -579,7 +579,7 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
         //Subscribe to changes in the goal
         goalList.Callback += (GoalCallBack);
         
-        GoalCallBack(GameStatus.SyncListGoal.Operation.OP_DIRTY, 0, null);
+        GoalCallBack(GameStatus.SyncListGoal.Operation.OP_DIRTY, 0, null, null);
     }
 
     protected void UpdateGoalCompassHUD(float delta)
@@ -595,7 +595,7 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
         }
     }
 
-    protected void GoalCallBack(GameStatus.SyncListGoal.Operation operation, int index, NetworkIdentity item) {
+    protected void GoalCallBack(GameStatus.SyncListGoal.Operation operation, int index, NetworkIdentity oldItem, NetworkIdentity newItem) {
         // Get team
         if(team == -1) return;
         GameStatus.SyncListGoal goalList = (team == 1) ? GameStatus.instance.goalIdentitiesTeam1 : GameStatus.instance.goalIdentitiesTeam0;

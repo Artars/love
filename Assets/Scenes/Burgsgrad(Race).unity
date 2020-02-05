@@ -1440,6 +1440,11 @@ PrefabInstance:
       propertyPath: m_SceneId
       value: 1348695456
       objectReference: {fileID: 0}
+    - target: {fileID: 2837054477716405054, guid: baece58659e1f51418d630701971bc8e,
+        type: 3}
+      propertyPath: sceneId
+      value: 2716447449
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baece58659e1f51418d630701971bc8e, type: 3}
 --- !u!114 &718078373 stripped
@@ -1708,6 +1713,11 @@ PrefabInstance:
       propertyPath: m_SceneId
       value: 2616310987
       objectReference: {fileID: 0}
+    - target: {fileID: 1094133066987509114, guid: 7ea9869712695034f808d357e3f80d56,
+        type: 3}
+      propertyPath: sceneId
+      value: 2335260748
+      objectReference: {fileID: 0}
     - target: {fileID: 5587389023683427600, guid: 7ea9869712695034f808d357e3f80d56,
         type: 3}
       propertyPath: goalSpawners.Array.size
@@ -1765,6 +1775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75d70f148964153479ca4c1dc1b9e296, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
   syncInterval: 0
   timeFormat: 0
   scoreFormat: 0
@@ -1788,10 +1799,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneId: 4192786499
   serverOnly: 0
-  localPlayerAuthority: 0
   m_AssetId: 
-  m_SceneId: 4192786499
 --- !u!4 &945107388
 Transform:
   m_ObjectHideFlags: 0
@@ -2024,6 +2034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28a1f91d3d5b4b241811d467aa119090, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
   syncInterval: 0.1
   debounceTime: 1
 --- !u!114 &1018103592
@@ -2038,10 +2049,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneId: 3569090356
   serverOnly: 1
-  localPlayerAuthority: 0
   m_AssetId: 
-  m_SceneId: 3569090356
 --- !u!1 &1038280194
 GameObject:
   m_ObjectHideFlags: 0
@@ -3864,6 +3874,11 @@ PrefabInstance:
       propertyPath: m_SceneId
       value: 194835397
       objectReference: {fileID: 0}
+    - target: {fileID: 2837054477716405054, guid: baece58659e1f51418d630701971bc8e,
+        type: 3}
+      propertyPath: sceneId
+      value: 1435412619
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baece58659e1f51418d630701971bc8e, type: 3}
 --- !u!114 &1966722400 stripped
@@ -4348,6 +4363,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SceneId
       value: 3647187410
+      objectReference: {fileID: 0}
+    - target: {fileID: 2837054477716405054, guid: baece58659e1f51418d630701971bc8e,
+        type: 3}
+      propertyPath: sceneId
+      value: 1490853795
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baece58659e1f51418d630701971bc8e, type: 3}

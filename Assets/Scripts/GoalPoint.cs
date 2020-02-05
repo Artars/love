@@ -7,9 +7,9 @@ public class GoalPoint : NetworkBehaviour
 {
     public delegate void ChangeColor(Color newColor);
 
-    [SyncVar(hook="UpdateTargetPosition")]
+    [SyncVar(hook=nameof(UpdateTargetPosition))]
     public Vector3 targetPosition;
-    [SyncVar(hook="UpdateTargetTransform")]
+    [SyncVar(hook=nameof(UpdateTargetTransform))]
     public NetworkIdentity target;
     public Transform targetTransform = null;
     [SyncVar]
@@ -62,7 +62,7 @@ public class GoalPoint : NetworkBehaviour
         EventChangeColor(color);
     }
 
-    protected void UpdateTargetTransform(NetworkIdentity newTarget)
+    protected void UpdateTargetTransform(NetworkIdentity oldTarget ,NetworkIdentity newTarget)
     {
         if(newTarget != null)
         {
@@ -74,7 +74,7 @@ public class GoalPoint : NetworkBehaviour
         }
     }
 
-    protected void UpdateTargetPosition(Vector3 newPosition)
+    protected void UpdateTargetPosition(Vector3 oldPosition,Vector3 newPosition)
     {
         myTransform.position = newPosition;
     }
