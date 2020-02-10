@@ -63,7 +63,8 @@ public class DominationGoalPoint : NetworkBehaviour
             {
                 removeCurrentTeamDomination = false;
                 //Make sound
-                GameMode.instance.PlayClipToTeam(currentTeam,AudioManager.SoundClips.DecrementPoint);
+                if(currentTeam >= 0 && currentTeam < 2)
+                    GameMode.instance.PlayClipToTeam(currentTeam,AudioManager.SoundClips.DecrementPoint);
 
                 currentTeam = -404;
                 SetFlagsVisibility(false);

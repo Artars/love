@@ -458,6 +458,9 @@ public class PlayerController : NetworkBehaviour, IPlayerControler
         // NetworkManager.Shutdown();
         if(isServer)
         {
+            Mirror.Discovery.NetworkDiscovery discovery = NetworkManager.singleton.GetComponent<Mirror.Discovery.NetworkDiscovery>();
+            if(discovery != null)
+                discovery.StopDiscovery();
             NetworkManager.singleton.StopHost();
 
         }

@@ -74,6 +74,11 @@ public class AudioManager : NetworkBehaviour
         currentTrack = Random.Range(0,musicTracks.Length);
         currentMusicVolume = volume;
         RpcPlayTrack(currentTrack, currentMusicVolume);
+
+        if(musicAudioSource == null) return;
+        musicAudioSource.clip = musicTracks[currentTrack];
+        musicAudioSource.volume = volume;
+        musicAudioSource.Play();
     }
 
 

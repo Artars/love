@@ -83,6 +83,7 @@ public class DiscoveryInfoList : MonoBehaviour
     {
         if(!NetworkClient.isConnected && !NetworkClient.active)
         {
+            networkDiscovery.StopDiscovery();
             NetworkManager.singleton.StartClient(info.uri);
         }
     }

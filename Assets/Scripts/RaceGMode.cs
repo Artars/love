@@ -74,7 +74,10 @@ public class RaceGMode : GameMode
             {
                 Debug.Log("if");
                 if (score[i] < matchSettings.maxPoints)
+                {
                     score[i]+= scoreByGoal;
+                    PlayClipToTeam(i, AudioManager.SoundClips.IncrementPoint);
+                }
             }
             Debug.Log("o score do time" + i + "é " + score[i]);
 
