@@ -35,7 +35,7 @@ public class NameMenu : MonoBehaviour
 
         if(isActive)
         {
-            string playerName = PlayerPrefs.GetString("Name", "");
+            string playerName = PlayerPrefs.GetString("Name", "Soldier");
             inputField.text = playerName;
             if(playerName == "")
             {
