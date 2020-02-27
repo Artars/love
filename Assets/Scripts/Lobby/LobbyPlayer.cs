@@ -43,12 +43,21 @@ public class LobbyPlayer : NetworkBehaviour
     public SettingsSelector settingsSelector;
     public TankOptionCollection tankCollection;
     public Image tankImage;
-    public TMPro.TextMeshProUGUI assigmentTankText;
     public TMPro.TextMeshProUGUI textIP; 
     public UnityEngine.UI.Button buttonReady;
 
+    [Header("Tank Assigment Window")]
+    public TMPro.TextMeshProUGUI assigmentTankText;
+    public Button nameChangeButton;
+    public Button incrementSkinButton;
+    public Button decrementSkinButton;
+    public GameObject renameWindow;
+    public TMPro.TMP_InputField nameField;
+    public Toggle showNameToggle;
+
 
     protected int currentlySelectedTank = -1;
+    protected bool hasTankAutority = false;
     protected bool assigmentWindowOpen = false;
 
     public override void OnNetworkDestroy () {
@@ -176,6 +185,18 @@ public class LobbyPlayer : NetworkBehaviour
     }
 
     [Command]
+    public void CmdSetTankSkin(int tankId, int skin)
+    {
+        LobbyManager.instance.SelectTankSkin(tankId,this,skin);
+    }
+
+    [Command]
+    public void CmdSetTankName(int tankId, string newName, bool showName)
+    {
+        LobbyManager.instance.SelectTankName(tankId,this,newName, showName);
+    }
+
+    [Command]
     public void CmdSetReady(bool isReady){
         LobbyManager.instance.PlayerSetReady(this, isReady);
     }
@@ -224,7 +245,34 @@ public class LobbyPlayer : NetworkBehaviour
     protected void UpdateRoleSelectionButtons(){
         if(currentlySelectedTank != -1){
             
-             InfoTank infoTank = tanksInfo[currentlySelectedTank];
+            InfoTank infoTank = tanksInfo[currentlySelectedTank];
+
+            //Update skin and name
+            assigmentTankText.text = "Tank " + tanksInfo[currentlySelectedTank].name;
+            tankImage.sprite = tankCollection.tankOptions[tanksInfo[currentlySelectedTank].prefabID].tankSprites[tanksInfo[currentlySelectedTank].skin];
+            
+            //Test if has autority
+            hasTankAutority = false;
+            for (int i = 0; i < tanksInfo[currentlySelectedTank].assigments.Length; i++)
+            {
+                if(tanksInfo[currentlySelectedTank].assigments[i].playerAssigned == connectionID)
+                {
+                    hasTankAutority = true;
+                    break;
+                }
+            }
+
+            nameChangeButton.interactable = hasTankAutority;
+            incrementSkinButton.interactable = hasTankAutority;
+            decrementSkinButton.interactable = hasTankAutority;
+
+            showNameToggle.isOn = tanksInfo[currentlySelectedTank].showName;
+            if(renameWindow.activeInHierarchy)
+            {
+                renameWindow.SetActive(hasTankAutority);
+                if(hasTankAutority)
+                    nameField.text = tanksInfo[currentlySelectedTank].name;
+            }
 
             while(assigmentInfoHolder.Count <= infoTank.assigments.Length){
                 int index = assigmentInfoHolder.Count;
@@ -262,8 +310,7 @@ public class LobbyPlayer : NetworkBehaviour
         roleAssigmentCanvas.SetActive(true);
 
         currentlySelectedTank = index;
-        assigmentTankText.text = "Tank " + index;
-        tankImage.sprite = tankCollection.tankOptions[tanksInfo[index].prefabID].tankSprite;
+        
         UpdateRoleSelectionButtons();
     }
 
@@ -273,7 +320,6 @@ public class LobbyPlayer : NetworkBehaviour
         roleAssigmentCanvas.SetActive(false);
 
         currentlySelectedTank = -1;
-
     }
 
 
@@ -289,6 +335,50 @@ public class LobbyPlayer : NetworkBehaviour
             }
         }
     }
+
+    public void ClickIncrementSkin()
+    {
+        if(currentlySelectedTank != -1)
+        {
+            int newSkin = tanksInfo[currentlySelectedTank].skin;
+            newSkin++;
+            if(newSkin >= tankCollection.tankOptions[tanksInfo[currentlySelectedTank].prefabID].tankSprites.Length)
+                newSkin = 0;
+            CmdSetTankSkin(currentlySelectedTank,newSkin);
+        }
+    }
+
+    public void ClickDecrementSkin()
+    {
+        if(currentlySelectedTank != -1)
+        {
+            int newSkin = tanksInfo[currentlySelectedTank].skin;
+            newSkin--;
+            if(newSkin < 0)
+                newSkin = tankCollection.tankOptions[tanksInfo[currentlySelectedTank].prefabID].tankSprites.Length - 1;
+            CmdSetTankSkin(currentlySelectedTank,newSkin);
+        }
+    }
+
+    public void ClickRenameWindow()
+    {
+        if(currentlySelectedTank == -1) return;
+        renameWindow.SetActive(true);
+        nameField.text = tanksInfo[currentlySelectedTank].name;
+        showNameToggle.isOn = tanksInfo[currentlySelectedTank].showName;
+    }
+
+    public void ClickNameCancel()
+    {
+        renameWindow.SetActive(false);
+    }
+
+    public void ClickNameSubmit()
+    {
+        CmdSetTankName(currentlySelectedTank, nameField.text, showNameToggle.isOn);
+        renameWindow.SetActive(false);
+    }
+
 
     public void ClickToggleReadyButton(){
         isReady = !isReady;
@@ -315,7 +405,20 @@ public class LobbyPlayer : NetworkBehaviour
     public void ClickExitButton()
     {
         // NetworkDiscovery.instance.StopDiscovery();
-        NetworkManager.Shutdown();
+
+        // NetworkManager.Shutdown();
+
+        if(isServer)
+        {
+            Mirror.Discovery.NetworkDiscovery discovery = NetworkManager.singleton.GetComponent<Mirror.Discovery.NetworkDiscovery>();
+            if(discovery != null)
+                discovery.StopDiscovery();
+            NetworkManager.singleton.StopHost();
+        }
+        else
+        {
+            NetworkManager.singleton.StopClient();
+        }
     }
 
     

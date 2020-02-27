@@ -12,24 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a5901483f669c40aafab629fcf537b, type: 3}
   m_Name: DefaultTankParameters
   m_EditorClassIdentifier: 
-  forwardSpeed: 8
-  backwardSpeed: 4
-  turnSpeed: 50
-  gearSystem:
-    lowestGear: -2
-    highestGear: 3
-    values:
-    - -1
-    - -0.5
-    - 0
-    - 0.33333334
-    - 0.6666667
-    - 1
-  turnCannonSpeed: 80
-  nivelCannonSpeed: 20
-  minCannonNivel: -10
-  maxCannonNivel: 40
-  shootCooldown: 2
-  bulletSpeed: 100
-  bulletDamage: 40
-  maxHeath: 100
+  tankParameters:
+    forwardSpeed: 8
+    backwardSpeed: 4
+    turnSpeed: 50
+    gearSystem:
+      lowestGear: -2
+      highestGear: 3
+      values:
+      - -1
+      - -0.5
+      - 0
+      - 0.33
+      - 0.66
+      - 1
+    shootMode: 0
+    turnCannonSpeed: 80
+    nivelCannonSpeed: 20
+    minCannonNivel: -10
+    maxCannonNivel: 40
+    shootCooldown: 2
+    bulletSpeed: 100
+    bulletDamage: 40
+    maxHeath: 100

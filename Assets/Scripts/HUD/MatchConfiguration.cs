@@ -102,11 +102,17 @@ public struct InfoTank {
     public int prefabID;
     public int id;
     public int team;
+    public string name;
+    public int skin;
+    public bool showName;
     public RoleAssigment[] assigments;
 
     public InfoTank(int id, int team, int numPlaces, int prefabID) {
         this.id = id;
         this.team = team;
+        this.name = "";
+        this.skin = 0;
+        this.showName = true;
         assigments = new RoleAssigment[numPlaces];
         this.prefabID = prefabID;
     }
@@ -114,6 +120,9 @@ public struct InfoTank {
     public InfoTank(int id, int team, TankOption tankOption) {
         this.id = id;
         this.team = team;
+        this.name = tankOption.defaultNames[UnityEngine.Random.Range(0,tankOption.defaultNames.Length)];
+        this.skin = 0;
+        this.showName = true;
         assigments = new RoleAssigment[tankOption.tankRoles.Length];
         this.prefabID = tankOption.prefabID;
 

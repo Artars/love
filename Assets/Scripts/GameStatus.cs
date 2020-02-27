@@ -3,18 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Clase de autoridade do servidor para mostrar status de jogo
+/// </summary>
 public class GameStatus : NetworkBehaviour
 {
+    public enum TimeFormat
+    {
+        Decrement,Increment,None
+    }
+
+    public enum ScoreFormat
+    {
+        Decrement,Increment,Self_Point_Slash_Max
+    }
+
+    public class SyncListGoal : SyncList<NetworkIdentity> {};
+    public class SyncListKillPair : SyncList<GameMode.KillPair> {};
+
     public static GameStatus instance = null;
 
-    public SyncListInt score;
-    public SyncListInt deaths;
-    public SyncListInt kills;
-    // public SyncList<GameMode.KillPair> killHistory;
+    [SyncVar]
+    public TimeFormat timeFormat = TimeFormat.Decrement;
+    [SyncVar]
+    public ScoreFormat scoreFormat = ScoreFormat.Decrement;
+
+    public readonly SyncListInt score = new SyncListInt();
+    public readonly SyncListInt deaths = new SyncListInt();
+    public readonly SyncListInt kills = new SyncListInt();
+    public readonly SyncListKillPair killHistory = new SyncListKillPair();
+    public readonly SyncListGoal goalIdentitiesTeam0 = new SyncListGoal();
+    public readonly SyncListGoal goalIdentitiesTeam1 = new SyncListGoal();
 
     protected TMPro.TMP_Text timeText;
     protected bool timeRunning = false;
     protected float timeCounter = 0;
+    protected float maxTime;
 
 
     [Header("Game settings")]
@@ -44,7 +68,9 @@ public class GameStatus : NetworkBehaviour
         score.Clear();
         deaths.Clear();
         kills.Clear();
-        // killHistory.Clear();
+        killHistory.Clear();
+        goalIdentitiesTeam0.Clear();
+        goalIdentitiesTeam1.Clear();
 
         for (int i = 0; i < MatchSetting.numTeams; i++)
         {
@@ -59,9 +85,9 @@ public class GameStatus : NetworkBehaviour
 
     public void Update()
     {
-        if(timeRunning && timeCounter != Mathf.Infinity)
+        if(timeRunning)
         {
-            timeCounter -= Time.deltaTime;
+            timeCounter += Time.deltaTime;
             if(timeText != null)
             {
                 timeText.text = TimeToString(timeCounter);
@@ -73,7 +99,8 @@ public class GameStatus : NetworkBehaviour
     public void RpcStartCounter(float maxTime)
     {
         timeRunning = true;
-        timeCounter = maxTime;
+        timeCounter = 0;
+        this.maxTime = maxTime;
 
         if(timeText != null)
             timeText.text = TimeToString(timeCounter);
@@ -95,32 +122,66 @@ public class GameStatus : NetworkBehaviour
         timeText = textRef;
         if(timeRunning)
             timeText.text = TimeToString(timeCounter);
-
     }
 
     protected string TimeToString(float time)
     {
-        if(time == Mathf.Infinity)
+        if(maxTime == Mathf.Infinity || timeFormat == TimeFormat.None)
             return "--:--";
         
-        if(time < 0)
-            time = 0;
+        float useTime = time;
+        if(timeFormat == TimeFormat.Decrement)
+            useTime = maxTime - time;
 
-        int min = Mathf.FloorToInt(time / 60);
-        int sec = Mathf.FloorToInt(time-min*60);
+        if(useTime < 0)
+            useTime = 0;
+
+        int min = Mathf.FloorToInt(useTime / 60);
+        int sec = Mathf.FloorToInt(useTime-min*60);
 
         return min.ToString("D2") + ":" + sec.ToString("D2");
     }
 
     public string GetCurrentScore(int team = 0)
     {
-        string newText = (MatchSetting.maxPoints - score[team]).ToString("D2");
-        for(int i = 0; i < score.Count; i++) {
-            if(i != team){
-                newText += "x" + (MatchSetting.maxPoints - score[i]).ToString("D2"); 
-            }
+        if(team < 0 || team >= score.Count)
+        {
+            return "00x00";
         }
-        return newText;
+        else
+        {
+            string newText;
+            if(scoreFormat == ScoreFormat.Decrement)
+            {
+                newText = (MatchSetting.maxPoints - score[team]).ToString("D2");
+
+                for(int i = 0; i < score.Count; i++) {
+                    if(i != team){
+                        newText += "x" + (MatchSetting.maxPoints - score[i]).ToString("D2"); 
+                    }
+                }
+            }
+            else if(scoreFormat == ScoreFormat.Increment)
+            {
+                newText = (score[team]).ToString("D2");
+
+                for(int i = 0; i < score.Count; i++) {
+                    if(i != team){
+                        newText += "x" + (score[i]).ToString("D2"); 
+                    }
+                }
+            }
+            else if(scoreFormat == ScoreFormat.Self_Point_Slash_Max)
+            {
+                newText = (score[team]).ToString("D2") +"/" + MatchSetting.maxPoints.ToString("D2");
+            }
+            else
+            {
+                newText = "00x00";
+            }
+            return newText;
+        }
+        
     }
     
 

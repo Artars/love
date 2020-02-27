@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Most of the processing happen on the server. There is some local processing as well, such as sound
+/// </summary>
 public class Tank : NetworkBehaviour
 {
-
+    /// <summary>
+    /// Used to keep track of who is on the tank
+    /// </summary>
     [System.Serializable]
     public class Assigment
     {
@@ -52,7 +57,10 @@ public class Tank : NetworkBehaviour
     public List<Assigment> playerRoles;
 
     [Header("Parameters")]
-    public TankParameters tankParameters;
+    
+    public TankParametersObject tankParametersObject;
+    [SyncVar(hook=nameof(UpdateTankParameters))]
+    public TankParameters tankParameters = null;
 
     [Header("Cannon")]
     protected float turnCannonSpeed = 20;
@@ -70,13 +78,17 @@ public class Tank : NetworkBehaviour
     [Header("Shooting")]
     public GameObject bulletPrefab;
     public ParticleSystem shootParticles;
+    protected bool canMoveCannon = true;
     protected float shootCooldown = 1;
     public float ShootCooldown {
         get{return shootCooldown;}
     }
+    [SyncVar]
+    public bool canShootCannon = true;
     protected float bulletSpeed = 30;
     protected float bulletDamage = 20;
     protected float cannonShootCounter;
+    protected ShootMode shootMode;
 
     [Header("Transform references")]
     public Transform cannonAttachmentPoint;
@@ -92,12 +104,14 @@ public class Tank : NetworkBehaviour
     public Transform leftThreadEnd;
     public Transform frontCollisionCheck;
     public Transform backCollisionCheck;
+    public Transform centerTransform;
 
 
-    [Header("Movement")]
-    [HideInInspector]
     [SyncVar]
-    public bool canBeControlled = true;
+    protected bool canBeMoved = true;
+    [Header("Movement")]
+    public bool useNavMesh = false;
+    public UnityEngine.AI.NavMeshAgent navMeshAgent;
     protected float forwardSpeed = 10;
     protected float backwardSpeed = 5;
     protected float turnSpeed = 10;
@@ -122,9 +136,13 @@ public class Tank : NetworkBehaviour
     public AudioSource frontCollisionSoundSource;
     public AudioSource backCollisionSoundSource;
     public AudioSource hitSoundSource;
+    public AudioSource turretRotationSoundSource;
     public float pitchStopped = 0.8f;
     public float pitchForward = 1.4f;
     public float pitchRotating = 1.0f;
+    public float turretMaxPitch = 1.4f;
+    public float turretDefaultPitch = 0.8f;
+    protected float turretDefaultVolume = 0.5f;
 
     [Header("Threads")]
     public float threadSpeed = 0.2f;
@@ -164,6 +182,16 @@ public class Tank : NetworkBehaviour
     [SyncVar]
     protected bool leftThreadOnGround = true;
 
+    [Header("Skins")]
+    public Material[] skins;
+    [SyncVar(hook=nameof(UpdateName))]
+    public string tankName = "";
+    [SyncVar(hook=nameof(UpdateSkin))]
+    public int tankSkin = 0;
+    [SyncVar]
+    public bool showName = true;
+    public List<MeshRenderer> meshRendereres = new List<MeshRenderer>();
+    public List<TMPro.TextMeshPro> tankTexts =  new List<TMPro.TextMeshPro>();
 
     //Components references
     protected Rigidbody rgbd;
@@ -205,7 +233,23 @@ public class Tank : NetworkBehaviour
     #region Initialization
 
     void Awake() {
-        LoadTankParameters();
+        if(navMeshAgent == null)
+            navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if(navMeshAgent == null)
+        {
+            useNavMesh = false;
+        }
+        else if(isClient)
+        {
+            navMeshAgent.enabled = false;
+        }
+        else
+        {
+            navMeshAgent.enabled = useNavMesh;
+        }
+        if(!isClient)
+            tankParameters = tankParametersObject.tankParameters;
+        UpdateTankParameters(null,tankParameters);
         rgbd = GetComponent<Rigidbody>();
         myTransform = transform;
         if (isServer) {
@@ -233,24 +277,73 @@ public class Tank : NetworkBehaviour
         motorSoundSource.loop = true;
         motorSoundSource.pitch = pitchStopped;
         motorSoundSource.Play();
+
+        turretRotationSoundSource.loop = true;
+        turretRotationSoundSource.pitch = turretDefaultPitch;
+        turretDefaultVolume = turretRotationSoundSource.volume;
+        turretRotationSoundSource.volume = 0;
+        turretRotationSoundSource.Play();
         
+        //Skin - Problem with Text
+        // MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
+        // for (int i = 0; i < renderers.Length; i++)
+        //     meshRendereres.Add(renderers[i]);
+        
+        TMPro.TextMeshPro[] texts = GetComponentsInChildren<TMPro.TextMeshPro>();
+        for (int i = 0; i < texts.Length; i++)
+            tankTexts.Add(texts[i]);
+            
+        if(isClient)
+        {
+            UpdateName("",tankName);
+            UpdateSkin(0,tankSkin);
+        }
     }
 
-    protected void LoadTankParameters()
+    protected void UpdateTankParameters(TankParameters oldTankParameters,TankParameters newTankParameters)
     {
-        if (tankParameters == null) return;
-        this.forwardSpeed = tankParameters.forwardSpeed;
-        this.backwardSpeed = tankParameters.backwardSpeed;
-        this.m_gearSystem = tankParameters.gearSystem;
-        this.turnSpeed = tankParameters.turnSpeed;
-        this.turnCannonSpeed = tankParameters.turnCannonSpeed;
-        this.nivelCannonSpeed = tankParameters.nivelCannonSpeed;
-        this.minCannonNivel = tankParameters.minCannonNivel;
-        this.maxCannonNivel = tankParameters.maxCannonNivel;
-        this.shootCooldown = tankParameters.shootCooldown;
-        this.bulletSpeed = tankParameters.bulletSpeed;
-        this.bulletDamage = tankParameters.bulletDamage;
-        this.maxHeath = tankParameters.maxHeath;
+        if (newTankParameters == null) return;
+        this.forwardSpeed = newTankParameters.forwardSpeed;
+        this.backwardSpeed = newTankParameters.backwardSpeed;
+        this.m_gearSystem = newTankParameters.gearSystem;
+        this.turnSpeed = newTankParameters.turnSpeed;
+        this.turnCannonSpeed = newTankParameters.turnCannonSpeed;
+        this.nivelCannonSpeed = newTankParameters.nivelCannonSpeed;
+        this.minCannonNivel = newTankParameters.minCannonNivel;
+        this.maxCannonNivel = newTankParameters.maxCannonNivel;
+        this.shootCooldown = newTankParameters.shootCooldown;
+        this.bulletSpeed = newTankParameters.bulletSpeed;
+        this.bulletDamage = newTankParameters.bulletDamage;
+        this.maxHeath = newTankParameters.maxHeath;
+        this.shootMode = newTankParameters.shootMode;
+
+        if(navMeshAgent != null)
+        {
+            navMeshAgent.speed = forwardSpeed;
+            navMeshAgent.angularSpeed = turnSpeed;
+        }
+    }
+
+    [Server]
+    public void SetTankParameters(TankParameters tankParam)
+    {
+        tankParameters = tankParam;
+        UpdateTankParameters(null,tankParameters);
+    }
+
+    public void SetCanMove(bool canMove)
+    {
+        this.canMoveCannon = canMove;
+        SetNavMeshEnabled(canMove);
+    }
+
+    public void SetNavMeshEnabled(bool canMove)
+    {
+        this.canBeMoved = canMove && !useNavMesh;
+        if(navMeshAgent != null)
+        {
+            navMeshAgent.enabled = canMove;
+        }
     }
 
     void Start() {
@@ -264,7 +357,7 @@ public class Tank : NetworkBehaviour
             cannonIdentity = cannonInstance.GetComponent<NetworkIdentity>();
             cannonReference = cannonInstance.GetComponent<Cannon>();
             cannonReference.tankIdentity = GetComponent<NetworkIdentity>();
-            cannonReference.SetTankReference(cannonReference.tankIdentity);
+            cannonReference.SetTankReference(null,cannonReference.tankIdentity);
 
             rotationPivot.rotation = cannonAttachmentPoint.rotation;
 
@@ -321,13 +414,13 @@ public class Tank : NetworkBehaviour
         bool hasOnlyOnePlayer = players.Count == 1;
         if (hasOnlyOnePlayer)
         {
-            player.canSwitchRoles = true;
+            player.SetCanSwitchRoles(true);
         }
         else
         {
             foreach (var p in players)
             {
-                p.canSwitchRoles = false;
+                p.SetCanSwitchRoles(false);
             }
         }
 
@@ -348,8 +441,8 @@ public class Tank : NetworkBehaviour
         {
             foreach (var p in players)
             {
-                p.canSwitchRoles = true;
-                p.RpcDisplayMessage("You can change roles", 2, 0.1f, 0.5f);
+                p.SetCanSwitchRoles(true);
+                p.RpcDisplayMessage("You can change roles", 2, GameMode.instance.defaultMessageColor, 0.1f, 0.5f);
             }
         }
 
@@ -367,14 +460,14 @@ public class Tank : NetworkBehaviour
         foreach(var assigment in playerRoles)
         {
             if(assigment.playerRef != null)
-                assigment.playerRef.canSwitchRoles = false;
+                assigment.playerRef.SetCanSwitchRoles(false);
             assigment.playerRef = null;
         }
     }
 
     public void SwitchPlayerRole(Player player, Role currentRole)
     {
-        if (!player.canSwitchRoles) return; //Avoid changin if the player is not available
+        if (!player.GetCanSwitchRoles()) return; //Avoid changin if the player is not available
         Role roleToSwitch = (currentRole == Role.Pilot) ? Role.Gunner : Role.Pilot;
 
         for (int i = 0; i < playerRoles.Count; i++) {
@@ -387,7 +480,7 @@ public class Tank : NetworkBehaviour
             {
                 playerRoles[i].playerRef = player;
                 player.role = roleToSwitch;
-                player.RpcAssignPlayer(team, roleToSwitch, GetComponent<NetworkIdentity>());
+                player.AssignPlayer(team, roleToSwitch, GetComponent<NetworkIdentity>());
             }
         }
     }
@@ -429,10 +522,16 @@ public class Tank : NetworkBehaviour
     }
 
     public void cannonShoot() {
-        if (cannonShootCounter < 0 && canBeControlled) {
+        if (cannonShootCounter < 0 && canMoveCannon) {
             ShootCannon(team);
             cannonShootCounter = shootCooldown;
         }
+    }
+
+    [Server]
+    public bool CanShootCannon()
+    {
+        return cannonShootCounter < 0 && canMoveCannon;
     }
 
     #endregion
@@ -444,10 +543,12 @@ public class Tank : NetworkBehaviour
         //Both
         UpdateThreadsVisual();
         UpdateMotorPitch();
+        UpdateTurretPitch();
         //Only server
         if(isServer)
         {
             cannonShootCounter -= Time.deltaTime;
+            canShootCannon = CanShootCannon();
         }
         //Only client
         else
@@ -494,6 +595,33 @@ public class Tank : NetworkBehaviour
         motorSoundSource.pitch = pitch;
     }
 
+    protected void UpdateTurretPitch()
+    {
+        float realRightAxis = rightThreadOnGround ? rightAxis : 0;
+        float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
+
+        //Rotation compensation
+        
+        float dif = 0;
+        if (Mathf.Abs(realRightAxis - realLeftAxis) > float.Epsilon) {
+            dif = realRightAxis - realLeftAxis;
+            dif *= 0.5f;
+        }
+
+        //Rotation from tank moving
+        float totalRotation = dif * turnSpeed;
+        //Rotation from turret itself
+        totalRotation += rotationAxis * turnCannonSpeed;
+
+        float maxRotation = (turnSpeed+turnCannonSpeed);
+
+        float porcent = Mathf.InverseLerp(0,maxRotation, Mathf.Abs(totalRotation));
+        float pitch = Mathf.Lerp(turretDefaultPitch, turretMaxPitch, porcent);
+
+        turretRotationSoundSource.pitch = pitch;
+        turretRotationSoundSource.volume = (porcent > Mathf.Epsilon) ? turretDefaultVolume : 0;
+    }
+
 
     void FixedUpdate() {
         if (isServer) {
@@ -524,6 +652,7 @@ public class Tank : NetworkBehaviour
         bulletScript.damage = bulletDamage;
         bulletScript.fireWithVelocity(directionToUse.normalized * bulletSpeed);
         bulletScript.tankWhoShot = this;
+        bulletScript.shootMode = shootMode;
 
         Debug.Log("Firing from: " + positionToUse);
 
@@ -646,7 +775,7 @@ public class Tank : NetworkBehaviour
         Ray forwardRay = new Ray(frontCollisionCheck.position, frontCollisionCheck.forward);
         RaycastHit forwardResult;
         Physics.Raycast(forwardRay, out forwardResult,distanceCollisionCheck, layer);
-        if(forwardResult.collider != null && rightGear > 0 && leftGear > 0)
+        if(forwardResult.collider != null && !forwardResult.collider.isTrigger && rightGear > 0 && leftGear > 0)
         {
             CauseCollision(true);
             return;
@@ -656,7 +785,7 @@ public class Tank : NetworkBehaviour
         Ray backRay = new Ray(backCollisionCheck.position, backCollisionCheck.forward);
         RaycastHit backResult;
         Physics.Raycast(backRay, out backResult,distanceCollisionCheck, layer);
-        if(backResult.collider != null && rightGear < 0 && leftGear < 0)
+        if(backResult.collider != null && !backResult.collider.isTrigger && rightGear < 0 && leftGear < 0)
         {
             CauseCollision(false);
             return;
@@ -669,18 +798,7 @@ public class Tank : NetworkBehaviour
         // Call collision for everyone
         RpcHadCollision(inFront);
 
-        // Stop tank
-        leftGear = rightGear = 0;
-        leftAxis = rightAxis = 0;
-        // Make pilot stop
-        foreach(var player in playerRoles)
-        {
-            if(player.role == Role.Pilot && player.playerRef != null)
-            {
-                player.playerRef.RpcForcePilotStop();
-                break;
-            }
-        }
+        ForceStop();
 
     }
 
@@ -707,7 +825,7 @@ public class Tank : NetworkBehaviour
 
     // }
     protected void moveTank(float deltaTime) {
-        if(!canBeControlled) return;
+        if(!canBeMoved) return;
 
         Vector3 nonControllableSpeed = Vector3.Dot(rgbd.velocity, transform.up) * transform.up;
 
@@ -743,7 +861,7 @@ public class Tank : NetworkBehaviour
     public void CheckTankRotation(float deltaTime)
     {
         //Avoid killing and uncontrollable tank
-        if(!canBeControlled)
+        if(!canBeMoved)
             return;
 
         //Verify if it's currently flipped
@@ -790,13 +908,38 @@ public class Tank : NetworkBehaviour
 
     public void DealWithCollision(Collider otherCollider, Collider selfCollider) {
         if(isServer){
+            //Avoid bullet that is being destroyed
+            if(otherCollider.gameObject == null) return;
+
             Bullet bullet = otherCollider.GetComponent<Bullet>();
             if(bullet != null) {
-                Debug.Log("Bullet of team " + bullet.team + " , with " + bullet.damage + "  damage");
+                Debug.Log("Bullet " + bullet.netId + " of team " + bullet.team + " , with " + bullet.damage + "  damage");
                 if(bullet.team != team) {
-                    DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+
+                    // Reaction to different shoot modes
+                    switch (bullet.shootMode)
+                    {
+                        case ShootMode.Damage:
+                            DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+                            break;
+                        
+                        case ShootMode.Stop:
+                            ForceStop();
+                            break;
+
+                        default:
+                            DealDamage(bullet.damage, bullet.tankId, bullet.angleFired);
+                            break;
+
+                    }
+
+                    // Make callback to shooter
                     if(bullet.tankWhoShot != null)
                         bullet.tankWhoShot.NotifyHitToGunner(otherCollider.transform.position);
+
+                    // Avoid more collisions
+                    bullet.canColide = false;
+                    // Destroy bullet
                     NetworkServer.Destroy(otherCollider.gameObject);
                 }
             }
@@ -806,13 +949,29 @@ public class Tank : NetworkBehaviour
     public void DealDamage(float damage, int otherTank, float angle) {
         Debug.Log("Tank from team " + team + " received " + damage + " damage!");
         currentHealth -= damage;
-        if(currentHealth <= 0 && canBeControlled) {
+        if(currentHealth <= 0 && canBeMoved) {
             Debug.Log("Is ded. RIP team " + team);
             KillTank(otherTank);
         }
         else {
             RpcOnChangeHealth(currentHealth, true);
             NotifyDamageToPlayers(damage,angle);
+        }
+    }
+
+    public void ForceStop()
+    {
+        // Stop tank
+        leftGear = rightGear = 0;
+        leftAxis = rightAxis = 0;
+        // Make pilot stop 
+        foreach(var player in playerRoles)
+        {
+            if(player.role == Role.Pilot && player.playerRef != null)
+            {
+                player.playerRef.RpcForcePilotStop();
+                break;
+            }
         }
     }
 
@@ -827,6 +986,7 @@ public class Tank : NetworkBehaviour
         GameObject mock = GameObject.Instantiate(mockPrefab, position, rotation);
         TankMock mockScript = mock.GetComponent<TankMock>();
         mockScript.ApplyPosition(position, rotation, turretRotation, Quaternion.Euler(cannonRotation,0,0));
+        mockScript.SetTankNameAndSkin(tankName,showName,tankSkin);
         mockScript.Explode();
     }
 
@@ -864,6 +1024,59 @@ public class Tank : NetworkBehaviour
 
     #endregion
 
+    #region Skin
+
+    [Server]
+    public void SetTankNameAndSkin(string name, bool showName, int skin)
+    {
+        tankName = name;
+        tankSkin = skin;
+        this.showName = showName;
+
+        UpdateSkin(0,tankSkin);
+        UpdateName("",tankName);
+    }
+
+    protected void UpdateSkin(int oldSkin, int newSkin)
+    {
+        //Update skin material
+        foreach (var mesh in meshRendereres)
+        {
+            if(mesh != null)
+            {
+                Material[] newMaterials = new Material[mesh.materials.Length];
+                for (int i = 0; i < newMaterials.Length; i++)
+                {
+                    newMaterials[i] = skins[newSkin];
+                }
+                mesh.materials = newMaterials;
+            }
+        }
+    }
+
+    protected void UpdateName(string oldName,string newName)
+    {
+        //Update text
+        foreach (var text in tankTexts)
+        {
+            if(text != null)
+            {
+                if(showName)
+                    text.text = newName;
+                else
+                    text.text = "";
+            }
+        }
+    }
+
+    public void ForceSkinAndNameUpdate()
+    {
+        UpdateSkin(0,tankSkin);
+        UpdateName("",tankName);
+    }
+
+    #endregion
+
     
     protected void OnDrawGizmos() {
         Gizmos.color = Color.red;
@@ -884,4 +1097,18 @@ public class Tank : NetworkBehaviour
             Gizmos.DrawRay(backCollisionCheck.position, backCollisionCheck.forward * distanceCollisionCheck);
         }
     }
+
+    #if UNITY_EDITOR
+
+    [UnityEditor.MenuItem("Debug/Update skin")]
+    public static void UpdateSkinAndText()
+    {
+        Tank[] tanks = FindObjectsOfType<Tank>();
+        foreach (var tank in tanks)
+        {
+            tank.ForceSkinAndNameUpdate();
+        }
+    }
+
+    #endif
 }

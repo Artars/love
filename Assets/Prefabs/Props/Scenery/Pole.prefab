@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 4354976066026153897}
   - component: {fileID: 8266624567988479130}
   - component: {fileID: 255672222517015108}
+  - component: {fileID: 3953530020009592609}
   m_Layer: 11
   m_Name: Pole
   m_TagString: Untagged
@@ -145,3 +146,16 @@ MonoBehaviour:
   positionToSpawnParticles: {fileID: 0}
   pivotPoint: {fileID: 7467136110164219548}
   timeToFall: 1
+--- !u!65 &3953530020009592609
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4354976066028419433}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.0009990484, y: 0.0009990485, z: 0.020000005}
+  m_Center: {x: 2.910383e-11, y: 0, z: 0}

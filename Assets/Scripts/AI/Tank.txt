@@ -1,0 +1,44 @@
+tree("Root")
+	fallback
+		tree("Hunt")
+		tree("Wander")
+
+//Will try to find the player
+tree("Hunt")
+	sequence 
+		FoundEnemy
+		SetPositionToEnemy
+		while
+			FoundEnemy
+			mute
+				sequence
+					mute 
+						fallback
+							sequence
+								CanEnemyBeSeen
+								CloseToTarget(50.0)
+								Stop
+							sequence
+								HasReachedDestination
+								SetPositionToEnemy
+					sequence
+						AimAtEnemy
+						CanEnemyBeSeen
+						AimCorrect
+						Shoot
+
+tree("Wander")
+	sequence
+		not 
+			FoundEnemy
+		mute //Movement
+			sequence
+				HasReachedDestination
+				fallback
+					SetNearestObjectivePosition
+					SetRandomPosition
+		mute //Cannon
+			sequence
+				AimCorrect
+				AimAtRandomDirection
+

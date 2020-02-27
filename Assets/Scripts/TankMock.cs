@@ -16,6 +16,14 @@ public class TankMock : MonoBehaviour
 
     public float lifetime = 2;
 
+    [Header("Skins")]
+    public Material[] skins;
+    public string tankName = "";
+    public int tankSkin = 0;
+    public bool showName = true;
+    public List<MeshRenderer> meshRendereres = new List<MeshRenderer>();
+    public List<TMPro.TextMeshPro> tankTexts =  new List<TMPro.TextMeshPro>();
+
     public void Start()
     {
         Destroy(gameObject, lifetime);
@@ -27,6 +35,49 @@ public class TankMock : MonoBehaviour
         mainTransform.rotation = mainRotation;
         turretTransform.rotation = turretRotation;
         cannonTransform.localRotation = cannonRotation;
+    }
+
+    public void SetTankNameAndSkin(string name, bool showName, int skin)
+    {
+        tankName = name;
+        tankSkin = skin;
+        this.showName = showName;
+
+        UpdateSkin(tankSkin);
+        UpdateName(tankName);
+    }
+
+
+    protected void UpdateSkin(int newSkin)
+    {
+        //Update skin material
+        foreach (var mesh in meshRendereres)
+        {
+            if(mesh != null)
+            {
+                Material[] newMaterials = new Material[mesh.materials.Length];
+                for (int i = 0; i < newMaterials.Length; i++)
+                {
+                    newMaterials[i] = skins[newSkin];
+                }
+                mesh.materials = newMaterials;
+            }
+        }
+    }
+
+    protected void UpdateName(string newName)
+    {
+        //Update text
+        foreach (var text in tankTexts)
+        {
+            if(text != null)
+            {
+                if(showName)
+                    text.text = newName;
+                else
+                    text.text = "";
+            }
+        }
     }
 
     public void Explode()

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 3249793829230636531}
   - component: {fileID: 880730747396609217}
   - component: {fileID: 4749580358462810258}
-  - component: {fileID: 676106051611191835}
   m_Layer: 0
   m_Name: Windmill
   m_TagString: Untagged
@@ -106,16 +105,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.04081925, y: 0.04097743, z: 0.020209331}
   m_Center: {x: -0.00067334494, y: 0.009511275, z: 0.020588303}
---- !u!65 &676106051611191835
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3249793829232898867}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.067007154, y: 0.015126814, z: 0.024550943}
-  m_Center: {x: -0.00070694607, y: -0.017775467, z: 0.018052706}

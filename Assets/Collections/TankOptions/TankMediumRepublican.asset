@@ -13,8 +13,39 @@ MonoBehaviour:
   m_Name: TankMediumRepublican
   m_EditorClassIdentifier: 
   tankName: Republican Medium
-  tankSprite: {fileID: 21300000, guid: 77055851d3ebb5c40bf30a18a332e138, type: 3}
+  tankSprites:
+  - {fileID: 21300000, guid: 04c02d4a83f690b448b11b1363761f0d, type: 3}
+  - {fileID: 21300000, guid: 2f7c7e593c3c59c41832109d5e7aa7d9, type: 3}
   tankRoles: 0100000002000000
   prefabID: 1
   tankPrefab: {fileID: 5378618044361311542, guid: 0d0933c68f8aae746b39d8424e9f35af,
     type: 3}
+  defaultNames:
+  - Borsch
+  - Balalaika
+  - Babushka
+  - Jaroslav
+  - Dimitrinsky
+  - Ilyia Muromets
+  - Bogatyr
+  - Gopnik
+  - Boris
+  - Katyusha
+  - Polyushka Polye
+  - Gavrilo
+  - Absolute
+  - Ivan
+  - Ivanov
+  - Ivanovich
+  - Rasputin
+  - Vladimir
+  - Maryusa
+  - Nikolaj
+  - Koschei
+  - Natasha
+  - Sasha
+  - Svetlana
+  - Tomislav
+  - Misha
+  - Kalinka
+  - Rudy

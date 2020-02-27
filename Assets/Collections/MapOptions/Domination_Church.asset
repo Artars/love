@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23dc7d36d39757c4798af09c367dc0a5, type: 3}
+  m_Name: Domination_Church
+  m_EditorClassIdentifier: 
+  scene: DuelAtTheChurch_Domination
+  mapName: '[DOM] Duel at the Church'
+  mapThumbnail: {fileID: 21300000, guid: de2b6afb0a85b3f42b6edd1e42ee55eb, type: 3}

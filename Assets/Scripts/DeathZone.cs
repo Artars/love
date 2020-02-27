@@ -5,16 +5,8 @@ using Mirror;
 
 public class DeathZone : NetworkBehaviour
 {
-    public Dictionary<Tank,float> debounceForTank = new Dictionary<Tank, float>();
+    public Dictionary<int,bool> debounceForTank = new Dictionary<int, bool>();
     public float debounceTime = 1;
-
-    public void Update()
-    {
-        foreach (KeyValuePair<Tank,float> debounce in debounceForTank)
-        {
-            debounceForTank[debounce.Key] -= Time.deltaTime;
-        }
-    }
 
     public void OnTriggerEnter(Collider col)
     {
@@ -25,16 +17,23 @@ public class DeathZone : NetworkBehaviour
                 Tank tankScript = col.GetComponentInParent<Tank>();
                 if(tankScript != null)
                 {
-                    if(!debounceForTank.ContainsKey(tankScript))
-                        debounceForTank.Add(tankScript, 0);
+                    if(!debounceForTank.ContainsKey(tankScript.tankId))
+                        debounceForTank.Add(tankScript.tankId, true);
 
-                    if(debounceForTank[tankScript] <= 0)
+                    if(debounceForTank[tankScript.tankId])
                     {
                         tankScript.KillTank(tankScript.tankId);
-                        debounceForTank[tankScript] = debounceTime;
+                        debounceForTank[tankScript.tankId] = false;
+                        StartCoroutine(WaitDebounce(tankScript.tankId));
                     }
                 }
             }
         }
+    }
+
+    protected IEnumerator WaitDebounce(int id)
+    {
+        yield return new WaitForSeconds(debounceTime);
+        debounceForTank[id] = true;
     }
 }

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scene: IronHarvest
   mapName: Iron Harvest
-  mapThumbnail: {fileID: 0}
+  mapThumbnail: {fileID: 21300000, guid: c0584411c5e09a743bc9496da4db4b11, type: 3}
