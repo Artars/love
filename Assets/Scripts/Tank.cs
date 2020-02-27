@@ -152,6 +152,10 @@ public class Tank : NetworkBehaviour
     public MeshRenderer rightThreadMesh;
     public int rightThreadIndex = -1;
     protected Material rightThreadMaterial;
+    public TrailRenderer leftThreadTrail;
+    public TrailRenderer rightThreadTrail;
+    public ParticleSystem leftThreadParticles;
+    public ParticleSystem rightThreadParticles;
 
     [Header("Killing")]
     public float timeToKillFlipped = 5f;
@@ -544,6 +548,7 @@ public class Tank : NetworkBehaviour
         UpdateThreadsVisual();
         UpdateMotorPitch();
         UpdateTurretPitch();
+        UpdateTrailAndParticles();
         //Only server
         if(isServer)
         {
@@ -593,6 +598,33 @@ public class Tank : NetworkBehaviour
         }
 
         motorSoundSource.pitch = pitch;
+    }
+
+    protected void UpdateTrailAndParticles()
+    {
+        //Get variables
+        float realRightAxis = rightThreadOnGround ? rightAxis : 0;
+        float realLeftAxis = leftThreadOnGround ? leftAxis : 0;
+        
+        //Update particles and trail
+        rightThreadTrail.emitting = Mathf.Abs(realRightAxis) > 0;
+        leftThreadTrail.emitting = Mathf.Abs(realLeftAxis) > 0;
+        //Detect changes in the state of the particles
+        if(rightThreadParticles.isPlaying ^ realRightAxis > 0)
+        {
+            if(rightThreadParticles.isPlaying)
+                rightThreadParticles.Stop();
+            else
+                rightThreadParticles.Play();
+        }
+
+        if(leftThreadParticles.isPlaying ^ realLeftAxis > 0)
+        {
+            if(leftThreadParticles.isPlaying)
+                leftThreadParticles.Stop();
+            else
+                leftThreadParticles.Play();
+        }
     }
 
     protected void UpdateTurretPitch()
