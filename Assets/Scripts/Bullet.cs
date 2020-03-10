@@ -21,6 +21,8 @@ public class Bullet : NetworkBehaviour
     public float angleFired;
     public Tank tankWhoShot;
 
+    public ParticleSystem bulletDetonation;
+
     public float lifeTime = 10;
 
     protected Transform myTransform;
@@ -88,9 +90,16 @@ public class Bullet : NetworkBehaviour
             }
             else if (!col.isTrigger)
             {
+                //Particles will only pop up if they missed a tank (in order to not overlap with tank explosion particles)
+                //Vector3 particlePosition = this.gameObject.transform.position;
+                Quaternion particleRotation = Quaternion.Euler(-this.gameObject.transform.rotation.eulerAngles);
+                Instantiate(bulletDetonation, gameObject.transform.position, particleRotation);
+
                 NetworkServer.Destroy(gameObject);
+               
             }
         }
+
     }
 
     protected IEnumerator waitDestroyTime(float time) {

@@ -261,12 +261,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24b19d1a7a54fb6469a90c00ab305a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
   syncInterval: 0.1
   team: -1
   tankId: -1
   damage: 0
   velocityFired: {x: 0, y: 0, z: 0}
+  canColide: 0
+  shootMode: 0
   angleFired: 0
+  tankWhoShot: {fileID: 0}
+  bulletDetonation: {fileID: 3130995876310251147, guid: eddfe17c4dd1eba46ae29a4668563847,
+    type: 3}
   lifeTime: 10
 --- !u!54 &8362911629168556891
 Rigidbody:
@@ -296,10 +302,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneId: 0
   serverOnly: 0
-  localPlayerAuthority: 0
-  m_AssetId: 74ca6805f1c7dc6499e9c704dc38114b
-  m_SceneId: 0
+  m_AssetId: 
 --- !u!114 &2581246014050152322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,7 +317,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
   syncInterval: 0.1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
   compressRotation: 1
 --- !u!65 &7840505459286740528
 BoxCollider:
