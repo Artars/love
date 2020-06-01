@@ -1,16 +1,30 @@
 fileFormatVersion: 2
 guid: beb1457d375110e468b8d8e1f29fccea
 TextureImporter:
-  fileIDToRecycleName:
-    8900000: generatedCubemap
-    21300000: Polyverse Skies - Blue Sky_0
-    21300002: Polyverse Skies - Blue Sky_1
-    21300004: Polyverse Skies - Blue Sky_2
-    21300006: Polyverse Skies - Blue Sky_3
-    21300008: Polyverse Skies - Blue Sky_4
-    21300010: Polyverse Skies - Blue Sky_5
+  internalIDToNameTable:
+  - first:
+      89: 8900000
+    second: generatedCubemap
+  - first:
+      213: 21300000
+    second: Polyverse Skies - Blue Sky_0
+  - first:
+      213: 21300002
+    second: Polyverse Skies - Blue Sky_1
+  - first:
+      213: 21300004
+    second: Polyverse Skies - Blue Sky_2
+  - first:
+      213: 21300006
+    second: Polyverse Skies - Blue Sky_3
+  - first:
+      213: 21300008
+    second: Polyverse Skies - Blue Sky_4
+  - first:
+      213: 21300010
+    second: Polyverse Skies - Blue Sky_5
   externalObjects: {}
-  serializedVersion: 9
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -65,7 +79,7 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
-  - serializedVersion: 2
+  - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -76,7 +90,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -87,7 +102,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -98,7 +114,8 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-  - serializedVersion: 2
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -109,6 +126,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -128,6 +146,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: e4f099a03521e5045a89b52f92dae61a
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -148,6 +167,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: cd6a3df6b2e6c744d8fd578ec292c349
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -168,6 +188,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 3181513f9aa39d04da32a73497750d05
+      internalID: 21300004
       vertices: []
       indices: 
       edges: []
@@ -188,6 +209,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 783386685925a8c47b1b4641c15cc483
+      internalID: 21300006
       vertices: []
       indices: 
       edges: []
@@ -208,6 +230,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: e0b6f56ff8957fe4fade48df5fe5b8fd
+      internalID: 21300008
       vertices: []
       indices: 
       edges: []
@@ -228,6 +251,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 6bc1ca1ad1c3b60498102f9bf6ae10f7
+      internalID: 21300010
       vertices: []
       indices: 
       edges: []
@@ -236,10 +260,12 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: b00dd4f6b62a9e546b770c2e87858cf4
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
